@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://6qsyrq6k7s0b" path="res://Assets/Levels/tileset.png" id="1_fc7b1"]
 [ext_resource type="PackedScene" uid="uid://p5ywwpgvi5wr" path="res://Characters/Playable/PlayerRyu.tscn" id="2_362h7"]
-[ext_resource type="PackedScene" uid="uid://ddbis14wwbot5" path="res://Characters/Non-Playable/NPCRyu.tscn" id="3_gelkq"]
+[ext_resource type="PackedScene" uid="uid://cojqwn7tyagvy" path="res://Characters/Non-Playable/NPCRyu.tscn" id="3_gelkq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gwbe7"]
 texture = ExtResource("1_fc7b1")
@@ -580,7 +580,7 @@ shape = SubResource("RectangleShape2D_7n732")
 position = Vector2(33, 117)
 
 [node name="Player2" parent="." instance=ExtResource("3_gelkq")]
-position = Vector2(327, 121)
+position = Vector2(317, 116)
 
 [node name="MainUI" type="Node2D" parent="."]
 

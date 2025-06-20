@@ -18,13 +18,13 @@ var attack_system: HumanRyu_Attacks
 #FUNCTION FOR FACING THE DIRECTION
 func update_facing_direction():
 	if enemy.position.x > position.x:
-		characterSprite.flip_h = false  # Face right
+		characterSprite.flip_h = false 
 	else:
-		characterSprite.flip_h = true   # Face left
+		characterSprite.flip_h = true  
 
 func _ready():
 	movement_system = HumanRyu_Movements.new(animation, self)
-	#attack_system = HumanRyu_Attacks(animation, self)
+	attack_system = HumanRyu_Attacks.new(animation, self)
 	
 func _physics_process(delta):
 	update_facing_direction()
@@ -42,8 +42,8 @@ func _physics_process(delta):
 	movement_system.handle_movements()
 	movement_system.handle_jump()
 	
-	#attack_system.handle_punch()
-	#attack_system.handle_kick()
-	#
+	attack_system.handle_punch()
+	attack_system.handle_kick()
+	
 	move_and_slide()
 	
