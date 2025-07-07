@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://dm3mo1fe15gbc"]
+
+[ext_resource type="PackedScene" uid="uid://cgbdlya664tp0" path="res://Characters/Playable/PlayerCharacter1.tscn" id="1_1ubbt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0smn3"]
+size = Vector2(38, 846.75)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rw36q"]
+size = Vector2(20, 868)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8ht51"]
+size = Vector2(2093, 20)
+
+[node name="Simulation_Level" type="Node2D"]
+
+[node name="Borders" type="Node2D" parent="."]
+
+[node name="Right_Border" type="StaticBody2D" parent="Borders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/Right_Border"]
+position = Vector2(2111, 430.375)
+shape = SubResource("RectangleShape2D_0smn3")
+
+[node name="Left_Border" type="StaticBody2D" parent="Borders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/Left_Border"]
+position = Vector2(-13, 425)
+shape = SubResource("RectangleShape2D_rw36q")
+
+[node name="Ground_Border" type="StaticBody2D" parent="Borders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/Ground_Border"]
+position = Vector2(1044.5, 846)
+shape = SubResource("RectangleShape2D_8ht51")
+
+[node name="PlayerCharacter1" parent="." instance=ExtResource("1_1ubbt")]
+position = Vector2(275, 301)
+
+[node name="Camera_View" type="Camera2D" parent="."]
+position = Vector2(1045, 186)
+zoom = Vector2(0.55, 0.5)

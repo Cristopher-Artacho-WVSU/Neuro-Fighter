@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Neuro-Fighter"
-run/main_scene="uid://bqf04n2x06v6n"
+run/main_scene="uid://dm3mo1fe15gbc"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
