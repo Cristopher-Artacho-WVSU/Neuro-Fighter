@@ -1,7 +1,7 @@
-[gd_scene load_steps=151 format=3 uid="uid://cgbdlya664tp0"]
+[gd_scene load_steps=151 format=3 uid="uid://cinrsvo42c74m"]
 
+[ext_resource type="Script" uid="uid://dxjm4qbccwrfq" path="res://Scripts/Controllers/NPCCharacter1/NPCCharacter1_Controller.gd" id="1_juauv"]
 [ext_resource type="Texture2D" uid="uid://5xo00djk0ee8" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0000.png" id="1_v7t0u"]
-[ext_resource type="Script" uid="uid://c466bhhpv8qhn" path="res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd" id="1_xekhk"]
 [ext_resource type="Texture2D" uid="uid://k3kjn7sdgsl3" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0001.png" id="2_xekhk"]
 [ext_resource type="Texture2D" uid="uid://c5jqxdj5hhg8t" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0002.png" id="3_ugqoa"]
 [ext_resource type="Texture2D" uid="uid://d32ibdo6t041m" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0003.png" id="4_77p5o"]
@@ -3313,7 +3313,7 @@ tracks/20/path = NodePath("Hitbox_LeftHand/Collision_LeftHand:shape:size")
 tracks/20/interp = 1
 tracks/20/loop_wrap = true
 tracks/20/keys = {
-"times": PackedFloat32Array(0, 0.311674, 0.376213),
+"times": PackedFloat32Array(0, 0.3125, 0.375),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(40, 40), Vector2(112.616, 40), Vector2(40, 40)]
@@ -3839,8 +3839,8 @@ size = Vector2(73, 34)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_44tk2"]
 size = Vector2(42, 54)
 
-[node name="PlayerCharacter1" type="CharacterBody2D"]
-script = ExtResource("1_xekhk")
+[node name="NPCCharacter1" type="CharacterBody2D"]
+script = ExtResource("1_juauv")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_v1dgo")
