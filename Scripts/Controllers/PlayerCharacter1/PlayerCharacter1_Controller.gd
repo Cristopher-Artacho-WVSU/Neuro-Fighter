@@ -3,6 +3,9 @@ extends CharacterBody2D
 #ONREADY VARIABLES
 @onready var animation = $AnimationPlayer
 @onready var characterSprite = $AnimatedSprite2D
+@onready var enemy = get_parent().get_node("NPCCharacter1")
+@onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
+@onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
 #ADDONS
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -21,10 +24,13 @@ var combo_timer = 0.5
 
 
 func _ready():
+	if not enemy:
+		print("enemy not found")
 	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
 
 func _physics_process(delta):
+	update_facing_direction()
 	if not is_on_floor():
 		velocity.y += gravity * delta
 		if not is_jumping:
@@ -62,7 +68,7 @@ func MovementSystem():
 		velocity.x = 0
 		animation.play("idle")
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-			velocity.y = -900
+			velocity.y = -1200
 			is_jumping = true
 			
 func DamagedSystem():
@@ -71,8 +77,6 @@ func DamagedSystem():
 	
 	var punch = Input.is_action_just_pressed("punch")
 	var kick = Input.is_action_just_pressed("kick")
-	
-	
 	
 	if kick:
 		print("trying to kick")
@@ -87,6 +91,20 @@ func DamagedSystem():
 		animation.play("light_punch")
 		_connect_animation_finished()
 	pass
+
+func update_facing_direction():
+	if enemy.position.x > position.x:
+		characterSprite.flip_h = false  # Face right
+		for hitbox in hitboxGroup:
+			hitbox.scale.x = 1  # Or flip_h if it's a Sprite/AnimatedSprite2D
+		for hurtbox in hurtboxGroup:
+			hurtbox.scale.x = 1
+	else:
+		characterSprite.flip_h = true   # Face left
+		for hitbox in hitboxGroup:
+			hitbox.scale.x = -1
+		for hurtbox in hurtboxGroup:
+			hurtbox.scale.x = -1
 
 
 func _connect_animation_finished():
