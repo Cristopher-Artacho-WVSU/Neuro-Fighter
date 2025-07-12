@@ -1,6 +1,6 @@
 [gd_scene load_steps=151 format=3 uid="uid://cinrsvo42c74m"]
 
-[ext_resource type="Script" uid="uid://dxjm4qbccwrfq" path="res://Scripts/Controllers/NPCCharacter1/NPCCharacter1_Controller.gd" id="1_juauv"]
+[ext_resource type="Script" uid="uid://cgo3wd5idwkk8" path="res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd" id="1_juauv"]
 [ext_resource type="Texture2D" uid="uid://5xo00djk0ee8" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0000.png" id="1_v7t0u"]
 [ext_resource type="Texture2D" uid="uid://k3kjn7sdgsl3" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0001.png" id="2_xekhk"]
 [ext_resource type="Texture2D" uid="uid://c5jqxdj5hhg8t" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0002.png" id="3_ugqoa"]
