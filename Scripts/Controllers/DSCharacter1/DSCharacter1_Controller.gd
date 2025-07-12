@@ -1,23 +1,43 @@
 extends CharacterBody2D
 
-# === STATE VARIABLES ===
+# HYPERPARAMETERS FOR CHARACTER LOGIC
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var speed = 300
-var is_jumping = false
-var is_attacking = false
+
+#SCRIPT VALUES
 var current_rule_dict: Dictionary = {}
 var ruleScript = 4
 
+#BOOL VALUES
+var is_jumping = false
+var is_attacking = false
+var is_hurt = false
 
+# PLAYER DETAILS
+var upper_attacks_taken: int = 0
+var lower_attacks_taken: int = 0
+var upper_attacks_landed: int = 0
+var lower_attacks_landed: int = 0
 
-# === ONREADY VARIABLES ===
+# WEIGHT ADJUSTMENT CONFIGURATIONS
+var baseline = 0.5
+var maxPenalty = 0.4
+var maxReward = 0.1
+var minWeight = 0.1
+var maxWeight = 1.0
+var sumWeight = len(rules)/2
+
+#ONREADY VARIABLES FOR OTHER PLAYER
 @onready var animation = $AnimationPlayer
 @onready var enemy = get_parent().get_node("PlayerCharacter1")
 @onready var enemyAnimation = enemy.get_node("AnimationPlayer")
+@onready var enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody")
+@onready var enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody")
+#ONREADY VARIABLES FOR THIS PLAYER
 @onready var characterSprite = $AnimatedSprite2D
 @onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
 @onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
-
+@onready var playerDetails = get_parent().get_node("PlayerDetailsUI/Player2Details")
 # === RULES ===
 var rules = [
 	{
@@ -90,7 +110,8 @@ func _physics_process(delta):
 			is_jumping = false
 			if not is_attacking:
 				animation.play("idle")
-
+	
+	DamagedSystem()
 	move_and_slide()
 
 
@@ -203,33 +224,37 @@ func _execute_single_action(action):
 			# e.g., set velocity to zero
 			velocity.x = 0
 			animation.play("idle")
-			print("in idle state")
+			#print("in idle state")
 		"walk_forward":
 			if enemy.global_position.x > global_position.x:
 				velocity.x = speed
 			else:
 				velocity.x = -speed
-			print("in walk_forward state")
+			#print("in walk_forward state")
 		"walk_backward":
 			if enemy.global_position.x > global_position.x:
 				velocity.x = -speed
 			else:
 				velocity.x = speed
-			print("in walk_backward state")
+			#print("in walk_backward state")
 		"light_punch":
 			animation.play("light_punch")
-			_connect_animation_finished()
+			upper_attacks_landed += 1
+			updateDetails()
+			_connect_attack_animation_finished()
 			is_attacking = true
 			velocity.x = 0
 			velocity.y = 0
-			print("in light_punch state")
+			#print("in light_punch state")
 		"light_kick":
 			animation.play("light_kick")
-			_connect_animation_finished()
+			upper_attacks_landed += 1
+			updateDetails()
+			_connect_attack_animation_finished()
 			is_attacking = true
 			velocity.x = 0
 			velocity.y = 0
-			print("in light_kick state")
+			#print("in light_kick state")
 		_:
 			print("Unknown action: %s" % str(action))
 
@@ -241,7 +266,7 @@ func generate_script(rules):
 	var minweight = 0.1
 	var maxweight = 1.0
 	var weightAdjustment = 0
-	
+	var fitness = 0
 	
 	for i in range(ruleScript):
 		if rules[i].get("wasUsed", false):
@@ -251,7 +276,10 @@ func generate_script(rules):
 		return
 		
 	inactive = ruleScript - active
-	#weightAdjustment = calculateAdjustment()
+	fitness = calculateFitness()
+#	CALCULATES THE REWARD OR PENALTY EACH RULE RECEIVES
+	#weightAdjustment = calculateAdjustment(fitness)
+	
 	#compensation = -active *(weightAdjustment/inactive)
 	
 	for i in range(ruleScript):
@@ -271,16 +299,52 @@ func generate_script(rules):
 	pass
 	
 	
-
-func calculateAdjustment(fitness):
+func calculateFitness():
+	var baseline = 0.5
+	var offensivenessVal = (0.002 * upper_attacks_landed + 0.002 * lower_attacks_landed)
+	#var defensivess = 0
+	var penaltyVal = (-0.005 * lower_attacks_taken + -0.005 * upper_attacks_taken)
 	
+#	ADD DEFENSIVENESS LATER ON
+	var raw_fitness = baseline + offensivenessVal + penaltyVal
+	var fitness = clampf(raw_fitness, 0.0, 1.0)
+	return fitness
+
+func calculateAdjustment(fitness, script):
+	var unusedRules = [] 
+	var usedRules = []
+	var total_delta = 0
+	
+	if fitness < baseline:
+		var raw_delta = (maxPenalty * (baseline - fitness)) / baseline
+		var delta = -min(maxPenalty, int(raw_delta))
+	else:
+		var raw_delta = (maxReward * (fitness - baseline)) / (1 - baseline)
+		var delta = min(maxReward, int(raw_delta))
+		
+	for r in script:
+		if r.get("wasUsed", 0) == 1:
+			usedRules.append(r)
+		else:
+			unusedRules.append(r)
+	if not usedRules or not unusedRules:
+		return script
+		
+	#for r in script:
+		#if r['wasUsed']:
+			#r['delta'] = delta  # full penalty/reward kung in script kag nafire
+		#else:
+			#r['delta'] = int(0.2 * delta)  # 1/5 penalty/reward kung in script kag wala nafire
+			#total_delta += r['delta']
+		
+		
 	pass
 
 
-func DistributeRemainder():
+func DistributeRemainder(excessAmount):
 	pass
 
-func _connect_animation_finished():
+func _connect_attack_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
 
@@ -289,3 +353,44 @@ func _on_attack_finished(anim_name):
 	if anim_name == "light_punch" or anim_name == "light_kick":
 		is_attacking = false
 		print("Attack animation finished:", anim_name)
+
+func DamagedSystem():
+	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
+		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
+			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
+	
+	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
+		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
+			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
+
+func _on_hurtbox_upper_body_area_entered(area: Area2D):
+	print("Upper body hit taken")
+	is_hurt = true
+	animation.play("light_hurt")
+	lower_attacks_taken += 1
+	updateDetails()
+	_connect_hurt_animation_finished()
+
+
+func _on_hurtbox_lower_body_area_entered(area: Area2D):
+	print("Lower body hit taken")
+	is_hurt = true
+	animation.play("light_hurt")
+	lower_attacks_taken += 1
+	updateDetails()
+	_connect_hurt_animation_finished()
+
+func updateDetails():
+	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d" % [
+		lower_attacks_taken, upper_attacks_taken, 
+		lower_attacks_landed, upper_attacks_landed	]
+	
+func _connect_hurt_animation_finished():
+	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
+		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
+
+func _on_hurt_finished(anim_name):
+	if anim_name == "light_hurt" or anim_name == "heavy_hurt":
+		is_hurt = false
+		print("Attack animation finished:", anim_name)
+	pass
