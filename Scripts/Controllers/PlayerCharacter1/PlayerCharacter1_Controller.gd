@@ -57,11 +57,11 @@ func MovementSystem():
 	var crouch = Input.is_action_pressed("crouch")
 
 	if move_right:
-		print("moving right")
+		#print("moving right")
 		velocity.x = speed
 		animation.play("walk_forward")
 	elif move_left:
-		print("moving left")
+		#print("moving left")
 		velocity.x = -speed
 		animation.play("walk_backward")
 	else:
@@ -79,13 +79,13 @@ func DamagedSystem():
 	var kick = Input.is_action_just_pressed("kick")
 	
 	if kick:
-		print("trying to kick")
+		#print("trying to kick")
 		is_attacking = true
 		velocity.x = 0
 		animation.play("light_kick")
 		_connect_animation_finished()
 	if punch:
-		print("trying to punch")
+		#print("trying to punch")
 		is_attacking = true
 		velocity.x = 0
 		animation.play("light_punch")
@@ -115,4 +115,4 @@ func _connect_animation_finished():
 func _on_attack_finished(anim_name):
 	if anim_name == "light_punch" or anim_name == "light_kick":
 		is_attacking = false
-		print("Attack animation finished:", anim_name)
+		#print("Attack animation finished:", anim_name)
