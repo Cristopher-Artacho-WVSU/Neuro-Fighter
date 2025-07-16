@@ -343,6 +343,10 @@ func calculateAdjustment(fitness: float) -> float:
 	return min(maxReward, raw_delta)
 	
 func _create_new_script():
+	# First reset all inScript flags
+	for rule in rules:
+		rule["inScript"] = false
+	
 	DSscript.clear()
 	
 	# Create candidate list with weights
@@ -350,18 +354,22 @@ func _create_new_script():
 	for rule in rules:
 		candidates.append({
 			"rule": rule,
-			"weight": rule["weight"]
+			"weight": rule["weight"],
+			"random_tie": randf()  # Add randomness for tie-breaking
 		})
 	
-	# Sort by weight descending
-	candidates.sort_custom(func(a, b): return a.weight > b.weight)
+	# Sort by weight descending, then random tie-breaker
+	candidates.sort_custom(func(a, b):
+		if a.weight != b.weight:
+			return a.weight > b.weight
+		return a.random_tie > b.random_tie
+	)
 	
 	# Select top rules for new script
-	for i in range(ruleScript):
-		if i < candidates.size():
-			var rule = candidates[i].rule
-			rule["inScript"] = true
-			DSscript.append(rule)
+	for i in range(min(ruleScript, candidates.size())):
+		var rule = candidates[i].rule
+		rule["inScript"] = true
+		DSscript.append(rule)
 			
 func _reset_rule_usage():
 	for rule in rules:
