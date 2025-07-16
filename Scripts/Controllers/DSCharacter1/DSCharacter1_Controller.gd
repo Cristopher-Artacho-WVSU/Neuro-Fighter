@@ -79,6 +79,10 @@ var rules = [
 	}
 ]
 
+# LOGGING SYSTEM
+var log_file_path = "res://training.txt"
+var cycle_used_rules = []
+
 # === ENGINE CALLBACKS ===
 func _ready():
 #	MAKE AN INITIAL SCRIPT
@@ -98,6 +102,42 @@ func _ready():
 
 	# Start with an initial script generation
 	generate_script()
+	initialize_log_file()
+	
+func initialize_log_file():
+	var file = FileAccess.open(log_file_path, FileAccess.WRITE)
+	if file:
+		file.store_string("=== DS Character Log ===\n")
+		file.close()
+
+func log_script_generation():
+	var timestamp = Time.get_datetime_string_from_system()
+	var file = FileAccess.open(log_file_path, FileAccess.READ_WRITE)
+	if file:
+		file.seek_end()
+		
+		# Header with timestamp
+		file.store_string("\n--- Script Generated (Timer Update) | Timestamp: %s ---\n" % timestamp)
+		
+		# Generated Script section
+		file.store_string("Generated Script:\n")
+		file.store_string(JSON.stringify(DSscript, "  "))
+		
+		# Rules used in this cycle
+		file.store_string("\nRules Executed in Last Cycle:\n")
+		file.store_string(JSON.stringify(cycle_used_rules))
+		
+		# Parameters section
+		file.store_string("\n--- End Log Entry ---")
+		file.store_string("\n--- Parameters: %s ---\n" % JSON.stringify({
+			"upper_attacks_taken": upper_attacks_taken,
+			"lower_attacks_taken": lower_attacks_taken,
+			"upper_attacks_landed": upper_attacks_landed,
+			"lower_attacks_landed": lower_attacks_landed
+		}))
+		
+		file.close()
+		
 
 func update_facing_direction():
 	if enemy.position.x > position.x:
@@ -176,6 +216,10 @@ func evaluate_and_execute(rules: Array):
 
 		if valid_actions.size() > 0:
 			_execute_actions(valid_actions)
+			# Record used rule for this cycle
+			if not rule["ruleID"] in cycle_used_rules:
+				cycle_used_rules.append(rule["ruleID"])
+			
 			var updated_rule = rule.duplicate()
 			updated_rule["wasUsed"] = true
 			rules[rule_index] = updated_rule
@@ -269,6 +313,8 @@ func _execute_single_action(action):
 		_:
 			print("Unknown action: %s" % str(action))
 
+
+
 func generate_script():
 	# Reset counters for new evaluation period
 	var active = 0
@@ -314,7 +360,9 @@ func generate_script():
 	_create_new_script()
 	_reset_rule_usage()
 	print("New script generated with weights: ", DSscript)
-
+	
+	log_script_generation()
+	cycle_used_rules.clear()
 	
 	
 func calculateFitness():
