@@ -7,6 +7,8 @@ extends Node2D
 @onready var player1HP = $MainUI/Player1_HPBar
 @onready var player2HP = $MainUI/Player2_HPBar
 @onready var timerLabel = $MainUI/Timer/TimerLabel
+@onready var player2 = $NPCCharacter1
+#REFERENCE THE PLAYER 2 AI
 
 #OTHER VARIABLES
 var totalTimerAmount = 99
@@ -30,3 +32,4 @@ func _physics_process(delta):
 
 func _on_timer_timeout():
 	print("Timer stops after 4 seconds")
+	player2.generate_script()

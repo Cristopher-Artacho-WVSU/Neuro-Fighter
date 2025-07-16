@@ -7,6 +7,8 @@ var speed = 300
 #SCRIPT VALUES
 var current_rule_dict: Dictionary = {}
 var ruleScript = 4
+var weightRemainder = 0
+var DSscript = []
 
 #BOOL VALUES
 var is_jumping = false
@@ -22,10 +24,10 @@ var lower_attacks_landed: int = 0
 # WEIGHT ADJUSTMENT CONFIGURATIONS
 var baseline = 0.5
 var maxPenalty = 0.4
-var maxReward = 0.1
+var maxReward = 0.4
 var minWeight = 0.1
 var maxWeight = 1.0
-var sumWeight = len(rules)/2
+#var sumWeight = len(rules)/2
 
 #ONREADY VARIABLES FOR OTHER PLAYER
 @onready var animation = $AnimationPlayer
@@ -79,6 +81,18 @@ var rules = [
 
 # === ENGINE CALLBACKS ===
 func _ready():
+#	MAKE AN INITIAL SCRIPT
+	DSscript.clear()
+	var initRules = rules.duplicate()
+	initRules.shuffle()
+	for i in range(ruleScript):
+		initRules[i]["inScript"] = true
+		DSscript.append(initRules[i])
+	#
+	#print("Rules in Script", DSscript)
+	#print("Rulebase", rules)
+	
+
 	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
 
@@ -138,13 +152,9 @@ func evaluate_and_execute(rules: Array):
 				matched_rules.append(i)  # Store the index
 	#print(matched_rules)
 
-	# Do something with matched_rules
-
-
 	# Sort matched rules by prioritization (highest first)
 	#matched_rules.sort_custom(Callable(self, "_sort_by_priority_desc"))
 
-		# In DS_script.gd's evaluate_and_execute function:
 	if matched_rules.size() > 0:
 		var rule_index = matched_rules[0]  # matched_rules now stores indices
 		var rule = rules[rule_index]
@@ -199,7 +209,6 @@ func _execute_actions(actions: Array):
 	for action in actions:
 		_execute_single_action(action)
 
-
 func get_rule_by_action(action) -> Dictionary:
 	for rule in rules:
 		var enemy_action = rule.get("enemy_action")
@@ -213,7 +222,6 @@ func get_rule_by_action(action) -> Dictionary:
 			return rule
 			
 	return {}
-
 
 func _execute_single_action(action):
 	if typeof(action) == TYPE_DICTIONARY:
@@ -258,7 +266,7 @@ func _execute_single_action(action):
 		_:
 			print("Unknown action: %s" % str(action))
 
-func generate_script(rules):
+func generate_script():
 	var active = 0
 	var inactive = 0
 	var compensation = 0
@@ -268,6 +276,10 @@ func generate_script(rules):
 	var weightAdjustment = 0
 	var fitness = 0
 	
+#	TURN ALL "inScript" OF RULES TO FALSE
+	#for rule in rules:
+		#rule["in_script"] = false
+	print(rules)
 	for i in range(ruleScript):
 		if rules[i].get("wasUsed", false):
 			active += 1
@@ -278,11 +290,12 @@ func generate_script(rules):
 	inactive = ruleScript - active
 	fitness = calculateFitness()
 #	CALCULATES THE REWARD OR PENALTY EACH RULE RECEIVES
-	#weightAdjustment = calculateAdjustment(fitness)
+	weightAdjustment = calculateAdjustment(fitness)
 	
-	#compensation = -active *(weightAdjustment/inactive)
+	compensation = -active *(weightAdjustment/inactive)
 	
 	for i in range(ruleScript):
+		print(rules[i]["weight"])
 		if rules[i].get("wasUsed", false):
 			rules[i]["weight"] += weightAdjustment
 		else:
@@ -294,8 +307,9 @@ func generate_script(rules):
 		elif rules[i]["weight"] > maxweight:
 			remainder += (rules[i]["weight"]- maxweight)
 			rules[i]["weight"] = maxweight
-			
-		#DistributeRemainder() #DISTRIBUTE WEIGHT ACROSS ALL RULES
+	DistributeRemainder() #DISTRIBUTE WEIGHT ACROSS ALL RULES
+#		CREATE THE NEW RULES IN HERE
+	print(rules)
 	pass
 	
 	
@@ -308,41 +322,51 @@ func calculateFitness():
 #	ADD DEFENSIVENESS LATER ON
 	var raw_fitness = baseline + offensivenessVal + penaltyVal
 	var fitness = clampf(raw_fitness, 0.0, 1.0)
+	print("fitness: ",fitness)
 	return fitness
 
-func calculateAdjustment(fitness, script):
+func calculateAdjustment(fitness):
 	var unusedRules = [] 
 	var usedRules = []
 	var total_delta = 0
+	var delta = 0
+	var raw_delta = 0
 	
 	if fitness < baseline:
-		var raw_delta = (maxPenalty * (baseline - fitness)) / baseline
-		var delta = -min(maxPenalty, int(raw_delta))
+		raw_delta = (maxPenalty * (baseline - fitness)) / baseline
+		delta = -min(maxPenalty, (raw_delta))
 	else:
-		var raw_delta = (maxReward * (fitness - baseline)) / (1 - baseline)
-		var delta = min(maxReward, int(raw_delta))
+		raw_delta = (maxReward * (fitness - baseline)) / (1 - baseline)
+		delta = min(maxReward, (raw_delta))
 		
-	for r in script:
-		if r.get("wasUsed", 0) == 1:
+	for r in rules:
+		if r.get("wasUsed", false) == true:
 			usedRules.append(r)
 		else:
 			unusedRules.append(r)
 	if not usedRules or not unusedRules:
-		return script
+		print("not passing rules")
+		return rules
 		
-	#for r in script:
-		#if r['wasUsed']:
-			#r['delta'] = delta  # full penalty/reward kung in script kag nafire
-		#else:
-			#r['delta'] = int(0.2 * delta)  # 1/5 penalty/reward kung in script kag wala nafire
-			#total_delta += r['delta']
-		
-		
-	pass
+	for r in rules:
+		if r.get("inScript", false):
+			if r.get("wasUsed", false):
+				r["delta"] = delta  # Full reward/penalty for rules that fired
+			else:
+				r["delta"] = int(0.2 * delta)  # Partial for those that didn’t fire
+				total_delta += r["delta"]  # Always add to total_delta
+		else:
+			r["delta"] = 0  # Not in script, so no weight update this cycle
+	print(total_delta)
+	print(rules)
+	return total_delta
 
 
-func DistributeRemainder(excessAmount):
-	pass
+func DistributeRemainder():
+	var dstribute_amount = weightRemainder/(len(rules)-ruleScript)
+	for rule in rules:
+		rule["weight"] += dstribute_amount
+
 
 func _connect_attack_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
@@ -352,7 +376,7 @@ func _connect_attack_animation_finished():
 func _on_attack_finished(anim_name):
 	if anim_name == "light_punch" or anim_name == "light_kick":
 		is_attacking = false
-		print("Attack animation finished:", anim_name)
+		#print("Attack animation finished:", anim_name)
 
 func DamagedSystem():
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
@@ -376,7 +400,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	print("Lower body hit taken")
 	is_hurt = true
 	animation.play("light_hurt")
-	lower_attacks_taken += 1
+	upper_attacks_taken += 1
 	updateDetails()
 	_connect_hurt_animation_finished()
 
