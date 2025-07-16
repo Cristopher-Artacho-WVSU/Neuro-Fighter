@@ -96,6 +96,9 @@ func _ready():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
 
+	# Start with an initial script generation
+	generate_script()
+
 func update_facing_direction():
 	if enemy.position.x > position.x:
 		characterSprite.flip_h = false  # Face right
@@ -267,50 +270,51 @@ func _execute_single_action(action):
 			print("Unknown action: %s" % str(action))
 
 func generate_script():
+	# Reset counters for new evaluation period
 	var active = 0
 	var inactive = 0
-	var compensation = 0
-	var remainder = 0
-	var minweight = 0.1
-	var maxweight = 1.0
-	var weightAdjustment = 0
-	var fitness = 0
 	
-#	TURN ALL "inScript" OF RULES TO FALSE
-	#for rule in rules:
-		#rule["in_script"] = false
-	print(rules)
-	for i in range(ruleScript):
-		if rules[i].get("wasUsed", false):
+	# Count active rules in current script
+	for rule in DSscript:
+		if rule.get("wasUsed", false):
 			active += 1
-	
-	if active <= 0 or active >= ruleScript:
+			
+	# Skip adjustment if no meaningful data
+	if active == ruleScript:
+		_reset_rule_usage()
 		return
 		
 	inactive = ruleScript - active
-	fitness = calculateFitness()
-#	CALCULATES THE REWARD OR PENALTY EACH RULE RECEIVES
-	weightAdjustment = calculateAdjustment(fitness)
+	var fitness = calculateFitness()
 	
-	compensation = -active *(weightAdjustment/inactive)
+	# Calculate weight adjustment
+	var weightAdjustment = calculateAdjustment(fitness)
+	var compensation = -active * (weightAdjustment / inactive)
 	
-	for i in range(ruleScript):
-		print(rules[i]["weight"])
-		if rules[i].get("wasUsed", false):
-			rules[i]["weight"] += weightAdjustment
-		else:
-			rules[i]["weight"] += compensation
+	# Apply weight adjustments with clamping
+	for rule in rules:
+		if rule.get("inScript", false):
+			if rule.get("wasUsed", false):
+				rule["weight"] += weightAdjustment
+			else:
+				rule["weight"] += compensation
+			
+			# Clamp weights and handle remainder
+			if rule["weight"] < minWeight:
+				weightRemainder += (rule["weight"] - minWeight)
+				rule["weight"] = minWeight
+			elif rule["weight"] > maxWeight:
+				weightRemainder += (rule["weight"] - maxWeight)
+				rule["weight"] = maxWeight
 	
-		if rules[i]["weight"] < minweight:
-			remainder += (rules[i]["weight"]- minweight)
-			rules[i]["weight"] = minweight
-		elif rules[i]["weight"] > maxweight:
-			remainder += (rules[i]["weight"]- maxweight)
-			rules[i]["weight"] = maxweight
-	DistributeRemainder() #DISTRIBUTE WEIGHT ACROSS ALL RULES
-#		CREATE THE NEW RULES IN HERE
-	print(rules)
-	pass
+	# Distribute remainder to non-script rules
+	DistributeRemainder()
+	
+	# Create new script based on updated weights
+	_create_new_script()
+	_reset_rule_usage()
+	print("New script generated with weights: ", DSscript)
+
 	
 	
 func calculateFitness():
@@ -322,50 +326,69 @@ func calculateFitness():
 #	ADD DEFENSIVENESS LATER ON
 	var raw_fitness = baseline + offensivenessVal + penaltyVal
 	var fitness = clampf(raw_fitness, 0.0, 1.0)
-	print("fitness: ",fitness)
+	#print("fitness: ",fitness)
 	return fitness
 
-func calculateAdjustment(fitness):
-	var unusedRules = [] 
-	var usedRules = []
-	var total_delta = 0
-	var delta = 0
-	var raw_delta = 0
-	
+func calculateAdjustment(fitness: float) -> float:
+	# Calculate performance delta
+	var raw_delta = 0.0
 	if fitness < baseline:
 		raw_delta = (maxPenalty * (baseline - fitness)) / baseline
-		delta = -min(maxPenalty, (raw_delta))
 	else:
 		raw_delta = (maxReward * (fitness - baseline)) / (1 - baseline)
-		delta = min(maxReward, (raw_delta))
+	
+	# Return the adjustment value
+	if fitness < baseline:
+		return -min(maxPenalty, raw_delta)
+	return min(maxReward, raw_delta)
+	
+func _create_new_script():
+	DSscript.clear()
+	
+	# Create candidate list with weights
+	var candidates = []
+	for rule in rules:
+		candidates.append({
+			"rule": rule,
+			"weight": rule["weight"]
+		})
+	
+	# Sort by weight descending
+	candidates.sort_custom(func(a, b): return a.weight > b.weight)
+	
+	# Select top rules for new script
+	for i in range(ruleScript):
+		if i < candidates.size():
+			var rule = candidates[i].rule
+			rule["inScript"] = true
+			DSscript.append(rule)
+			
+func _reset_rule_usage():
+	for rule in rules:
+		rule["wasUsed"] = false
 		
-	for r in rules:
-		if r.get("wasUsed", false) == true:
-			usedRules.append(r)
-		else:
-			unusedRules.append(r)
-	if not usedRules or not unusedRules:
-		print("not passing rules")
-		return rules
-		
-	for r in rules:
-		if r.get("inScript", false):
-			if r.get("wasUsed", false):
-				r["delta"] = delta  # Full reward/penalty for rules that fired
-			else:
-				r["delta"] = int(0.2 * delta)  # Partial for those that didn’t fire
-				total_delta += r["delta"]  # Always add to total_delta
-		else:
-			r["delta"] = 0  # Not in script, so no weight update this cycle
-	print(total_delta)
-	print(rules)
-	return total_delta
+	# Reset attack counters
+	upper_attacks_taken = 0
+	lower_attacks_taken = 0
+	upper_attacks_landed = 0
+	lower_attacks_landed = 0
 
 
 func DistributeRemainder():
-	var dstribute_amount = weightRemainder/(len(rules)-ruleScript)
+	if weightRemainder == 0:
+		return
+	
+	var non_script_rules = []
 	for rule in rules:
-		rule["weight"] += dstribute_amount
+		if not rule.get("inScript", false):
+			non_script_rules.append(rule)
+	
+	if non_script_rules.size() > 0:
+		var per_rule_adjust = weightRemainder / non_script_rules.size()
+		for rule in non_script_rules:
+			rule["weight"] += per_rule_adjust
+	
+	weightRemainder = 0
 
 
 func _connect_attack_animation_finished():
