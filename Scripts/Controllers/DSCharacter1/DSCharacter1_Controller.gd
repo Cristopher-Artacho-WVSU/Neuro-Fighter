@@ -87,11 +87,9 @@ var cycle_used_rules = []
 func _ready():
 #	MAKE AN INITIAL SCRIPT
 	DSscript.clear()
-	var initRules = rules.duplicate()
-	initRules.shuffle()
-	for i in range(ruleScript):
-		initRules[i]["inScript"] = true
-		DSscript.append(initRules[i])
+	for i in range(min(ruleScript, rules.size())):
+		rules[i]["inScript"] = true
+		DSscript.append(rules[i])
 	#
 	#print("Rules in Script", DSscript)
 	#print("Rulebase", rules)
@@ -219,10 +217,14 @@ func evaluate_and_execute(rules: Array):
 			# Record used rule for this cycle
 			if not rule["ruleID"] in cycle_used_rules:
 				cycle_used_rules.append(rule["ruleID"])
-			
-			var updated_rule = rule.duplicate()
-			updated_rule["wasUsed"] = true
-			rules[rule_index] = updated_rule
+				
+			# Update wasUsed in both arrays
+			rules[rule_index]["wasUsed"] = true
+			# Find and update the same rule in DSscript
+			for script_rule in DSscript:
+				if script_rule["ruleID"] == rule["ruleID"]:
+					script_rule["wasUsed"] = true
+					break
 
 # Custom sort function
 func _sort_by_priority_desc(a, b):
@@ -320,6 +322,9 @@ func generate_script():
 	var active = 0
 	var inactive = 0
 	
+	log_script_generation()
+	cycle_used_rules.clear()
+	
 	# Count active rules in current script
 	for rule in DSscript:
 		if rule.get("wasUsed", false):
@@ -359,10 +364,8 @@ func generate_script():
 	# Create new script based on updated weights
 	_create_new_script()
 	_reset_rule_usage()
-	print("New script generated with weights: ", DSscript)
-	
-	log_script_generation()
-	cycle_used_rules.clear()
+	#print("New script generated with weights: ", DSscript)
+	print(rules)
 	
 	
 func calculateFitness():
