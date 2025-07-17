@@ -18,10 +18,14 @@ var is_hurt = false
 var in_combo = false
 var is_crouching = false
 var is_attacking = false
+var is_defending = false
 
 #TIMERS
 var heavyHurt_timer = 0.5
 var combo_timer = 0.5
+var idle_timer = 0.0
+var backward_timer = 0.0
+const DEFENSE_TRIGGER_TIME = 0.5  # 2 seconds
 
 
 func _ready():
@@ -39,6 +43,9 @@ func _physics_process(delta):
 	if is_hurt:
 		return
 	update_facing_direction()
+	
+	handle_defense_triggers(delta)
+	
 	if not is_on_floor():
 		velocity.y += gravity * delta
 		if not is_jumping:
@@ -47,18 +54,73 @@ func _physics_process(delta):
 		velocity.y = 0
 		if is_jumping:
 			is_jumping = false
-			if not is_attacking:
-				animation.play("idle")
+
 	AttackSystem()
-	DamagedSystem()      # Handle input for attack first
-	MovementSystem()     # Then check for movement (skipped if attacking)
+	MovementSystem()
+	DamagedSystem()
 	move_and_slide()
+			
+func handle_defense_triggers(delta):
 	
-func MovementSystem():
-	if is_attacking:
-		return  # Skip movement animation if attacking
-	if is_jumping:
+	if is_attacking || is_jumping || is_hurt:
+		idle_timer = 0.0
+		backward_timer = 0.0
+		is_defending = false
 		return
+	
+	#IF NOT MOVING, PLUS IDLE TIMER
+	if velocity.x == 0 && is_on_floor():
+		idle_timer += delta
+		backward_timer = 0.0
+	else:
+		idle_timer = 0.0
+		
+		#CHECK MOVING BACKWARD
+		var is_moving_backward = false
+		if enemy.position.x > position.x:  #ENEMY RIGHT
+			is_moving_backward = velocity.x < 0
+		else:  #ENEMY LEFT
+			is_moving_backward = velocity.x > 0
+		
+		#ADD TIMER
+		if is_moving_backward:
+			backward_timer += delta
+		else:
+			backward_timer = 0.0
+	
+	#TRIGGER DEFENSE IF RIGHT TIME
+	if idle_timer >= DEFENSE_TRIGGER_TIME || backward_timer >= DEFENSE_TRIGGER_TIME:
+		start_defense()
+		
+func start_defense():
+	is_defending = true
+	velocity.x = 0
+	animation.play("standing_block")
+	_connect_animation_finished()
+
+func AttackSystem():
+	if is_attacking:
+		return
+	
+	var punch = Input.is_action_just_pressed("punch")
+	var kick = Input.is_action_just_pressed("kick")
+	if kick:
+		#print("trying to kick")
+		is_attacking = true
+		velocity.x = 0
+		animation.play("light_kick")
+		_connect_animation_finished()
+	if punch:
+		#print("trying to punch")
+		is_attacking = true
+		velocity.x = 0
+		animation.play("light_punch")
+		_connect_animation_finished()
+		
+func MovementSystem():
+	if is_attacking || is_jumping:
+		return
+		
 	var move_right = Input.is_action_pressed("right_movement")
 	var move_left = Input.is_action_pressed("left_movement")
 	var crouch = Input.is_action_pressed("crouch")
@@ -77,7 +139,12 @@ func MovementSystem():
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 			velocity.y = -1200
 			is_jumping = true
-			
+	
+	if is_defending:
+		if animation.current_animation != "standing_block":
+			animation.play("standing_block")
+		return
+
 func DamagedSystem():
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
@@ -86,24 +153,6 @@ func DamagedSystem():
 	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
 		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
 			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
-
-func AttackSystem():
-	var punch = Input.is_action_just_pressed("punch")
-	var kick = Input.is_action_just_pressed("kick")
-	if is_attacking:
-		return
-	if kick:
-		#print("trying to kick")
-		is_attacking = true
-		velocity.x = 0
-		animation.play("light_kick")
-		_connect_animation_finished()
-	if punch:
-		#print("trying to punch")
-		is_attacking = true
-		velocity.x = 0
-		animation.play("light_punch")
-		_connect_animation_finished()
 
 func update_facing_direction():
 	if enemy.position.x > position.x:
@@ -126,11 +175,19 @@ func _connect_animation_finished():
 
 # Callback function to reset attack state when animation finishes
 func _on_attack_finished(anim_name):
-	if anim_name == "light_punch" or anim_name == "light_kick":
-		is_attacking = false
+	match anim_name:
+		"light_punch", "light_kick":
+			is_attacking = false
+		"standing_block":
+			is_defending = false
+			# Return to idle after defense
+			animation.play("idle")
 
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
+	if is_defending:
+		return
+		
 #	MADE GROUP FOR ENEMY NODES "Player2_Hitboxes" 
 	if area.is_in_group("Player2_Hitboxes"):
 		print("Player 1 Upper body hit taken")
@@ -140,6 +197,9 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 
 
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
+	if is_defending:
+		return 
+		
 	if area.is_in_group("Player1_Hitboxes"):
 		print("Player 1 Lower body hit taken")
 		is_hurt = true
