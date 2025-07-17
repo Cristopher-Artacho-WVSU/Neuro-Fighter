@@ -152,6 +152,8 @@ func update_facing_direction():
 			hurtbox.scale.x = -1
 
 func _physics_process(delta):
+	if is_hurt:
+		return
 	update_facing_direction()
 	evaluate_and_execute(rules)
 	# Gravity and jump handling
@@ -166,7 +168,7 @@ func _physics_process(delta):
 			if not is_attacking:
 				animation.play("idle")
 	
-	DamagedSystem()
+	
 	move_and_slide()
 
 
@@ -366,7 +368,7 @@ func generate_script():
 	_reset_rule_usage()
 	#print("New script generated with weights: ", DSscript)
 	print(rules)
-	
+	printSumWeights()
 	
 func calculateFitness():
 	var baseline = 0.5
@@ -470,21 +472,25 @@ func DamagedSystem():
 			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
-	print("Upper body hit taken")
-	is_hurt = true
-	animation.play("light_hurt")
-	lower_attacks_taken += 1
-	updateDetails()
-	_connect_hurt_animation_finished()
+	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
+	if area.is_in_group("Player1_Hitboxes"):
+		print("Player 2Upper body hit taken")
+		is_hurt = true
+		animation.play("light_hurt")
+		lower_attacks_taken += 1
+		updateDetails()
+		_connect_hurt_animation_finished()
 
 
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
-	print("Lower body hit taken")
-	is_hurt = true
-	animation.play("light_hurt")
-	upper_attacks_taken += 1
-	updateDetails()
-	_connect_hurt_animation_finished()
+	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
+	if area.is_in_group("Player1_Hitboxes"):
+		print("Player 2 Lower body hit taken")
+		is_hurt = true
+		animation.play("light_hurt")
+		upper_attacks_taken += 1
+		updateDetails()
+		_connect_hurt_animation_finished()
 
 func updateDetails():
 	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d" % [
@@ -497,6 +503,18 @@ func _connect_hurt_animation_finished():
 
 func _on_hurt_finished(anim_name):
 	if anim_name == "light_hurt" or anim_name == "heavy_hurt":
+		if get_parent().has_method("apply_damage_to_player2"):
+			get_parent().apply_damage_to_player2(10)
 		is_hurt = false
 		print("Attack animation finished:", anim_name)
-	pass
+
+func printSumWeights():
+	var totalWeight = 0.0
+	for rule in rules:
+		totalWeight += rule.get("weight", 0.0)
+	print("Total Rule Weight:", totalWeight)
+	
+func KO():
+	animation.play("knocked_down")
+	_connect_hurt_animation_finished()
+	
