@@ -487,7 +487,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 		print("Player 2Upper body hit taken")
 		is_hurt = true
 		animation.play("light_hurt")
-		lower_attacks_taken += 1
+		upper_attacks_taken += 1
 		updateDetails()
 		_connect_hurt_animation_finished()
 
