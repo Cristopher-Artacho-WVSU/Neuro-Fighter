@@ -35,6 +35,8 @@ var maxWeight = 1.0
 @onready var enemyAnimation = enemy.get_node("AnimationPlayer")
 @onready var enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody")
 @onready var enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody")
+
+
 #ONREADY VARIABLES FOR THIS PLAYER
 @onready var characterSprite = $AnimatedSprite2D
 @onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
@@ -437,17 +439,23 @@ func DistributeRemainder():
 	
 	weightRemainder = 0
 
-
 func _connect_attack_animation_finished():
+	print("Callback from function _connect_attack_animation_finished")
 	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
 
 # Callback function to reset attack state when animation finishes
 func _on_attack_finished(anim_name):
+	print("Callback from function _on_attack_finished")
 	if anim_name == "light_punch" or anim_name == "light_kick":
 		is_attacking = false
-		upper_attacks_landed += 1
-		updateDetails()
+		for hitbox in get_tree().get_nodes_in_group("Player2_Hitboxes"):
+			if hitbox.overlaps_area(enemy_UpperHurtbox):
+				upper_attacks_landed += 1
+				updateDetails()
+			elif hitbox.overlaps_area(enemy_LowerHurtbox):
+				lower_attacks_landed += 1
+				updateDetails()
 		#print("Attack animation finished:", anim_name)
 
 func DamagedSystem():

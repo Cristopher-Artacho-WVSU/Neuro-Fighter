@@ -1,1 +1,71 @@
 === DS Character Log ===
+
+--- Script Generated (Timer Update) | Timestamp: 2025-07-18T08:39:28 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "walk_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[1,2]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---

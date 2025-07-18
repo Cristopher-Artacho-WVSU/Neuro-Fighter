@@ -25,7 +25,7 @@ var heavyHurt_timer = 0.5
 var combo_timer = 0.5
 var idle_timer = 0.0
 var backward_timer = 0.0
-const DEFENSE_TRIGGER_TIME = 0.5  # 2 seconds
+const DEFENSE_TRIGGER_TIME = 1.0  # 2 seconds
 
 
 func _ready():
