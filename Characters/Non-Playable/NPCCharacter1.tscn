@@ -3858,18 +3858,21 @@ position = Vector2(0, 284)
 shape = SubResource("RectangleShape2D_5nog8")
 
 [node name="Hurtbox_UpperBody" type="Area2D" parent="."]
+collision_mask = 4
 
 [node name="Collision_UpperBody" type="CollisionShape2D" parent="Hurtbox_UpperBody"]
 position = Vector2(6, -88)
 shape = SubResource("CapsuleShape2D_v7t0u")
 
 [node name="Hurtbox_LowerBody" type="Area2D" parent="."]
+collision_mask = 4
 
 [node name="Collision_LowerBody" type="CollisionShape2D" parent="Hurtbox_LowerBody"]
 position = Vector2(-2, 150)
 shape = SubResource("CapsuleShape2D_xekhk")
 
 [node name="Hitbox_RightHand" type="Area2D" parent="." groups=["Player2_Hitboxes"]]
+collision_layer = 4
 monitoring = false
 monitorable = false
 
@@ -3878,6 +3881,7 @@ position = Vector2(6, -95)
 shape = SubResource("RectangleShape2D_kboy1")
 
 [node name="Hitbox_LeftHand" type="Area2D" parent="." groups=["Player2_Hitboxes"]]
+collision_layer = 4
 monitoring = false
 monitorable = false
 
@@ -3886,6 +3890,7 @@ position = Vector2(99, -120)
 shape = SubResource("RectangleShape2D_bhyjx")
 
 [node name="Hitbox_RightFoot" type="Area2D" parent="." groups=["Player2_Hitboxes"]]
+collision_layer = 4
 monitoring = false
 monitorable = false
 
@@ -3894,6 +3899,7 @@ position = Vector2(101.5, 277)
 shape = SubResource("RectangleShape2D_fvknb")
 
 [node name="Hitbox_LeftFoot" type="Area2D" parent="." groups=["Player2_Hitboxes"]]
+collision_layer = 4
 monitoring = false
 monitorable = false
 

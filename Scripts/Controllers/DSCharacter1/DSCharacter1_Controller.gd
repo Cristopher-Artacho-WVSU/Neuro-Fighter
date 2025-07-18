@@ -87,20 +87,23 @@ var cycle_used_rules = []
 
 # === ENGINE CALLBACKS ===
 func _ready():
+	print("Hurtbox groups: ", get_groups())
+	print("Collision layer: ", collision_layer)
+	print("Collision mask: ", collision_mask)
+	#CONNECT HITBOX SIGNALS
+	for hitbox in hitboxGroup:
+		hitbox.connect("area_entered", Callable(self, "_on_hitbox_area_entered"))
+		
 #	MAKE AN INITIAL SCRIPT
 	DSscript.clear()
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
 		DSscript.append(rules[i])
-	#
-	#print("Rules in Script", DSscript)
-	#print("Rulebase", rules)
+		
+	animation.disconnect("animation_finished", Callable(self, "_on_attack_finished"))
+	animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
 	
-
-	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
-
-	# Start with an initial script generation
+	#INITIAL SCRIPT
 	generate_script()
 	initialize_log_file()
 
@@ -109,7 +112,7 @@ func _physics_process(delta):
 		return
 	update_facing_direction()
 	evaluate_and_execute(rules)
-	# Gravity and jump handling
+	#GRAVITY AND JUMP HANDLING
 	if not is_on_floor():
 		velocity.y += gravity * delta
 		if not is_jumping:
@@ -149,18 +152,14 @@ func log_script_generation():
 	if file:
 		file.seek_end()
 		
-		# Header with timestamp
 		file.store_string("\n--- Script Generated (Timer Update) | Timestamp: %s ---\n" % timestamp)
 		
-		# Generated Script section
 		file.store_string("Generated Script:\n")
 		file.store_string(JSON.stringify(DSscript, "  "))
 		
-		# Rules used in this cycle
 		file.store_string("\nRules Executed in Last Cycle:\n")
 		file.store_string(JSON.stringify(cycle_used_rules))
 		
-		# Parameters section
 		file.store_string("\n--- End Log Entry ---")
 		file.store_string("\n--- Parameters: %s ---\n" % JSON.stringify({
 			"upper_attacks_taken": upper_attacks_taken,
@@ -170,6 +169,14 @@ func log_script_generation():
 		}))
 		
 		file.close()
+		
+func start_attack():
+	for hitbox in hitboxGroup:
+		hitbox.monitoring = true
+
+func end_attack():
+	for hitbox in hitboxGroup:
+		hitbox.monitoring = false
 
 func evaluate_and_execute(rules: Array):
 	var enemy_anim = enemyAnimation.current_animation
@@ -192,16 +199,15 @@ func evaluate_and_execute(rules: Array):
 			continue
 		if match_all:
 				matched_rules.append(i)  # Store the index
-	#print(matched_rules)
-
+				
 	# Sort matched rules by prioritization (highest first)
 	#matched_rules.sort_custom(Callable(self, "_sort_by_priority_desc"))
-
+	
 	if matched_rules.size() > 0:
 		var rule_index = matched_rules[0]  # matched_rules now stores indices
 		var rule = rules[rule_index]
 		var actions = rule.get("enemy_actions", [])
-
+		
 		if actions.size() == 0:
 			var raw_action = rule.get("enemy_action", "idle")
 			actions = [raw_action] if typeof(raw_action) == TYPE_STRING else raw_action
@@ -296,6 +302,7 @@ func _execute_single_action(action):
 				velocity.x = speed
 			#print("in walk_backward state")
 		"light_punch":
+			start_attack()
 			animation.play("light_punch")
 			_connect_attack_animation_finished()
 			is_attacking = true
@@ -303,6 +310,7 @@ func _execute_single_action(action):
 			velocity.y = 0
 			#print("in light_punch state")
 		"light_kick":
+			start_attack()
 			animation.play("light_kick")
 			_connect_attack_animation_finished()
 			is_attacking = true
@@ -440,8 +448,8 @@ func DistributeRemainder():
 	weightRemainder = 0
 
 func _connect_attack_animation_finished():
-	print("Callback from function _connect_attack_animation_finished")
 	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
+		print("Callback from function _connect_attack_animation_finished")
 		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
 
 # Callback function to reset attack state when animation finishes
@@ -449,14 +457,8 @@ func _on_attack_finished(anim_name):
 	print("Callback from function _on_attack_finished")
 	if anim_name == "light_punch" or anim_name == "light_kick":
 		is_attacking = false
-		for hitbox in get_tree().get_nodes_in_group("Player2_Hitboxes"):
-			if hitbox.overlaps_area(enemy_UpperHurtbox):
-				upper_attacks_landed += 1
-				updateDetails()
-			elif hitbox.overlaps_area(enemy_LowerHurtbox):
-				lower_attacks_landed += 1
-				updateDetails()
-		#print("Attack animation finished:", anim_name)
+		
+	end_attack()
 
 func DamagedSystem():
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
@@ -466,6 +468,18 @@ func DamagedSystem():
 	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
 		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
 			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
+
+func _on_hitbox_area_entered(area):
+	# Check if we hit the player's hurtbox
+	if area.is_in_group("Player1_Hurtboxes"):
+		if area.name == "Hurtbox_UpperBody":
+			upper_attacks_landed += 1
+			print("Upper hit landed!")
+		elif area.name == "Hurtbox_LowerBody":
+			lower_attacks_landed += 1
+			print("Lower hit landed!")
+		updateDetails()
+
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 

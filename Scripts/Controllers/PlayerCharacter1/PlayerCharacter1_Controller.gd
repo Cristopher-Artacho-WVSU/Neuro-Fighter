@@ -31,6 +31,9 @@ var hurt_animation_timer: float = 0.0
 
 
 func _ready():
+	$Hurtbox_UpperBody.add_to_group("Player1_Hurtboxes")
+	$Hurtbox_LowerBody.add_to_group("Player1_Hurtboxes")
+	
 	is_jumping = false
 	is_hurt = false
 	in_combo = false

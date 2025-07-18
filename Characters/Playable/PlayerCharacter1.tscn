@@ -991,6 +991,18 @@ tracks/34/keys = {
 "update": 0,
 "values": [Color(0, 0.6, 0.7, 0.42)]
 }
+tracks/35/type = "value"
+tracks/35/imported = false
+tracks/35/enabled = true
+tracks/35/path = NodePath("Hitbox_RightHand:collision_layer")
+tracks/35/interp = 1
+tracks/35/loop_wrap = true
+tracks/35/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
 
 [sub_resource type="Animation" id="Animation_v7t0u"]
 resource_name = "heavy_hurt"
@@ -2684,6 +2696,18 @@ tracks/29/keys = {
 "update": 0,
 "values": [Vector2(-124, 284)]
 }
+tracks/30/type = "value"
+tracks/30/imported = false
+tracks/30/enabled = true
+tracks/30/path = NodePath("Hitbox_RightHand:collision_layer")
+tracks/30/interp = 1
+tracks/30/loop_wrap = true
+tracks/30/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
 
 [sub_resource type="Animation" id="Animation_ugqoa"]
 resource_name = "light_kick"
@@ -3858,18 +3882,21 @@ position = Vector2(0, 284)
 shape = SubResource("RectangleShape2D_5nog8")
 
 [node name="Hurtbox_UpperBody" type="Area2D" parent="."]
+collision_mask = 4
 
 [node name="Collision_UpperBody" type="CollisionShape2D" parent="Hurtbox_UpperBody"]
 position = Vector2(6, -88)
 shape = SubResource("CapsuleShape2D_v7t0u")
 
 [node name="Hurtbox_LowerBody" type="Area2D" parent="."]
+collision_mask = 4
 
 [node name="Collision_LowerBody" type="CollisionShape2D" parent="Hurtbox_LowerBody"]
 position = Vector2(-2, 150)
 shape = SubResource("CapsuleShape2D_xekhk")
 
 [node name="Hitbox_RightHand" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+collision_layer = 4
 monitoring = false
 monitorable = false
 
@@ -3878,6 +3905,7 @@ position = Vector2(6, -95)
 shape = SubResource("RectangleShape2D_kboy1")
 
 [node name="Hitbox_LeftHand" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+collision_layer = 4
 monitoring = false
 monitorable = false
 
@@ -3886,6 +3914,7 @@ position = Vector2(99, -120)
 shape = SubResource("RectangleShape2D_bhyjx")
 
 [node name="Hitbox_RightFoot" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+collision_layer = 4
 monitoring = false
 monitorable = false
 
@@ -3894,6 +3923,7 @@ position = Vector2(101.5, 277)
 shape = SubResource("RectangleShape2D_fvknb")
 
 [node name="Hitbox_LeftFoot" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+collision_layer = 4
 monitoring = false
 monitorable = false
 
