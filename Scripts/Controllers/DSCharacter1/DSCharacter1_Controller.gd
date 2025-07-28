@@ -101,6 +101,39 @@ func _ready():
 	# Start with an initial script generation
 	generate_script()
 	initialize_log_file()
+
+func _physics_process(delta):
+	if is_hurt:
+		return
+	update_facing_direction()
+	evaluate_and_execute(rules)
+	# Gravity and jump handling
+	if not is_on_floor():
+		velocity.y += gravity * delta
+		if not is_jumping:
+			is_jumping = true
+	else:
+		velocity.y = 0
+		if is_jumping:
+			is_jumping = false
+			if not is_attacking:
+				animation.play("idle")
+	
+	move_and_slide()
+
+func update_facing_direction():
+	if enemy.position.x > position.x:
+		characterSprite.flip_h = false  # Face right
+		for hitbox in hitboxGroup:
+			hitbox.scale.x = 1  # Or flip_h if it's a Sprite/AnimatedSprite2D
+		for hurtbox in hurtboxGroup:
+			hurtbox.scale.x = 1
+	else:
+		characterSprite.flip_h = true   # Face left
+		for hitbox in hitboxGroup:
+			hitbox.scale.x = -1
+		for hurtbox in hurtboxGroup:
+			hurtbox.scale.x = -1
 	
 func initialize_log_file():
 	var file = FileAccess.open(log_file_path, FileAccess.WRITE)
@@ -135,42 +168,6 @@ func log_script_generation():
 		}))
 		
 		file.close()
-		
-
-func update_facing_direction():
-	if enemy.position.x > position.x:
-		characterSprite.flip_h = false  # Face right
-		for hitbox in hitboxGroup:
-			hitbox.scale.x = 1  # Or flip_h if it's a Sprite/AnimatedSprite2D
-		for hurtbox in hurtboxGroup:
-			hurtbox.scale.x = 1
-	else:
-		characterSprite.flip_h = true   # Face left
-		for hitbox in hitboxGroup:
-			hitbox.scale.x = -1
-		for hurtbox in hurtboxGroup:
-			hurtbox.scale.x = -1
-
-func _physics_process(delta):
-	if is_hurt:
-		return
-	update_facing_direction()
-	evaluate_and_execute(rules)
-	# Gravity and jump handling
-	if not is_on_floor():
-		velocity.y += gravity * delta
-		if not is_jumping:
-			is_jumping = true
-	else:
-		velocity.y = 0
-		if is_jumping:
-			is_jumping = false
-			if not is_attacking:
-				animation.play("idle")
-	
-	
-	move_and_slide()
-
 
 func evaluate_and_execute(rules: Array):
 	var enemy_anim = enemyAnimation.current_animation
@@ -298,8 +295,6 @@ func _execute_single_action(action):
 			#print("in walk_backward state")
 		"light_punch":
 			animation.play("light_punch")
-			upper_attacks_landed += 1
-			updateDetails()
 			_connect_attack_animation_finished()
 			is_attacking = true
 			velocity.x = 0
@@ -307,8 +302,6 @@ func _execute_single_action(action):
 			#print("in light_punch state")
 		"light_kick":
 			animation.play("light_kick")
-			upper_attacks_landed += 1
-			updateDetails()
 			_connect_attack_animation_finished()
 			is_attacking = true
 			velocity.x = 0
@@ -316,8 +309,6 @@ func _execute_single_action(action):
 			#print("in light_kick state")
 		_:
 			print("Unknown action: %s" % str(action))
-
-
 
 func generate_script():
 	# Reset counters for new evaluation period
@@ -343,7 +334,6 @@ func generate_script():
 	# Calculate weight adjustment
 	var weightAdjustment = calculateAdjustment(fitness)
 	var compensation = -active * (weightAdjustment / inactive)
-	
 	# Apply weight adjustments with clamping
 	for rule in rules:
 		if rule.get("inScript", false):
@@ -351,7 +341,6 @@ func generate_script():
 				rule["weight"] += weightAdjustment
 			else:
 				rule["weight"] += compensation
-			
 			# Clamp weights and handle remainder
 			if rule["weight"] < minWeight:
 				weightRemainder += (rule["weight"] - minWeight)
@@ -359,10 +348,8 @@ func generate_script():
 			elif rule["weight"] > maxWeight:
 				weightRemainder += (rule["weight"] - maxWeight)
 				rule["weight"] = maxWeight
-	
 	# Distribute remainder to non-script rules
 	DistributeRemainder()
-	
 	# Create new script based on updated weights
 	_create_new_script()
 	_reset_rule_usage()
@@ -438,7 +425,6 @@ func _reset_rule_usage():
 func DistributeRemainder():
 	if weightRemainder == 0:
 		return
-	
 	var non_script_rules = []
 	for rule in rules:
 		if not rule.get("inScript", false):
@@ -460,6 +446,8 @@ func _connect_attack_animation_finished():
 func _on_attack_finished(anim_name):
 	if anim_name == "light_punch" or anim_name == "light_kick":
 		is_attacking = false
+		upper_attacks_landed += 1
+		updateDetails()
 		#print("Attack animation finished:", anim_name)
 
 func DamagedSystem():
