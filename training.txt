@@ -1,40 +1,8 @@
 === DS Character Log ===
 
---- Script Generated (Timer Update) | Timestamp: 2025-07-18T08:39:28 ---
+--- Script Generated (Timer Update) | Timestamp: 2025-07-31T12:50:40 ---
 Generated Script:
 [
-  {
-	"conditions": {
-	  "distance": {
-		"op": "<=",
-		"value": 325
-	  }
-	},
-	"enemy_action": [
-	  "light_kick"
-	],
-	"inScript": true,
-	"prioritization": 11,
-	"ruleID": 2,
-	"wasUsed": true,
-	"weight": 0.5
-  },
-  {
-	"conditions": {
-	  "distance": {
-		"op": "<=",
-		"value": 315
-	  }
-	},
-	"enemy_action": [
-	  "light_punch"
-	],
-	"inScript": true,
-	"prioritization": 12,
-	"ruleID": 3,
-	"wasUsed": false,
-	"weight": 0.5
-  },
   {
 	"conditions": {
 	  "player_anim": "idle"
@@ -51,6 +19,27 @@ Generated Script:
   {
 	"conditions": {
 	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "player_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
 		"op": "<=",
 		"value": 315
 	  }
@@ -61,11 +50,243 @@ Generated Script:
 	"inScript": true,
 	"prioritization": 2,
 	"ruleID": 6,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 5,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "player_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 8,
 	"wasUsed": false,
 	"weight": 0.5
   }
 ]
 Rules Executed in Last Cycle:
-[1,2]
+[5,6]
 --- End Log Entry ---
---- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":2,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-07-31T12:50:44 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "player_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.508
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.508
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "player_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.508
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "walk_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 6,
+	"wasUsed": true,
+	"weight": 0.488
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 5,
+	"wasUsed": false,
+	"weight": 0.488
+  }
+]
+Rules Executed in Last Cycle:
+[6]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":2,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-07-31T12:50:48 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "player_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.511
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.511
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "player_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.511
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 5,
+	"wasUsed": false,
+	"weight": 0.491
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "walk_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 6,
+	"wasUsed": true,
+	"weight": 0.476
+  }
+]
+Rules Executed in Last Cycle:
+[6]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":4,"upper_attacks_landed":0,"upper_attacks_taken":4} ---

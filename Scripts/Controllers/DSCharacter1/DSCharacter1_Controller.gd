@@ -6,7 +6,7 @@ var speed = 300
 
 #SCRIPT VALUES
 var current_rule_dict: Dictionary = {}
-var ruleScript = 4
+var ruleScript = 5
 var weightRemainder = 0
 var DSscript = []
 
@@ -14,6 +14,7 @@ var DSscript = []
 var is_jumping = false
 var is_attacking = false
 var is_hurt = false
+var is_defended = false
 
 # PLAYER DETAILS
 var upper_attacks_taken: int = 0
@@ -44,26 +45,26 @@ var maxWeight = 1.0
 @onready var playerDetails = get_parent().get_node("PlayerDetailsUI/Player2Details")
 # === RULES ===
 var rules = [
-	{
-		"ruleID": 1, "prioritization": 1,
-		"conditions": { "distance": { "op": ">=", "value": 325 } },
-		"enemy_action": ["walk_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 2, "prioritization": 11,
-		"conditions": { "distance": { "op": "<=", "value": 325 } },
-		"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 3, "prioritization": 12,
-		"conditions": { "distance": { "op": "<=", "value": 315 } },
-		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 4, "prioritization": 21,
-		"conditions": { "enemy_anim": "light_kick", "distance": { "op": ">=", "value": 315 } },
-		"enemy_action": ["standing_defense"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
+	#{
+		#"ruleID": 1, "prioritization": 1,
+		#"conditions": { "distance": { "op": ">=", "value": 325 } },
+		#"enemy_action": ["walk_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 2, "prioritization": 11,
+		#"conditions": { "distance": { "op": "<=", "value": 325 } },
+		#"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 3, "prioritization": 12,
+		#"conditions": { "distance": { "op": "<=", "value": 315 } },
+		#"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 4, "prioritization": 21,
+		#"conditions": { "enemy_anim": "light_kick", "distance": { "op": ">=", "value": 315 } },
+		#"enemy_action": ["standing_defense"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
 	{
 		"ruleID": 5, "prioritization": 22,
 		"conditions": { "enemy_anim": "light_punch", "distance": { "op": ">=", "value": 325 } },
@@ -78,7 +79,17 @@ var rules = [
 		"ruleID": 7, "prioritization": 100,
 		"conditions": { "player_anim": "idle" },
 		"enemy_action": ["idle"], "weight": 0.5, "wasUsed": false, "inScript": false
-	}
+	},
+	{
+		"ruleID": 8, "prioritization": 21,
+		"conditions": { "player_anim": "light_kick", "distance": { "op": ">=", "value": 325 }, "upper_attacks_taken": { "op": ">=", "value": 1 } },
+		"enemy_action": ["standing_defense"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 9, "prioritization": 22,
+		"conditions": { "player_anim": "light_punch", "distance": { "op": ">=", "value": 315 }, "upper_attacks_taken": { "op": ">=", "value": 1 } },
+		"enemy_action": ["standing_defense"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
 ]
 
 # LOGGING SYSTEM
@@ -187,9 +198,16 @@ func evaluate_and_execute(rules: Array):
 				match_all = false
 				continue
 				
+		if match_all and "upper_attacks_taken" in conditions:
+			var cond = conditions["upper_attacks_taken"]
+			if not _compare_numeric(cond["op"], upper_attacks_taken, cond["value"]):
+				match_all = false
+				continue
+				
 		if "player_anim" in conditions and conditions["player_anim"] != enemyAnimation.current_animation:
 			match_all = false
 			continue
+
 		if match_all:
 				matched_rules.append(i)  # Store the index
 	#print(matched_rules)
@@ -309,6 +327,9 @@ func _execute_single_action(action):
 			velocity.x = 0
 			velocity.y = 0
 			#print("in light_kick state")
+		"standing_defense":
+			animation.play("standing_block")
+			is_defended = true
 		_:
 			print("Unknown action: %s" % str(action))
 
@@ -479,6 +500,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 
 
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
+	
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group("Player1_Hitboxes"):
 		print("Player 2 Lower body hit taken")
@@ -500,7 +522,10 @@ func _connect_hurt_animation_finished():
 func _on_hurt_finished(anim_name):
 	if anim_name == "light_hurt" or anim_name == "heavy_hurt":
 		if get_parent().has_method("apply_damage_to_player2"):
-			get_parent().apply_damage_to_player2(10)
+			if is_defended:
+				get_parent().apply_damage_to_player2(7)
+			else:
+				get_parent().apply_damage_to_player2(10)
 		is_hurt = false
 		print("Attack animation finished:", anim_name)
 

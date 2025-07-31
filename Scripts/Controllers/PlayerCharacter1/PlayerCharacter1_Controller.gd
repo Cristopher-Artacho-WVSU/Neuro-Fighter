@@ -10,7 +10,10 @@ extends CharacterBody2D
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 #MEASUREMENT VARIABLES
-var speed =  300
+var speed =  3200
+var step_cooldown := 0.8  # seconds between each allowed step
+var step_timer := 0.0     # current cooldown time
+var has_stepped := false  # flag to prevent multiple steps
 
 #BOOL STATEMENTS
 var is_jumping = false
@@ -117,33 +120,56 @@ func AttackSystem():
 		animation.play("light_punch")
 		_connect_animation_finished()
 		
+#func MovementSystem():
+	#if is_attacking or is_jumping:
+		#return
+	#var move_right = Input.is_action_pressed("right_movement")
+	#var move_left = Input.is_action_pressed("left_movement")
+	#
+	#if move_right:
+		#velocity.x = speed
+	#elif move_left:
+		#velocity.x = -speed
+
 func MovementSystem():
-	if is_attacking || is_jumping:
+	if is_attacking or is_jumping:
 		return
-		
+
+	# Cooldown timer update
+	if step_timer > 0:
+		step_timer -= get_process_delta_time()
+	else:
+		has_stepped = false  # Cooldown finished, allow next step
+
 	var move_right = Input.is_action_pressed("right_movement")
 	var move_left = Input.is_action_pressed("left_movement")
 	var crouch = Input.is_action_pressed("crouch")
 
-	if move_right:
-		#print("moving right")
-		velocity.x = speed
-		animation.play("walk_forward")
-	elif move_left:
-		#print("moving left")
-		velocity.x = -speed
-		animation.play("walk_backward")
-	else:
-		velocity.x = 0
-		animation.play("idle")
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-			velocity.y = -1200
-			is_jumping = true
-	
 	if is_defending:
 		if animation.current_animation != "standing_block":
 			animation.play("standing_block")
 		return
+
+	# Movement logic (single step at a time)
+	if move_right and not has_stepped:
+		velocity.x = speed
+		animation.play("walk_forward")
+		has_stepped = true
+		step_timer = step_cooldown
+	elif move_left and not has_stepped:
+		velocity.x = -speed
+		animation.play("walk_backward")
+		has_stepped = true
+		step_timer = step_cooldown
+	else:
+		velocity.x = 0
+		if not has_stepped:
+			animation.play("idle")
+
+	# Jumping logic
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+		velocity.y = -1200
+		is_jumping = true
 
 func DamagedSystem():
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
