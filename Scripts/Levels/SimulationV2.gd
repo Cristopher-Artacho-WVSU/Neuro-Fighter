@@ -31,8 +31,7 @@ func _physics_process(delta):
 		totalTimerAmount -= delta
 		if totalTimerAmount <= 0:
 			timer_running = false
-			totalTimerAmount = 0
-			print("Timer has ended.")
+			get_tree().quit()
 	
 
 		timerLabel.text = str(int(totalTimerAmount))
