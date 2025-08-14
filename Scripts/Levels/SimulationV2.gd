@@ -39,7 +39,7 @@ func _physics_process(delta):
 
 func _on_timer_timeout():
 	print("Timer stops after 4 seconds")
-	player2.generate_script()
+	#player2.generate_script()cx
 
 #FUNCTION FOR INITIALIZING THE INITIAL HP
 func init_HPBar():

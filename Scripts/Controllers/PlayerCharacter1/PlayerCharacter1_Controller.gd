@@ -265,7 +265,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	if is_defending:
 		return 
 		
-	if area.is_in_group("Player1_Hitboxes"):
+	if area.is_in_group("Player2_Hitboxes"):
 		print("Player 1 Lower body hit taken")
 		is_hurt = true
 		animation.play("light_hurt")
