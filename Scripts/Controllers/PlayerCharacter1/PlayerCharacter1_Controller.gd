@@ -1,291 +1,210 @@
 extends CharacterBody2D
 
-#ONREADY VARIABLES
+# Constants
+var GRAVITY = ProjectSettings.get_setting("physics/2d/default_gravity")
+const DEFENSE_TRIGGER_TIME = 1.0
+const BASE_SPEED: float = 300.0
+const DASH_SPEED: float = 1000.0
+const DASH_DURATION: float = 0.3
+const DASH_COOLDOWN: float = 0.4
+const MOVEMENT_SMOOTHING: float = 8.0
+const JUMP_FORCE: float = -1200.0
+const HIT_THRESHOLD = 10.0
+
+# Node references
 @onready var animation = $AnimationPlayer
 @onready var characterSprite = $AnimatedSprite2D
-@onready var enemy = get_parent().get_node("NPCCharacter1")
-@onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
-@onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
-#ADDONS
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+@onready var enemy = get_parent().get_node("NPCCharacter1") as Node2D
+@onready var hurtboxes = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
+@onready var hitboxes = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
 
-#MOVEMENT VARIABLES
-var base_speed: float = 300.0
-var dash_speed: float = 1000.0
-var dash_duration: float = 0.3
-var dash_cooldown: float = 0.4
+# State variables
+var is_jumping := false
+var is_hurt := false
+var is_crouching := false
+var is_attacking := false
+var is_defending := false
+var is_dashing := false
+
+# Timers
+var dash_cooldown_timer: float = 0.0
 var current_dash_timer: float = 0.0
-var dash_direction: int = 0
-var is_dashing: bool = false
-var dash_cooldown_timer:float = 0.0
-var dash_velocity = Vector2.ZERO
-var movement_smoothing: float = 8.0
+var idle_timer: float = 0.0
+var backward_timer: float = 0.0
+var dash_velocity := Vector2.ZERO
 
-#BOOL STATEMENTS
-var is_jumping = false
-var is_hurt = false
-var in_combo = false
-var is_crouching = false
-var is_attacking = false
-var is_defending = false
-
-#TIMERS
-var heavyHurt_timer = 0.5
-var combo_timer = 0.5
-var idle_timer = 0.0
-var backward_timer = 0.0
-const DEFENSE_TRIGGER_TIME = 1.0  # 2 seconds
-
+# Precomputed values
+var enemy_to_right: bool = false
 
 func _ready():
-	is_jumping = false
-	is_hurt = false
-	in_combo = false
-	is_crouching = false
-	is_attacking = false
-	if not enemy:
-		print("enemy not found")
-	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
+	# Connect signals once
+	animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+	for hurtbox in hurtboxes:
+		hurtbox.connect("area_entered", Callable(self, "_on_hurtbox_area_entered"))
 
 func _physics_process(delta):
 	if is_hurt:
 		return
-	update_facing_direction()
+	
+	# Precompute enemy position once per frame
+	enemy_to_right = enemy.position.x > position.x
 	
 	handle_defense_triggers(delta)
+	handle_dash(delta)
+	apply_gravity(delta)
 	
-	if not is_on_floor():
-		velocity.y += gravity * delta
-		if not is_jumping:
-			is_jumping = true
-	else:
-		velocity.y = 0
-		if is_jumping:
-			is_jumping = false
-
-	#HANDLE DASH COOLDOWN
-	if dash_cooldown_timer > 0:
-		dash_cooldown_timer -= delta
-		
-	#HANDLE ACTIVE DASH
-	if is_dashing:
-		current_dash_timer -= delta
-		if current_dash_timer <= 0:
-			end_dash()
-		else:
-			#APPLY DASH VELOCITY
-			velocity.x = dash_velocity.x
-			#SMOOTHLY END VELOCITY AT THE END OF DASH
-			if current_dash_timer < dash_duration * 0.3:
-				velocity.x = lerp(0.0, float(dash_velocity.x), float(current_dash_timer) / (float(dash_duration) * 0.3))
-
-	AttackSystem()
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
-		MovementSystem(delta)
-	DamagedSystem()
-	move_and_slide()
-			
-func handle_defense_triggers(delta):
+		handle_movement_input(delta)
 	
+	AttackSystem()
+	update_facing_direction()
+	move_and_slide()
+
+func handle_defense_triggers(delta):
 	if is_attacking || is_jumping || is_hurt || is_dashing:
 		idle_timer = 0.0
 		backward_timer = 0.0
 		is_defending = false
 		return
 	
-	#IF NOT MOVING, PLUS IDLE TIMER
-	if velocity.x == 0 && is_on_floor():
+	# Standing still
+	if is_zero_approx(velocity.x) && is_on_floor():
 		idle_timer += delta
 		backward_timer = 0.0
 	else:
 		idle_timer = 0.0
-		
-		#CHECK MOVING BACKWARD
-		var is_moving_backward = false
-		if enemy.position.x > position.x:  #ENEMY RIGHT
-			is_moving_backward = velocity.x < 0
-		else:  #ENEMY LEFT
-			is_moving_backward = velocity.x > 0
-		
-		#ADD TIMER
-		if is_moving_backward:
+		# Moving backward
+		if (enemy_to_right && velocity.x < 0) || (!enemy_to_right && velocity.x > 0):
 			backward_timer += delta
 		else:
 			backward_timer = 0.0
 	
-	#TRIGGER DEFENSE IF RIGHT TIME
+	# Trigger defense
 	if idle_timer >= DEFENSE_TRIGGER_TIME || backward_timer >= DEFENSE_TRIGGER_TIME:
 		start_defense()
-		
-func start_defense():
-	is_defending = true
-	velocity.x = 0
-	animation.play("standing_block")
-	_connect_animation_finished()
 
-func AttackSystem():
-	if is_attacking || is_dashing:
-		return
+func handle_dash(delta):
+	# Handle cooldown
+	if dash_cooldown_timer > 0:
+		dash_cooldown_timer -= delta
 	
-	var punch = Input.is_action_just_pressed("punch")
-	var kick = Input.is_action_just_pressed("kick")
-	if kick:
-		is_attacking = true
-		velocity.x = 0
-		if animation.is_playing() && !animation.current_animation.begins_with("light_"):
-			animation.stop()
-		animation.play("light_kick")
-		_connect_animation_finished()
-	if punch:
-		is_attacking = true
-		velocity.x = 0
-		if animation.is_playing() && !animation.current_animation.begins_with("light_"):
-			animation.stop()
-		animation.play("light_punch")
-		_connect_animation_finished()
-		
-func MovementSystem(delta):
-	if is_attacking || is_jumping || is_defending || is_hurt:
-		return
+	# Handle active dash
+	if is_dashing:
+		current_dash_timer -= delta
+		if current_dash_timer <= 0:
+			end_dash()
+		else:
+			velocity.x = dash_velocity.x
+			# Smooth dash ending
+			if current_dash_timer < DASH_DURATION * 0.3:
+				velocity.x = lerp(0.0, dash_velocity.x, current_dash_timer / (DASH_DURATION * 0.3))
 
+func apply_gravity(delta):
+	if not is_on_floor():
+		velocity.y += GRAVITY * delta
+		if not is_jumping:
+			is_jumping = true
+	elif is_jumping:
+		is_jumping = false
+		velocity.y = 0
+
+func handle_movement_input(delta):
 	var move_right = Input.is_action_pressed("right_movement")
 	var move_left = Input.is_action_pressed("left_movement")
 	
-	if (move_left or move_right) and dash_cooldown_timer <= 0 and is_on_floor():
-		var dash_direction
-		if move_right:
-			dash_direction = 1
-		elif move_left:
-			dash_direction = -1
-		else:
-			dash_direction = 1 if characterSprite.flip_h == false else -1
-			
-		start_dash(dash_direction)
+	# Dash input
+	if (move_left || move_right) && dash_cooldown_timer <= 0 && is_on_floor():
+		start_dash(1 if move_right else -1)
+		return
 	
-	#NORMAL MOVEMENT
-	if !is_dashing:
-		var target_velocity = 0.0
-		
-		if move_right:
-			target_velocity = base_speed
-		elif move_left:
-			target_velocity = -base_speed
-		
-		#SMOOTHLY ITERPOLATE TO TARGET VELOCITY
-		velocity.x = lerp(float(velocity.x), float(target_velocity), movement_smoothing * delta)
-		
-		#ANIMATION HANDLING
-		if abs(velocity.x) > 10:  # Small threshold to prevent jitter
-			if (enemy.position.x > position.x and velocity.x > 0) or (enemy.position.x < position.x and velocity.x < 0):
-				animation.play("walk_forward")
-			else:
-				animation.play("walk_backward")
+	# Normal movement
+	var target_velocity = 0.0
+	if move_right:
+		target_velocity = BASE_SPEED
+	elif move_left:
+		target_velocity = -BASE_SPEED
+	
+	velocity.x = lerp(velocity.x, target_velocity, MOVEMENT_SMOOTHING * delta)
+	
+	# Animation handling
+	if abs(velocity.x) > HIT_THRESHOLD:
+		if (enemy_to_right && velocity.x > 0) || (!enemy_to_right && velocity.x < 0):
+			animation.play("walk_forward")
 		else:
-			animation.play("idle")
-
-	#JUMPING LOGIC
+			animation.play("walk_backward")
+	else:
+		animation.play("idle")
+	
+	# Jumping
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = -1200.0
+		velocity.y = JUMP_FORCE
 		is_jumping = true
 
-func start_dash(dash_direction):
-	
-	#SET DASH STATE
+func start_dash(direction: int):
 	is_dashing = true
-	current_dash_timer = dash_duration
-	dash_cooldown_timer = dash_cooldown
-	dash_velocity = Vector2(dash_direction * dash_speed, 0)
+	current_dash_timer = DASH_DURATION
+	dash_cooldown_timer = DASH_COOLDOWN
+	dash_velocity = Vector2(direction * DASH_SPEED, 0)
 	
-	#PLAY DASH ANIMATION
-	if (enemy.position.x > position.x and dash_direction > 0) or (enemy.position.x < position.x and dash_direction < 0):
-		#animation.play("dash_forward")  # Create this animation
-		pass
-	else:
-		#animation.play("dash_backward")  # Create this animation
-		pass
+	# Animation (uncomment when animations are ready)
+	# if (enemy_to_right && direction > 0) || (!enemy_to_right && direction < 0):
+	#     animation.play("dash_forward")
+	# else:
+	#     animation.play("dash_backward")
 
 func end_dash():
 	is_dashing = false
 	velocity.x = 0
 	animation.play("idle")
 
-func DamagedSystem():
-	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
-		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
-			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
+func start_defense():
+	is_defending = true
+	velocity.x = 0
+	animation.play("standing_block")
+
+func AttackSystem():
+	if is_attacking || is_dashing:
+		return
 	
-	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
-		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
-			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
+	if Input.is_action_just_pressed("kick"):
+		execute_attack("light_kick")
+	elif Input.is_action_just_pressed("punch"):
+		execute_attack("light_punch")
+
+func execute_attack(anim_name: String):
+	is_attacking = true
+	velocity.x = 0
+	if animation.is_playing() && !animation.current_animation.begins_with("light_"):
+		animation.stop()
+	animation.play(anim_name)
 
 func update_facing_direction():
-	if enemy.position.x > position.x:
-		characterSprite.flip_h = false  # Face right
-		for hitbox in hitboxGroup:
-			hitbox.scale.x = 1  # Or flip_h if it's a Sprite/AnimatedSprite2D
-		for hurtbox in hurtboxGroup:
-			hurtbox.scale.x = 1
-	else:
-		characterSprite.flip_h = true   # Face left
-		for hitbox in hitboxGroup:
-			hitbox.scale.x = -1
-		for hurtbox in hurtboxGroup:
-			hurtbox.scale.x = -1
+	characterSprite.flip_h = !enemy_to_right
+	var scale_x = 1 if enemy_to_right else -1
+	
+	for hitbox in hitboxes:
+		hitbox.scale.x = scale_x
+	for hurtbox in hurtboxes:
+		hurtbox.scale.x = scale_x
 
-
-func _connect_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
-
-# Callback function to reset attack state when animation finishes
-func _on_attack_finished(anim_name):
+func _on_animation_finished(anim_name):
 	match anim_name:
 		"light_punch", "light_kick":
 			is_attacking = false
 		"standing_block":
 			is_defending = false
-			# Return to idle after defense
 			animation.play("idle")
+		"light_hurt", "heavy_hurt":
+			if get_parent().has_method("apply_damage_to_player1"):
+				get_parent().apply_damage_to_player1(10)
+			is_hurt = false
 
-
-func _on_hurtbox_upper_body_area_entered(area: Area2D):
-	if is_defending:
+func _on_hurtbox_area_entered(area: Area2D):
+	if is_defending || !area.is_in_group("Player2_Hitboxes"):
 		return
-		
-#	MADE GROUP FOR ENEMY NODES "Player2_Hitboxes" 
-	if area.is_in_group("Player2_Hitboxes"):
-		print("Player 1 Upper body hit taken")
-		is_hurt = true
-		animation.play("light_hurt")
-		_connect_hurt_animation_finished()
-
-
-func _on_hurtbox_lower_body_area_entered(area: Area2D):
-	if is_defending:
-		return 
-		
-	if area.is_in_group("Player2_Hitboxes"):
-		print("Player 1 Lower body hit taken")
-		is_hurt = true
-		animation.play("light_hurt")
-		_connect_hurt_animation_finished()
-
-		#print("Attack animation finished:", anim_name)
 	
-
-func _connect_hurt_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
-		
-func _on_hurt_finished(anim_name):
-	if anim_name == "light_hurt" or anim_name == "heavy_hurt":
-		if get_parent().has_method("apply_damage_to_player1"):
-			get_parent().apply_damage_to_player1(10)
-		is_hurt = false
-		print("Attack animation finished:", anim_name)
+	is_hurt = true
+	animation.play("light_hurt")
 
 func KO():
 	animation.play("knocked_down")
-	_connect_hurt_animation_finished()
-	
