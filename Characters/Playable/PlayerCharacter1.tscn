@@ -1359,7 +1359,7 @@ tracks/36/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [0.837758]
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_vlcbn"]
@@ -3675,6 +3675,7 @@ tracks/30/keys = {
 [sub_resource type="Animation" id="Animation_pjudy"]
 resource_name = "idle"
 length = 0.812506
+loop_mode = 1
 step = 0.0625
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -6623,5 +6624,4 @@ monitorable = false
 
 [node name="Collision_LeftFoot" type="CollisionShape2D" parent="Hitbox_LeftFoot"]
 position = Vector2(-124, 284)
-rotation = 0.837758
 shape = SubResource("RectangleShape2D_44tk2")
