@@ -58,6 +58,10 @@ var maxReward = 0.4
 var minWeight = 0.1
 var maxWeight = 1.0
 
+# LOGS (FOR AI TRAINING)
+var log_file_path = "res://logs/weight_logs.json"
+var rules_logs = []
+
 var rules = [
 	{
 		"ruleID": 1, "prioritization": 1,
@@ -156,6 +160,7 @@ func _ready():
 
 func _physics_process(delta):
 	update_facing_direction()
+	rules_logs.push_back(rules)
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
 		evaluate_and_execute(rules)
 	
@@ -171,6 +176,10 @@ func _physics_process(delta):
 	debug_states()
 	move_and_slide()
 	pass
+
+func _exit_tree() -> void:
+	rules_logs.push_back(rules)
+	write_log_rules(rules_logs)
 
 func debug_states():
 	print("is_dashing", is_dashing)
@@ -397,6 +406,15 @@ func _on_animation_finished(anim_name: String):
 		"jump":
 			is_jumping = false
 
+func write_log_rules(rules_now):
+	var log_file = FileAccess.open(log_file_path, FileAccess.WRITE_READ)
+	if log_file == null:
+		printerr("Error opening log file: ", FileAccess.get_open_error())
+		return
+
+	var rules_json = JSON.stringify(rules_now, "  ")
+	log_file.store_string(rules_json + "\n")
+	log_file.close()
 
 
 #if is_hurt:
