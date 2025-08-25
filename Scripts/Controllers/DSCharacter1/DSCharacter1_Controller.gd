@@ -140,7 +140,7 @@ func _ready():
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
 		DSscript.append(rules[i])
-	
+	print(DSscript)
 	
 #	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
@@ -304,7 +304,7 @@ func _execute_single_action(action):
 			_connect_animation_finished()
 		_:
 			print("Unknown action: %s" % str(action))
-	print(action)
+	#print(action)
 	is_dashing = false
 
 func debug_states():
@@ -376,10 +376,6 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 		if dash_timer <= 0:
 			is_dashing = false
 			velocity.x = 0
-	else:
-		if !is_attacking and !is_defending and !is_hurt:
-			animation.play("idle")
-		velocity.x = 0
 
 	
 	# Movement animations
