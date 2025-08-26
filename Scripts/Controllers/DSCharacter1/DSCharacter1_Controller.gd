@@ -165,7 +165,8 @@ func _physics_process(delta):
 		velocity.y = 0
 		if is_jumping:
 			is_jumping = false
-			
+	
+	DamagedSystem()
 	debug_states()
 	move_and_slide()
 
@@ -175,8 +176,8 @@ func evaluate_and_execute(rules: Array):
 	var distance = global_position.distance_to(enemy.global_position)
 	var matched_rules = []
 
-	for i in range(rules.size()):
-		var rule = rules[i]
+	for i in range(DSscript.size()):
+		var rule = DSscript[i]
 		var conditions = rule["conditions"]
 		var match_all = true
 		
@@ -252,34 +253,34 @@ func _execute_single_action(action):
 		"idle":
 			velocity.x = 0
 			animation.play("idle")
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		"light_punch":
 			animation.play("light_punch")
 			is_attacking = true
 			velocity.x = 0
 			velocity.y = 0
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		"light_kick":
 			animation.play("light_kick")
 			is_attacking = true
 			velocity.x = 0
 			velocity.y = 0
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		"standing_defense":
 			animation.play("standing_block")
 			is_defending = true
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		"dash_forward":
 			var direction = 1 if enemy.global_position.x > global_position.x else -1
 			MovementSystem(direction)
 			animation.play("move_forward")
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		"dash_backward":
 			var direction = -1 if enemy.global_position.x > global_position.x else 1
 			MovementSystem(direction)
 			animation.play("move_backward")
 			#print("dash_backward")
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		"jump":
 			if is_on_floor():
 				velocity.y = -1200.0
@@ -289,32 +290,33 @@ func _execute_single_action(action):
 			animation.play("crouch")
 			velocity.x = 0
 			velocity.y = 0
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		"crouch_lightKick":
 			animation.play("crouch_lightKick")
 			is_attacking = true
 			velocity.x = 0
 			velocity.y = 0
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		"crouch_lightPunch":
 			animation.play("crouch_lightPunch")
 			is_attacking = true
 			velocity.x = 0
 			velocity.y = 0
-			_connect_animation_finished()
+			#_connect_animation_finished()
 		_:
 			print("Unknown action: %s" % str(action))
 	#print(action)
-	is_dashing = false
+	#is_dashing = false
+	_connect_animation_finished()
 
 func debug_states():
-	#print("is_dashing: ", is_dashing)
-	#print("is_jumping state: ", is_jumping)
-	#print("is_crouching: ", is_crouching)
-	#print("is_attacking state:", is_attacking)
-	#print("is_defending: ", is_defending)
-	#print("is_hurt state:", is_hurt)
-	#print("is_is_dashing: ", is_dashing)
+	print("is_dashing: ", is_dashing)
+	print("is_jumping state: ", is_jumping)
+	print("is_crouching: ", is_crouching)
+	print("is_attacking state:", is_attacking)
+	print("is_defending: ", is_defending)
+	print("is_hurt state:", is_hurt)
+	print("is_is_dashing: ", is_dashing)
 	pass
 	
 func update_facing_direction():
@@ -410,6 +412,10 @@ func _on_animation_finished(anim_name: String):
 			is_jumping = false
 		"crouch":
 			is_crouching = false
+		"move_forward":
+			is_dashing = false
+		"move_backward":
+			is_dashing = false
 
 func generate_script():
 	# Reset counters for new evaluation period
@@ -634,6 +640,10 @@ func _on_hurt_finished(anim_name):
 		if anim_name == "light_hurt" or anim_name == "heavy_hurt":
 			if get_parent().has_method("apply_damage_to_player1"):
 				get_parent().apply_damage_to_player2(10)
+	is_hurt = false
+	is_attacking = false
+	is_defending = false
+	is_dashing = false
 
 func updateDetails():
 	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d \nUpper Attacks Blocked: %d \nLower Attacks Landed: %d" % [

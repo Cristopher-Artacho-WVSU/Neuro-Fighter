@@ -177,6 +177,7 @@ func AttackSystem():
 			velocity.x = 0
 
 func DamagedSystem(delta):
+	print("DamagedSystem is enabled")
 	if Input.is_action_pressed("move_right") or Input.is_action_pressed("move_left") \
 	or Input.is_action_pressed("jump") or Input.is_action_pressed("crouch") \
 	or Input.is_action_pressed("punch") or Input.is_action_pressed("kick"):
@@ -197,6 +198,7 @@ func DamagedSystem(delta):
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if area.is_in_group("Player2_Hitboxes"):
+		print("Upper attack received")
 		if is_defending:
 			print("Player 1 blocked the attack (upper body)")
 			velocity.x = 0
@@ -210,6 +212,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 		_connect_hurt_animation_finished()
 
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
+	print("Upper attack received")
 	if area.is_in_group("Player2_Hitboxes"):
 		if is_defending:
 			print("Player 1 blocked the attack (lower body)")
