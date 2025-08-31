@@ -6,8 +6,8 @@ extends CharacterBody2D
 @onready var enemy = get_parent().get_node("NPCCharacter1")
 @onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
 @onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
-
 @onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
+
 #ADDONS
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 

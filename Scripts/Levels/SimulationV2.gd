@@ -1,7 +1,5 @@
 extends Node2D
 
-
-
 #ONREADY NODE VARIABLES
 @onready var timer = $MainUI/Timer
 @onready var player1HP = $MainUI/Player1_HPBar

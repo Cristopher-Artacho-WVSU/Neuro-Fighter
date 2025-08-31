@@ -6593,7 +6593,7 @@ shape = SubResource("CapsuleShape2D_v7t0u")
 position = Vector2(-2, 150)
 shape = SubResource("CapsuleShape2D_xekhk")
 
-[node name="Hitbox_RightHand" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+[node name="Hitbox_RightHand" type="Area2D" parent="." groups=["Player2_Hitboxes"]]
 monitoring = false
 monitorable = false
 
@@ -6601,7 +6601,7 @@ monitorable = false
 position = Vector2(6, -95)
 shape = SubResource("RectangleShape2D_kboy1")
 
-[node name="Hitbox_LeftHand" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+[node name="Hitbox_LeftHand" type="Area2D" parent="." groups=["Player2_Hitboxes"]]
 monitoring = false
 monitorable = false
 
@@ -6609,7 +6609,7 @@ monitorable = false
 position = Vector2(99, -120)
 shape = SubResource("RectangleShape2D_bhyjx")
 
-[node name="Hitbox_RightFoot" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+[node name="Hitbox_RightFoot" type="Area2D" parent="." groups=["Player2_Hitboxes"]]
 monitoring = false
 monitorable = false
 
@@ -6618,7 +6618,7 @@ position = Vector2(101.5, 277)
 shape = SubResource("RectangleShape2D_fvknb")
 debug_color = Color(0.976471, 0.0509804, 0.0156863, 0.419608)
 
-[node name="Hitbox_LeftFoot" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+[node name="Hitbox_LeftFoot" type="Area2D" parent="." groups=["Player2_Hitboxes"]]
 monitoring = false
 monitorable = false
 
