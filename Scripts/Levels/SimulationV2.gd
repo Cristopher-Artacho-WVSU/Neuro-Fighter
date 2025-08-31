@@ -20,6 +20,26 @@ func _ready():
 	timerLabel.text = str(int(totalTimerAmount))
 	timer.start()
 	init_HPBar()
+	
+	match Global.player1_controller:
+		"Human":
+			# Use human controller script
+			player1.set_script(load("res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd"))
+		"NDS":
+			# Use NDS controller script
+			player1.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+	
+	# Set up player 2 controller
+	match Global.player2_controller:
+		"DecisionTree":
+			# Use decision tree controller
+			player2.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+		"DynamicScripting":
+			# Use dynamic scripting controller
+			player2.set_script(load("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
+		"NDS":
+			# Use NDS controller
+			player2.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
 
 func _physics_process(delta):
 	monitorHP(delta)
