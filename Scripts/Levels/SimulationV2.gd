@@ -1,7 +1,5 @@
 extends Node2D
 
-
-
 #ONREADY NODE VARIABLES
 @onready var timer = $MainUI/Timer
 @onready var player1HP = $MainUI/Player1_HPBar
@@ -18,28 +16,27 @@ var max_hp = 100
 var P2_CurrentHP = 100
 var P1_CurrentHP = 100
 
-
 func _ready():
 	timerLabel.text = str(int(totalTimerAmount))
 	timer.start()
 	init_HPBar()
 
 func _physics_process(delta):
-	monitorHP()
+	monitorHP(delta)
 #	RUN THE TIMER
 	if timer_running:
 		totalTimerAmount -= delta
 		if totalTimerAmount <= 0:
 			timer_running = false
-			totalTimerAmount = 0
-			print("Timer has ended.")
+			game_over()
 	
 
 		timerLabel.text = str(int(totalTimerAmount))
 
 func _on_timer_timeout():
-	print("Timer stops after 4 seconds")
-	player2.generate_script()
+	#print("Timer stops after 4 seconds")
+	#player2.generate_script()
+	pass
 
 #FUNCTION FOR INITIALIZING THE INITIAL HP
 func init_HPBar():
@@ -47,7 +44,7 @@ func init_HPBar():
 	player2HP.max_value = max_hp
 	
 #FUNCTION FOR MONITORING THE CURRENT HP. IF 0, GAME ENDS
-func monitorHP():
+func monitorHP(delta):
 	player1HP.max_value = max_hp
 	player2HP.max_value = max_hp
 	player1HP.value = P1_CurrentHP
@@ -55,10 +52,12 @@ func monitorHP():
 	
 	if player2HP.value <= 0:
 		print("Player 1 Wins")
-		get_tree().quit()
+		game_over()
 	if player1HP.value <= 0:
 		print("Player 2 Wins")
-		get_tree().quit()
+		player1.KO()
+		game_over()
+		
 
 #APPLIES DAMAGE TO PLAYER 2 REFERENCING THE amount GIVEN FROM on_hurt_finished of DS
 func apply_damage_to_player2(amount):
@@ -79,3 +78,7 @@ func apply_damage_to_player1(amount):
 	if P2_CurrentHP <= 0:
 		player1.KO()
 		print("Player 2 KO!")
+
+func game_over():
+	await get_tree().create_timer(2.1).timeout
+	get_tree().quit()
