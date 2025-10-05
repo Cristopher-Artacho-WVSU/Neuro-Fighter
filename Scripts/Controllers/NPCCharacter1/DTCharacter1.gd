@@ -1,128 +1,214 @@
 extends CharacterBody2D
-# ONREADY VARIABLES
-@onready var enemy = get_parent().get_node("PlayerCharacter1")
-@onready var distance = position.distance_to(enemy.position)
-@onready var animation = $AnimationPlayer
-@onready var characterSprite = $AnimatedSprite2D
-@onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
-@onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
-@onready var opponentHitboxes = [
-	get_parent().get_node("PlayerCharacter1/Hitbox_LeftFoot/CollisionShape2D"),
-	get_parent().get_node("PlayerCharacter1/Hitbox_RightFoot/CollisionShape2D"),
-	get_parent().get_node("PlayerCharacter1/Hitbox_LeftHand/CollisionShape2D"),
-	get_parent().get_node("PlayerCharacter1/Hitbox_RightHand/CollisionShape2D")
-]
 
-# ADDONS
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+# NODES - Initialize in _ready() to avoid issues
+var enemy = null
+var animation = null
+var character_sprite = null
+var hurtboxes = []
+var hitboxes = []
 
-# MEASUREMENT VARIABLES
-var speed = 300
+# CONSTANTS
+var GRAVITY = ProjectSettings.get_setting("physics/2d/default_gravity")
+const SPEED = 300
+const ATTACK_RANGE_PUNCH = 200
+const ATTACK_RANGE_KICK = 300
+const MOVE_THRESHOLD = 250
 
 # STATE VARIABLES
 var is_jumping = false
 var is_hurt = false
-var in_combo = false
-var is_crouching = false
 var is_attacking = false
 
 func _ready():
-	$Hurtbox_UpperBody.area_entered.connect(Callable(self, "_on_hurtbox_entered").bind("Hurtbox_Upper"))
-	$Hurtbox_UpperBody.area_entered.connect(Callable(self, "_on_hurtbox_entered").bind("Hurtbox_Lower"))
+	print("Decision Tree Controller Initialized")
 	
-func _process(delta):
+	# Initialize nodes safely
+	initialize_nodes()
+	
+	# Connect signals
+	connect_signals()
+	
+	print("DT Controller ready!")
+
+func initialize_nodes():
+	# Get enemy reference
+	enemy = get_parent().get_node("PlayerCharacter1")
+	if not enemy:
+		print("ERROR: Could not find PlayerCharacter1!")
+		# Try alternative path
+		enemy = get_node("../PlayerCharacter1")
+		if enemy:
+			print("Found enemy via alternative path")
+	
+	# Get component nodes
+	animation = $AnimationPlayer
+	character_sprite = $AnimatedSprite2D
+	
+	# Get hurtboxes and hitboxes
+	hurtboxes = [
+		$Hurtbox_LowerBody,
+		$Hurtbox_UpperBody
+	]
+	
+	hitboxes = [
+		$Hitbox_LeftFoot,
+		$Hitbox_LeftHand,
+		$Hitbox_RightFoot,
+		$Hitbox_RightHand
+	]
+	
+	# Verify critical nodes
+	if not animation:
+		print("ERROR: No AnimationPlayer found!")
+	if not character_sprite:
+		print("ERROR: No AnimatedSprite2D found!")
+
+func connect_signals():
+	# Connect animation finished signal
+	if animation and not animation.animation_finished.is_connected(_on_animation_finished):
+		animation.animation_finished.connect(_on_animation_finished)
+		print("Animation signals connected")
+	
+	# Connect hurtbox signals
+	for hurtbox in hurtboxes:
+		if hurtbox and not hurtbox.area_entered.is_connected(_on_hurtbox_area_entered):
+			hurtbox.area_entered.connect(_on_hurtbox_area_entered)
+			print("Hurtbox signal connected: ", hurtbox.name)
+
+func _physics_process(delta):
+	# Skip processing if critical nodes are missing
+	if not is_instance_valid(enemy) or not animation:
+		return
+	
 	update_facing_direction()
-
-	if not is_on_floor():
-		velocity.y += gravity * delta
-		if not is_jumping:
-			is_jumping = true
-	else:
-		velocity.y = 0
-		if is_jumping:
-			is_jumping = false
-			if not is_attacking:
-				animation.play("idle")
-
-	if not is_attacking:
+	apply_gravity(delta)
+	
+	# State machine - only act if not currently attacking or hurt
+	if not is_attacking and not is_hurt:
+		# Check for attacks first
 		DTAttackSystem()
+		# Only move if not attacking
 		if not is_attacking:
 			DTMovementSystem()
-
+	
 	move_and_slide()
 
-
-func _on_hurtbox_entered(hitbox: Area2D, hurtbox_name: String):
-	var hitbox_name = hitbox.get_parent().name
-	print("Hitbox: %s detected in %s" % [hitbox_name, hurtbox_name])
+func apply_gravity(delta):
+	if not is_on_floor():
+		velocity.y += GRAVITY * delta
+		is_jumping = true
+	else:
+		velocity.y = 0
+		is_jumping = false
 
 func DTMovementSystem():
 	if not is_instance_valid(enemy):
 		return
 	
-	var distance = global_position.distance_to(enemy.position)
+	var distance = global_position.distance_to(enemy.global_position)
 	
-	if distance > 325:
-		# Determine movement direction
+	if distance > MOVE_THRESHOLD:
+		# Move toward enemy
 		if enemy.position.x > position.x:
-			# Move right
-			velocity.x = speed
-			animation.play("walk_forward")
+			# Enemy is to the right, move right
+			velocity.x = SPEED
+			play_animation("walk_forward")
 		else:
-			# Move left
-			velocity.x = -speed
-			animation.play("walk_backward")
+			# Enemy is to the left, move left
+			velocity.x = -SPEED
+			play_animation("walk_backward")
 	else:
-		# Stop when within range
+		# Stop when within attack range
 		velocity.x = 0
-		animation.play("idle")
-
+		if not is_attacking:
+			play_animation("idle")
 
 func DTAttackSystem():
 	if not is_instance_valid(enemy):
 		return
-
+	
 	var current_distance = global_position.distance_to(enemy.global_position)
+	
+	# Choose attack based on distance
+	if current_distance <= ATTACK_RANGE_PUNCH:
+		# Close range - use punch
+		start_attack("light_punch", current_distance)
+	elif current_distance <= ATTACK_RANGE_KICK:
+		# Medium range - use kick
+		start_attack("light_kick", current_distance)
+	# If farther than ATTACK_RANGE_KICK, don't attack
 
-	if current_distance <= 315:
-		if not is_attacking:
-			print("Attacking enemy at distance:", current_distance)
-			is_attacking = true
-			velocity.x = 0
-			animation.play("light_punch")
-			_connect_animation_finished()
-	elif current_distance <= 325:
-		if not is_attacking:
-			is_attacking = true
-			velocity.x = 0
-			animation.play("light_kick")
-			_connect_animation_finished()
+func start_attack(attack_animation, distance):
+	if not is_attacking:
+		print("Starting attack: ", attack_animation, " at distance: ", distance)
+		is_attacking = true
+		velocity.x = 0  # Stop movement during attack
+		play_animation(attack_animation)
+
+func play_animation(anim_name):
+	if animation and animation.has_animation(anim_name):
+		if animation.current_animation != anim_name:
+			animation.play(anim_name)
 	else:
-		print("Enemy too far to attack: ", current_distance)
-
-
+		print("WARNING: Animation not found: ", anim_name)
 
 func update_facing_direction():
-	if enemy.position.x > position.x:
-		characterSprite.flip_h = false  # Face right
-		for hitbox in hitboxGroup:
-			hitbox.scale.x = 1  # Or flip_h if it's a Sprite/AnimatedSprite2D
-		for hurtbox in hurtboxGroup:
-			hurtbox.scale.x = 1
-	else:
-		characterSprite.flip_h = true   # Face left
-		for hitbox in hitboxGroup:
-			hitbox.scale.x = -1
-		for hurtbox in hurtboxGroup:
-			hurtbox.scale.x = -1
+	if not is_instance_valid(enemy) or not character_sprite:
+		return
+	
+	# Face the enemy
+	var face_right = enemy.position.x > position.x
+	character_sprite.flip_h = not face_right
+	
+	# Update hitbox and hurtbox directions
+	var scale_x = 1 if face_right else -1
+	for hitbox in hitboxes:
+		if hitbox:
+			hitbox.scale.x = scale_x
+	for hurtbox in hurtboxes:
+		if hurtbox:
+			hurtbox.scale.x = scale_x
 
+func _on_animation_finished(anim_name):
+	print("Animation finished: ", anim_name)
+	
+	match anim_name:
+		"light_punch", "light_kick", "heavy_punch", "heavy_kick":
+			is_attacking = false
+			print("Attack completed, ready for next action")
+		"light_hurt", "heavy_hurt":
+			is_hurt = false
 
-func _connect_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
+func _on_hurtbox_area_entered(area: Area2D):
+	if area.is_in_group("Player1_Hitboxes"):
+		print("DT Character hit by: ", area.name)
+		is_hurt = true
+		is_attacking = false  # Interrupt attack if hit
+		play_animation("light_hurt")
+		
+		# Apply knockback or other hit effects
+		var knockback_direction = -1 if enemy.position.x > position.x else 1
+		velocity.x = knockback_direction * 200
 
-# Callback function to reset attack state when animation finishes
-func _on_attack_finished(anim_name):
-	if anim_name == "light_punch" or anim_name == "light_kick":
-		is_attacking = false
-		print("Attack animation finished:", anim_name)
+# Utility function to check if enemy is in attack range
+func is_enemy_in_attack_range():
+	if not is_instance_valid(enemy):
+		return false
+	var distance = global_position.distance_to(enemy.global_position)
+	return distance <= ATTACK_RANGE_KICK
+
+# Function to handle KO state
+func KO():
+	print("DT Character KO!")
+	is_attacking = false
+	is_hurt = true
+	play_animation("knocked_down")
+	# Disable movement and attacks
+	set_physics_process(false)
+
+# Debug function to see current state
+func print_state():
+	print("State - Attacking: ", is_attacking, " | Hurt: ", is_hurt, " | Jumping: ", is_jumping)
+	if is_instance_valid(enemy):
+		var distance = global_position.distance_to(enemy.global_position)
+		print("Distance to enemy: ", distance)

@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://da1n83xvb2o5c"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 657.0
+offset_bottom = 301.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Start Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Player1Options" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Player1Options"]
+layout_mode = 2
+text = "Player 1"
+
+[node name="HumanButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Player1Options"]
+layout_mode = 2
+text = "Human"
+
+[node name="NDSButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Player1Options"]
+layout_mode = 2
+text = "NDS"
+
+[node name="Player2Options" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Player2Options"]
+layout_mode = 2
+text = "Player 2"
+
+[node name="DecisionTreeButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Player2Options"]
+layout_mode = 2
+text = "Decision Tree"
+
+[node name="DynamicScriptingButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Player2Options"]
+layout_mode = 2
+text = "Dynamic Scripting"
+
+[node name="NDSButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Player2Options"]
+layout_mode = 2
+text = "NDS AI
+"
+
+[node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Start Game"

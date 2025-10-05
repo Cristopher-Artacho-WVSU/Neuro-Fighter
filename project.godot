@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="Neuro-Fighter"
-run/main_scene="uid://da1n83xvb2o5c"
+run/main_scene="uid://eks5e1kqp2yu"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Global="*res://Scripts/Global.gd"
+AIStateManager="*res://Scripts/Controllers/AI_StateManager.gd"
 
 [input]
 
