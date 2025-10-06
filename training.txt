@@ -368,6 +368,4903 @@ Rules Executed in Last Cycle:
 Generated Script:
 [
   {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightPunch"
+	],
+	"inScript": true,
+	"prioritization": 14,
+	"ruleID": 5,
+	"wasUsed": true,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[1,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-05T21:39:58 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-05T21:40:02 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-05T21:40:06 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": true,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4,3]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:26:34 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightPunch"
+	],
+	"inScript": true,
+	"prioritization": 14,
+	"ruleID": 5,
+	"wasUsed": true,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[1,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:26:38 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5,3]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:26:42 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": true,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[3]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:26:46 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[1,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:26:50 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightPunch"
+	],
+	"inScript": true,
+	"prioritization": 14,
+	"ruleID": 5,
+	"wasUsed": true,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":2,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:26:54 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:26:58 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:27:02 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:27:06 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:27:10 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[3]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":2} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:27:14 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:27:18 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:27:22 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:27:26 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.503
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:35:43 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightPunch"
+	],
+	"inScript": true,
+	"prioritization": 14,
+	"ruleID": 5,
+	"wasUsed": true,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[1,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:35:47 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": true,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[3,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:35:51 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:35:55 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:35:59 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:36:03 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": true,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.505333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[3,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:36:07 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.506333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.506333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.501333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.501
+  }
+]
+Rules Executed in Last Cycle:
+[5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":2,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:36:11 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.506333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.506333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.501333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.501
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:36:15 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.507333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.502333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.502
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:36:19 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": true,
+	"weight": 0.507333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.502333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502333333333333
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.502
+  }
+]
+Rules Executed in Last Cycle:
+[2,4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":2} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:36:54 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightPunch"
+	],
+	"inScript": true,
+	"prioritization": 14,
+	"ruleID": 5,
+	"wasUsed": true,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[1,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:36:58 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:02 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:06 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:10 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:14 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:18 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:22 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:26 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:30 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:34 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": true,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.502666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[3]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:38 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.503666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": true,
+	"weight": 0.503666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:42 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.504666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[3,4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:46 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.504666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:50 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.504666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4,1,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:54 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.504666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5,4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:37:58 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.504666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:38:02 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.504666666666667
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.502
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.501
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:49:15 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightKick"
+	],
+	"inScript": true,
+	"prioritization": 13,
+	"ruleID": 4,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightPunch"
+	],
+	"inScript": true,
+	"prioritization": 14,
+	"ruleID": 5,
+	"wasUsed": true,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[1,5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:49:19 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  },
+	  "enemy_anim": "light_punch",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 22,
+	"ruleID": 7,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightPunch"
+	],
+	"inScript": true,
+	"prioritization": 14,
+	"ruleID": 5,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:49:23 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "light_punch"
+	],
+	"inScript": true,
+	"prioritization": 12,
+	"ruleID": 3,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:49:27 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "light_kick"
+	],
+	"inScript": true,
+	"prioritization": 11,
+	"ruleID": 2,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick",
+	  "upper_attacks_taken": {
+		"op": ">=",
+		"value": 1
+	  }
+	},
+	"enemy_action": [
+	  "standing_defense"
+	],
+	"inScript": true,
+	"prioritization": 21,
+	"ruleID": 6,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[3]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":3} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:49:31 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": true,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "crouch_lightPunch"
+	],
+	"inScript": true,
+	"prioritization": 14,
+	"ruleID": 5,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "player_anim": "idle"
+	},
+	"enemy_action": [
+	  "idle"
+	],
+	"inScript": true,
+	"prioritization": 100,
+	"ruleID": 11,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[1,4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T21:49:35 ---
+Generated Script:
+[
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  }
+	},
+	"enemy_action": [
+	  "dash_backward"
+	],
+	"inScript": true,
+	"prioritization": 2,
+	"ruleID": 8,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_kick"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 23,
+	"ruleID": 9,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": ">=",
+		"value": 325
+	  }
+	},
+	"enemy_action": [
+	  "dash_forward"
+	],
+	"inScript": true,
+	"prioritization": 1,
+	"ruleID": 1,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 250
+	  },
+	  "rand_chance": {
+		"op": ">=",
+		"value": 0.5
+	  }
+	},
+	"enemy_action": [
+	  "jump"
+	],
+	"inScript": true,
+	"prioritization": 40,
+	"ruleID": 13,
+	"wasUsed": false,
+	"weight": 0.5
+  },
+  {
+	"conditions": {
+	  "distance": {
+		"op": "<=",
+		"value": 315
+	  },
+	  "enemy_anim": "light_punch"
+	},
+	"enemy_action": [
+	  "crouch"
+	],
+	"inScript": true,
+	"prioritization": 24,
+	"ruleID": 10,
+	"wasUsed": false,
+	"weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T22:05:21 ---
+Generated Script:
+[
+  {
     "conditions": {
       "distance": {
         "op": ">=",
@@ -451,27 +5348,11 @@ Generated Script:
 Rules Executed in Last Cycle:
 [1,5]
 --- End Log Entry ---
---- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
 
---- Script Generated (Timer Update) | Timestamp: 2025-10-05T21:39:58 ---
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T22:05:25 ---
 Generated Script:
 [
-  {
-    "conditions": {
-      "distance": {
-        "op": "<=",
-        "value": 325
-      }
-    },
-    "enemy_action": [
-      "light_kick"
-    ],
-    "inScript": true,
-    "prioritization": 11,
-    "ruleID": 2,
-    "wasUsed": false,
-    "weight": 0.502666666666667
-  },
   {
     "conditions": {
       "distance": {
@@ -485,8 +5366,24 @@ Generated Script:
     "inScript": true,
     "prioritization": 13,
     "ruleID": 4,
-    "wasUsed": false,
-    "weight": 0.502666666666667
+    "wasUsed": true,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 325
+      }
+    },
+    "enemy_action": [
+      "light_kick"
+    ],
+    "inScript": true,
+    "prioritization": 11,
+    "ruleID": 2,
+    "wasUsed": true,
+    "weight": 0.505333333333333
   },
   {
     "conditions": {
@@ -502,7 +5399,125 @@ Generated Script:
     "prioritization": 12,
     "ruleID": 3,
     "wasUsed": false,
-    "weight": 0.502666666666667
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick"
+    },
+    "enemy_action": [
+      "crouch"
+    ],
+    "inScript": true,
+    "prioritization": 23,
+    "ruleID": 9,
+    "wasUsed": false,
+    "weight": 0.5
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": ">=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick",
+      "upper_attacks_taken": {
+        "op": ">=",
+        "value": 1
+      }
+    },
+    "enemy_action": [
+      "standing_defense"
+    ],
+    "inScript": true,
+    "prioritization": 21,
+    "ruleID": 6,
+    "wasUsed": false,
+    "weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[2,4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":1} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T22:05:29 ---
+Generated Script:
+[
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      }
+    },
+    "enemy_action": [
+      "light_punch"
+    ],
+    "inScript": true,
+    "prioritization": 12,
+    "ruleID": 3,
+    "wasUsed": false,
+    "weight": 0.510666666666667
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick"
+    },
+    "enemy_action": [
+      "crouch"
+    ],
+    "inScript": true,
+    "prioritization": 23,
+    "ruleID": 9,
+    "wasUsed": false,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": ">=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick",
+      "upper_attacks_taken": {
+        "op": ">=",
+        "value": 1
+      }
+    },
+    "enemy_action": [
+      "standing_defense"
+    ],
+    "inScript": true,
+    "prioritization": 21,
+    "ruleID": 6,
+    "wasUsed": false,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      },
+      "enemy_anim": "light_punch"
+    },
+    "enemy_action": [
+      "crouch"
+    ],
+    "inScript": true,
+    "prioritization": 24,
+    "ruleID": 10,
+    "wasUsed": false,
+    "weight": 0.5
   },
   {
     "conditions": {
@@ -523,49 +5538,16 @@ Generated Script:
     "ruleID": 13,
     "wasUsed": false,
     "weight": 0.5
-  },
-  {
-    "conditions": {
-      "distance": {
-        "op": "<=",
-        "value": 315
-      },
-      "enemy_anim": "light_punch"
-    },
-    "enemy_action": [
-      "crouch"
-    ],
-    "inScript": true,
-    "prioritization": 24,
-    "ruleID": 10,
-    "wasUsed": false,
-    "weight": 0.5
   }
 ]
 Rules Executed in Last Cycle:
-[5]
+[5,4]
 --- End Log Entry ---
---- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
 
---- Script Generated (Timer Update) | Timestamp: 2025-10-05T21:40:02 ---
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T22:05:33 ---
 Generated Script:
 [
-  {
-    "conditions": {
-      "distance": {
-        "op": "<=",
-        "value": 325
-      }
-    },
-    "enemy_action": [
-      "crouch_lightKick"
-    ],
-    "inScript": true,
-    "prioritization": 13,
-    "ruleID": 4,
-    "wasUsed": false,
-    "weight": 0.502666666666667
-  },
   {
     "conditions": {
       "distance": {
@@ -580,31 +5562,15 @@ Generated Script:
     "prioritization": 12,
     "ruleID": 3,
     "wasUsed": false,
-    "weight": 0.502666666666667
-  },
-  {
-    "conditions": {
-      "distance": {
-        "op": "<=",
-        "value": 325
-      }
-    },
-    "enemy_action": [
-      "light_kick"
-    ],
-    "inScript": true,
-    "prioritization": 11,
-    "ruleID": 2,
-    "wasUsed": false,
-    "weight": 0.502666666666667
+    "weight": 0.510666666666667
   },
   {
     "conditions": {
       "distance": {
         "op": ">=",
-        "value": 325
+        "value": 315
       },
-      "enemy_anim": "light_punch",
+      "enemy_anim": "light_kick",
       "upper_attacks_taken": {
         "op": ">=",
         "value": 1
@@ -614,8 +5580,38 @@ Generated Script:
       "standing_defense"
     ],
     "inScript": true,
-    "prioritization": 22,
-    "ruleID": 7,
+    "prioritization": 21,
+    "ruleID": 6,
+    "wasUsed": false,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick"
+    },
+    "enemy_action": [
+      "crouch"
+    ],
+    "inScript": true,
+    "prioritization": 23,
+    "ruleID": 9,
+    "wasUsed": false,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "player_anim": "idle"
+    },
+    "enemy_action": [
+      "idle"
+    ],
+    "inScript": true,
+    "prioritization": 100,
+    "ruleID": 11,
     "wasUsed": false,
     "weight": 0.5
   },
@@ -639,27 +5635,11 @@ Generated Script:
 Rules Executed in Last Cycle:
 [5]
 --- End Log Entry ---
---- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":1,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
 
---- Script Generated (Timer Update) | Timestamp: 2025-10-05T21:40:06 ---
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T22:05:37 ---
 Generated Script:
 [
-  {
-    "conditions": {
-      "distance": {
-        "op": "<=",
-        "value": 325
-      }
-    },
-    "enemy_action": [
-      "light_kick"
-    ],
-    "inScript": true,
-    "prioritization": 11,
-    "ruleID": 2,
-    "wasUsed": false,
-    "weight": 0.502666666666667
-  },
   {
     "conditions": {
       "distance": {
@@ -673,24 +5653,59 @@ Generated Script:
     "inScript": true,
     "prioritization": 12,
     "ruleID": 3,
-    "wasUsed": true,
-    "weight": 0.502666666666667
+    "wasUsed": false,
+    "weight": 0.510666666666667
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": ">=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick",
+      "upper_attacks_taken": {
+        "op": ">=",
+        "value": 1
+      }
+    },
+    "enemy_action": [
+      "standing_defense"
+    ],
+    "inScript": true,
+    "prioritization": 21,
+    "ruleID": 6,
+    "wasUsed": false,
+    "weight": 0.505333333333333
   },
   {
     "conditions": {
       "distance": {
         "op": "<=",
-        "value": 325
-      }
+        "value": 315
+      },
+      "enemy_anim": "light_kick"
     },
     "enemy_action": [
-      "crouch_lightKick"
+      "crouch"
     ],
     "inScript": true,
-    "prioritization": 13,
-    "ruleID": 4,
-    "wasUsed": true,
-    "weight": 0.502666666666667
+    "prioritization": 23,
+    "ruleID": 9,
+    "wasUsed": false,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "player_anim": "idle"
+    },
+    "enemy_action": [
+      "idle"
+    ],
+    "inScript": true,
+    "prioritization": 100,
+    "ruleID": 11,
+    "wasUsed": false,
+    "weight": 0.5
   },
   {
     "conditions": {
@@ -711,6 +5726,69 @@ Generated Script:
     "ruleID": 13,
     "wasUsed": false,
     "weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T22:05:41 ---
+Generated Script:
+[
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      }
+    },
+    "enemy_action": [
+      "light_punch"
+    ],
+    "inScript": true,
+    "prioritization": 12,
+    "ruleID": 3,
+    "wasUsed": false,
+    "weight": 0.510666666666667
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick"
+    },
+    "enemy_action": [
+      "crouch"
+    ],
+    "inScript": true,
+    "prioritization": 23,
+    "ruleID": 9,
+    "wasUsed": false,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": ">=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick",
+      "upper_attacks_taken": {
+        "op": ">=",
+        "value": 1
+      }
+    },
+    "enemy_action": [
+      "standing_defense"
+    ],
+    "inScript": true,
+    "prioritization": 21,
+    "ruleID": 6,
+    "wasUsed": false,
+    "weight": 0.505333333333333
   },
   {
     "conditions": {
@@ -732,9 +5810,121 @@ Generated Script:
     "ruleID": 7,
     "wasUsed": false,
     "weight": 0.5
+  },
+  {
+    "conditions": {
+      "player_anim": "idle"
+    },
+    "enemy_action": [
+      "idle"
+    ],
+    "inScript": true,
+    "prioritization": 100,
+    "ruleID": 11,
+    "wasUsed": false,
+    "weight": 0.5
   }
 ]
 Rules Executed in Last Cycle:
-[4,3]
+[2]
 --- End Log Entry ---
---- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0} ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":6} ---
+
+--- Script Generated (Timer Update) | Timestamp: 2025-10-06T22:05:45 ---
+Generated Script:
+[
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      }
+    },
+    "enemy_action": [
+      "light_punch"
+    ],
+    "inScript": true,
+    "prioritization": 12,
+    "ruleID": 3,
+    "wasUsed": false,
+    "weight": 0.510666666666667
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick"
+    },
+    "enemy_action": [
+      "crouch"
+    ],
+    "inScript": true,
+    "prioritization": 23,
+    "ruleID": 9,
+    "wasUsed": false,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": ">=",
+        "value": 315
+      },
+      "enemy_anim": "light_kick",
+      "upper_attacks_taken": {
+        "op": ">=",
+        "value": 1
+      }
+    },
+    "enemy_action": [
+      "standing_defense"
+    ],
+    "inScript": true,
+    "prioritization": 21,
+    "ruleID": 6,
+    "wasUsed": false,
+    "weight": 0.505333333333333
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 315
+      }
+    },
+    "enemy_action": [
+      "dash_backward"
+    ],
+    "inScript": true,
+    "prioritization": 2,
+    "ruleID": 8,
+    "wasUsed": false,
+    "weight": 0.5
+  },
+  {
+    "conditions": {
+      "distance": {
+        "op": "<=",
+        "value": 250
+      },
+      "rand_chance": {
+        "op": ">=",
+        "value": 0.5
+      }
+    },
+    "enemy_action": [
+      "jump"
+    ],
+    "inScript": true,
+    "prioritization": 40,
+    "ruleID": 13,
+    "wasUsed": false,
+    "weight": 0.5
+  }
+]
+Rules Executed in Last Cycle:
+[5,4]
+--- End Log Entry ---
+--- Parameters: {"lower_attacks_landed":0,"lower_attacks_taken":2,"upper_attacks_landed":0,"upper_attacks_taken":0} ---

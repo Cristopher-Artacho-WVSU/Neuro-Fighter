@@ -133,6 +133,8 @@ var rules = [
 ]
 
 func _ready():
+	if enemy and enemy.has_node("AnimationPlayer"):
+		print("AnimationPlayer of Enemy detected")
 	is_dashing = false
 	is_jumping = false
 	is_crouching = false
