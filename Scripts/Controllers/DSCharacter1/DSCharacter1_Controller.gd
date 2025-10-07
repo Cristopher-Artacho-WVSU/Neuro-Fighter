@@ -2,12 +2,18 @@ extends CharacterBody2D
 
 #ADDONS
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var jump_speed = 1000  # example, tune as needed
+var fall_multiplier = 3.0
+var jump_multiplier = 1.2
+
+
 #ONREADY VARIABLES FOR THIS CHARACTER
 @onready var animation = $AnimationPlayer
 @onready var characterSprite = $AnimatedSprite2D
 @onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
 @onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
 @onready var playerDetails = get_parent().get_node("PlayerDetailsUI/Player2Details")
+@onready var generateScript_timer = Timer.new()
 
 #ONREADY VARIABLES FOR OTHER PLAYER
 @onready var enemy = get_parent().get_node("PlayerCharacter1")
@@ -127,6 +133,8 @@ var rules = [
 ]
 
 func _ready():
+	if enemy and enemy.has_node("AnimationPlayer"):
+		print("AnimationPlayer of Enemy detected")
 	is_dashing = false
 	is_jumping = false
 	is_crouching = false
@@ -135,7 +143,7 @@ func _ready():
 #HURTS
 	is_defending = false
 	is_hurt = false
-
+#CREATE INITIAL SCRIPT
 	DSscript.clear()
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
@@ -151,23 +159,21 @@ func _ready():
 	
 	#generate_script()
 	#initialize_log_file()
+	add_child(generateScript_timer)
+	generateScript_timer.wait_time = 4.0
+	generateScript_timer.one_shot = false
+	generateScript_timer.start()
+	generateScript_timer.connect("timeout", Callable(self, "_on_generateScript_timer_timeout"))
 
 func _physics_process(delta):
 	update_facing_direction()
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
 		evaluate_and_execute(rules)
 	#
-	if not is_on_floor():
-		velocity.y += gravity * delta
-		if not is_jumping:
-			is_jumping = true
-	else:
-		velocity.y = 0
-		if is_jumping:
-			is_jumping = false
+	applyGravity(delta)
 	
 	DamagedSystem()
-	debug_states()
+	#debug_states()
 	move_and_slide()
 
 
@@ -459,8 +465,7 @@ func generate_script():
 	# Create new script based on updated weights
 	_create_new_script()
 	_reset_rule_usage()
-	#print("New script generated with weights: ", DSscript)
-	print(rules)
+	print("New script generated with weights: ", DSscript)
 	printSumWeights()
 
 # FOR LOGGING THE HISTORY OF SCRIPT GENERATION, THEIR WEIGHTS, AND OTHER PARAMETERS
@@ -573,7 +578,7 @@ func _create_new_script():
 		var rule = candidates[i].rule
 		rule["inScript"] = true
 		DSscript.append(rule)
-	print(DSscript)
+	#print(DSscript)
 
 func printSumWeights():
 	var totalWeight = 0.0
@@ -649,3 +654,26 @@ func updateDetails():
 	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d \nUpper Attacks Blocked: %d \nLower Attacks Landed: %d" % [
 		lower_attacks_taken, upper_attacks_taken, 
 		lower_attacks_landed, upper_attacks_landed, upper_attacks_blocked, lower_attacks_blocked	]
+
+func applyGravity(delta):
+	if not is_on_floor():
+		# If moving up (jumping), apply gravity faster than default
+		if velocity.y < 0:
+			velocity.y += gravity * jump_multiplier * delta
+		else:
+			# If moving down (falling), apply even stronger gravity
+			velocity.y += gravity * fall_multiplier * delta
+
+		if not is_jumping:
+			is_jumping = true
+	else:
+		if velocity.y > 0:
+			velocity.y = 0
+			velocity.x = 0
+		if is_jumping:
+			is_jumping = false
+
+
+func _on_generateScript_timer_timeout():
+	print("Timeout")
+	generate_script()
