@@ -135,19 +135,22 @@ func _ready():
 	# Initialize AI State Manager
 	ai_state_manager = get_node("/root/AI_StateManager")
 	if not ai_state_manager:
-		# Create if it doesn't exist
-		ai_state_manager = Node.new()
-		ai_state_manager.set_script(load("res://Scripts/Controllers/AI_StateManager.gd"))
-		get_tree().root.add_child(ai_state_manager)
-		ai_state_manager.name = "AI_StateManager"
+		 # Try to get it from autoload
+		ai_state_manager = get_node_or_null("/root/AIStateManager")
+		if not ai_state_manager:
+			print("WARNING: AI_StateManager not found - state saving disabled")
+			# Create a dummy node to prevent null errors
+			ai_state_manager = Node.new()
 	# MAKE AN INITIAL SCRIPT
 	
 	if Global.player1_saved_state != "":
-		load_rules(Global.player2_saved_state)
+		load_rules(Global.player1_saved_state)
+		print("Loaded AI State: ", Global.player1_saved_state)
 	if Global.player2_saved_state != "":
 		load_rules(Global.player2_saved_state)
+		print("Loaded AI State: ", Global.player2_saved_state)
 		
-	print("DS PLAYER")
+	print("DS PLAYER Initialized")
 	DSscript.clear()
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
@@ -161,6 +164,10 @@ func _ready():
 	initialize_log_file()
 	
 func save_current_rules(label: String, metadata: Dictionary = {}):
+	if not ai_state_manager or ai_state_manager.get_script() == null:
+		print("WARNING: AI_StateManager not available - cannot save rules")
+		return
+		
 	var save_metadata = {
 		"fitness": current_fitness,
 		"upper_attacks_landed": upper_attacks_landed,
@@ -175,6 +182,10 @@ func save_current_rules(label: String, metadata: Dictionary = {}):
 	print("Rules saved with label: ", label)
 
 func load_rules(label: String):
+	if not ai_state_manager or ai_state_manager.get_script() == null:
+		print("WARNING: AI_StateManager not available - cannot load rules")
+		return
+		
 	var loaded_rules = ai_state_manager.load_state(label)
 	if loaded_rules and loaded_rules.size() > 0:
 		rules = loaded_rules
