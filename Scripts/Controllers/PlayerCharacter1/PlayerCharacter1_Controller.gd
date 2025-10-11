@@ -12,7 +12,7 @@ extends CharacterBody2D
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var jump_speed = 3000  # example, tune as needed
 var fall_multiplier = 5.0
-var jump_multiplier = 1.4
+var jump_multiplier = 1.6
 
 #VALUE VARIABLES
 #DASHING MOVEMENT
@@ -36,9 +36,9 @@ var is_attacking = false
 var is_defending = false
 var is_hurt = false
 
-
 #TIMERS
-
+var hitstop_id: int = 0
+var is_in_global_hitstop: bool = false
 
 #INITIATE VARIABLES, SETUP WHEN THE GAME STARTS
 func _ready():
@@ -90,7 +90,7 @@ func MovementSystem(delta):
 	var backward = Input.is_action_pressed("move_left")
 	
 	
-	if jump:
+	if jump and not is_jumping:
 		animation.play("jump")
 		print("Jumped")
 		velocity.y = -1200.0
@@ -222,12 +222,14 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 		if is_defending:
 			print("Player 1 blocked the attack (upper body)")
 			velocity.x = 0
+			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("standing_block")  # play block only on hit
 			
 		else:
 			print("Player 1 Lower body hit taken")
 			is_hurt = true
 			velocity.x = 0
+			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
 		_connect_hurt_animation_finished()
 
@@ -237,11 +239,13 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 		if is_defending:
 			print("Player 1 blocked the attack (lower body)")
 			velocity.x = 0
+			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("standing_block")  # play block only on hit
 		else:
 			print("Player 1 Lower body hit taken")
 			is_hurt = true
 			velocity.x = 0
+			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
 		_connect_hurt_animation_finished()
 
@@ -255,12 +259,15 @@ func _on_hurt_finished(anim_name):
 	if is_defending and anim_name == "standing_block":
 		if get_parent().has_method("apply_damage_to_player1"):
 			get_parent().apply_damage_to_player1(7)
+		animation.play("idle")
+		
 	else:
 #		IF PLAYER IS NOT DEFENDING WHENT HE DAMAGE RECEIVED
 		if anim_name == "light_hurt" or anim_name == "heavy_hurt":
 			if get_parent().has_method("apply_damage_to_player1"):
 				get_parent().apply_damage_to_player1(10)
-		
+			animation.play("idle")
+
 #	AFTER THE ATTACK, is_hurt IS TURNED TO FALSE
 		is_hurt = false
 		is_attacking = false
@@ -332,7 +339,6 @@ func applyGravity(delta):
 		else:
 			# If moving down (falling), apply even stronger gravity
 			velocity.y += gravity * fall_multiplier * delta
-
 		if not is_jumping:
 			is_jumping = true
 	else:
@@ -347,3 +353,25 @@ func displacement_small():
 	
 func displacement_verySmall():
 	velocity.x = 50
+
+func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> void:
+	hitstop_id += 1
+	var my_id = hitstop_id
+
+	# Apply immediately
+	if not is_in_global_hitstop:
+		Engine.time_scale = slowdown_factor
+		is_in_global_hitstop = true
+
+	# Manual real-time delay (does not wait for next frame)
+	var end_time = Time.get_unix_time_from_system() + hitstop_duration
+	while Time.get_unix_time_from_system() < end_time:
+		await get_tree().process_frame
+
+	# Prevent older hitstops from overwriting new ones
+	if my_id != hitstop_id:
+		return
+
+	# Restore immediately
+	Engine.time_scale = 1.0
+	is_in_global_hitstop = false
