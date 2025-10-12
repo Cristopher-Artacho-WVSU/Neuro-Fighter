@@ -48,10 +48,7 @@ var is_recently_hit: bool = false
 func _ready():
 	prev_distance_to_enemy = abs(enemy.position.x - position.x)
 	setup_animation_connections()
-<<<<<<< HEAD
 	setup_damage_connections()
-=======
->>>>>>> c3d067e (save before rebase)
 
 func setup_animation_connections():
 	if not animation.is_connected("animation_finished", _on_animation_finished):

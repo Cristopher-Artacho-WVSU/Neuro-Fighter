@@ -36,15 +36,6 @@ shape = SubResource("RectangleShape2D_rw36q")
 position = Vector2(1044.5, 846)
 shape = SubResource("RectangleShape2D_8ht51")
 
-<<<<<<< HEAD
-=======
-[node name="PlayerCharacter1" parent="." instance=ExtResource("1_1ubbt")]
-position = Vector2(316, 460)
-
-[node name="NPCCharacter1" parent="." instance=ExtResource("2_0smn3")]
-position = Vector2(1570, 455)
-
->>>>>>> 8b50887 (added temporary damage)
 [node name="Camera_View" type="Camera2D" parent="."]
 position = Vector2(1045, 186)
 zoom = Vector2(0.55, 0.5)
