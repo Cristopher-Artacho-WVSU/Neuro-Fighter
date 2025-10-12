@@ -7,9 +7,9 @@ extends Control
 @onready var left_load_panel = $MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/LoadPanel/SavedStatesContainer
 @onready var right_load_panel = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/LoadPanel/SavedStatesContainer
 @onready var left_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/PercentageDisplay/PercentageValue
-@onright var right_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/PercentageDisplay/PercentageValue
-@onready var nos_ai_input = $MarginContainer/VBoxContainer/HBoxContainer/NOSAIPanel/NOSInput
-@onready var nos_ai_description = $MarginContainer/VBoxContainer/HBoxContainer/NOSAIPanel/NOSDescription
+@onready var right_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/PercentageDisplay/PercentageValue
+@onready var nds_ai_input = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel/NDSInput
+@onready var nds_ai_description = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel/NDSDescription
 @onready var play_button = $MarginContainer/VBoxContainer/ButtonContainer/PlayButton
 @onready var save_button = $MarginContainer/VBoxContainer/ButtonContainer/SaveButton
 @onready var performance_chart = $MarginContainer/VBoxContainer/PreviewPanel/PerformanceChart
@@ -29,7 +29,7 @@ func _ready():
 	setup_algorithm_buttons()
 	setup_load_sections()
 	update_display()
-	setup_nos_ai_section()
+	setup_nds_ai_section()
 
 func setup_algorithm_buttons():
 	# Left side buttons
@@ -69,10 +69,10 @@ func setup_load_sections():
 		right_button.tooltip_text = state.get("description", "No description")
 		right_load_panel.add_child(right_button)
 
-func setup_nos_ai_section():
-	nos_ai_input.placeholder_text = "Enter NOS AI parameters..."
-	nos_ai_input.text = "Learning Rate: 0.1, Exploration: 0.3"
-	nos_ai_description.text = "Configure Neuro-Dynamic System parameters"
+func setup_nds_ai_section():
+	nds_ai_input.placeholder_text = "Enter NDS AI parameters..."
+	nds_ai_input.text = "Learning Rate: 0.1, Exploration: 0.3"
+	nds_ai_description.text = "Configure Neuro-Dynamic System parameters"
 
 func _on_left_algorithm_selected(algorithm):
 	current_left_type = algorithm
@@ -106,8 +106,8 @@ func update_display():
 	left_percentage_value.text = "%d%%" % (left_percent * 100)
 	right_percentage_value.text = "%d%%" % (right_percent * 100)
 	
-	# Update NOS AI section visibility and content
-	update_nos_ai_section()
+	# Update NDS AI section visibility and content
+	update_nds_ai_section()
 	
 	# Update play button state
 	play_button.disabled = (current_left_type == "Human" and current_right_type == "Human")
@@ -132,14 +132,14 @@ func calculate_ai_percentage(algorithm_type: String, ai_state) -> float:
 			_:
 				return 0.5
 
-func update_nos_ai_section():
-	# Show NOS AI section only when NDS is selected
-	var nos_panel = $MarginContainer/VBoxContainer/HBoxContainer/NOSAIPanel
-	nos_panel.visible = (current_left_type == "NDS" or current_right_type == "NDS")
+func update_nds_ai_section():
+	# Show NDS AI section only when NDS is selected
+	var nds_panel = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel
+	nds_panel.visible = (current_left_type == "NDS" or current_right_type == "NDS")
 	
 	if current_left_type == "NDS" or current_right_type == "NDS":
-		var params = Global.get_nos_ai_parameters()
-		nos_ai_input.text = "LR: %.2f, Explore: %.2f, Layers: %s" % [
+		var params = Global.get_nds_ai_parameters()
+		nds_ai_input.text = "LR: %.2f, Explore: %.2f, Layers: %s" % [
 			params.get("learning_rate", 0.1),
 			params.get("exploration_rate", 0.3),
 			str(params.get("network_layers", []))
@@ -183,9 +183,9 @@ func update_algorithm_button_style(panel: Node, selected_algorithm: String):
 				child.disabled = false
 
 func _on_play_button_pressed():
-	# Apply NOS AI parameters if NDS is selected
+	# Apply NDS AI parameters if NDS is selected
 	if current_left_type == "NDS" or current_right_type == "NDS":
-		apply_nos_ai_parameters()
+		apply_nds_ai_parameters()
 	
 	Global.set_controllers(current_left_type, current_right_type, current_left_state, current_right_state)
 	print("Starting game with controllers: P1=%s, P2=%s" % [current_left_type, current_right_type])
@@ -243,17 +243,17 @@ func _on_save_dialog_action(action: String, name_input: LineEdit, desc_input: Li
 	
 	dialog.queue_free()
 
-func apply_nos_ai_parameters():
-	# Parse and apply NOS AI parameters from input
-	var input_text = nos_ai_input.text
+func apply_nds_ai_parameters():
+	# Parse and apply NDS AI parameters from input
+	var input_text = nds_ai_input.text
 	# This would parse the input and set parameters in Global
 	# For now, we'll use defaults
-	print("Applying NOS AI parameters: ", input_text)
+	print("Applying NDS AI parameters: ", input_text)
 
-# Handle NOS AI input changes
-func _on_nos_input_text_changed(new_text):
+# Handle NDS AI input changes
+func _on_nds_input_text_changed(new_text):
 	# You can add real-time validation here
 	pass
 
-func _on_nos_input_text_submitted(new_text):
-	apply_nos_ai_parameters()
+func _on_nds_input_text_submitted(new_text):
+	apply_nds_ai_parameters()

@@ -112,11 +112,11 @@ func DTMovementSystem():
 		if enemy.position.x > position.x:
 			# Enemy is to the right, move right
 			velocity.x = SPEED
-			play_animation("walk_forward")
+			play_animation("move_forward")
 		else:
 			# Enemy is to the left, move left
 			velocity.x = -SPEED
-			play_animation("walk_backward")
+			play_animation("move_backward")
 	else:
 		# Stop when within attack range
 		velocity.x = 0
@@ -186,10 +186,16 @@ func _on_hurtbox_area_entered(area: Area2D):
 		is_attacking = false  # Interrupt attack if hit
 		play_animation("light_hurt")
 		
+		apply_damage(10)
+		
 		# Apply knockback or other hit effects
 		var knockback_direction = -1 if enemy.position.x > position.x else 1
 		velocity.x = knockback_direction * 200
 
+func apply_damage(amount):
+	if get_parent().has_method("apply_damage_to_player2"):
+		get_parent().apply_damage_to_player2(amount)
+		
 # Utility function to check if enemy is in attack range
 func is_enemy_in_attack_range():
 	if not is_instance_valid(enemy):

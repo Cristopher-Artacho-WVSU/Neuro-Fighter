@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 [gd_scene load_steps=329 format=3 uid="uid://cgbdlya664tp0"]
+=======
+[gd_scene load_steps=235 format=3 uid="uid://cgbdlya664tp0"]
+>>>>>>> 8b50887 (added temporary damage)
 
 [ext_resource type="Texture2D" uid="uid://5xo00djk0ee8" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0000.png" id="1_v7t0u"]
 [ext_resource type="Texture2D" uid="uid://br6aa5bq27h8e" path="res://Assets/Characters/Character 1/Crouch/Crouch0000.png" id="2_cbwdj"]
