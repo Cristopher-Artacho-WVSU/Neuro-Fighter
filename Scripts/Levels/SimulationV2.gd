@@ -30,16 +30,16 @@ func _ready():
 			player1.set_physics_process(true)
 		"DecisionTree":
 			# Use decision tree controller
-			player2.set_script(preload("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+			player1.set_script(preload("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
 			#print(Global.player2_controller)
 			#print(player2.get_script().resource_path)
-			player2._ready()
-			player2.set_physics_process(true)
+			player1._ready()
+			player1.set_physics_process(true)
 		"DynamicScripting":
 			# Use dynamic scripting controller
-			player2.set_script(preload("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
-			player2._ready()  # This will initialize @onready variables
-			player2.set_physics_process(true)
+			player1.set_script(preload("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
+			player1._ready()  # This will initialize @onready variables
+			player1.set_physics_process(true)
 		"NDS":
 			# Use NDS controller script
 			player1.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
@@ -50,10 +50,10 @@ func _ready():
 	match Global.player2_controller:
 		"Human":
 			# Use human controller script
-			player1.set_script(load("res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd"))
+			player2.set_script(load("res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd"))
 			print(Global.player1_controller)
-			player1._ready()  # This will initialize @onready variables
-			player1.set_physics_process(true)
+			player2._ready()  # This will initialize @onready variables
+			player2.set_physics_process(true)
 		"DecisionTree":
 			# Use decision tree controller
 			player2.set_script(preload("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))

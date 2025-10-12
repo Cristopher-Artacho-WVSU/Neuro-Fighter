@@ -48,7 +48,10 @@ var is_recently_hit: bool = false
 func _ready():
 	prev_distance_to_enemy = abs(enemy.position.x - position.x)
 	setup_animation_connections()
+<<<<<<< HEAD
 	setup_damage_connections()
+=======
+>>>>>>> c3d067e (save before rebase)
 
 func setup_animation_connections():
 	if not animation.is_connected("animation_finished", _on_animation_finished):
@@ -189,6 +192,8 @@ func DefenseSystem(delta):
 		last_input_time += delta
 		if last_input_time >= DEFENSE_DELAY:
 			is_defending = true
+	
+	setup_damage_connections()
 
 func any_input_pressed() -> bool:
 	return (
@@ -274,7 +279,11 @@ func handle_blocked_attack(body_part: String):
 	velocity.x = 0
 	apply_hitstop(0.3)
 	animation.play("standing_block")
+<<<<<<< HEAD
 	_connect_hurt_animation_finished()
+=======
+	apply_damage(7)
+>>>>>>> c3d067e (save before rebase)
 
 func handle_taken_damage(body_part: String):
 	print("Player 1 ", body_part, " body hit taken")
@@ -282,12 +291,17 @@ func handle_taken_damage(body_part: String):
 	velocity.x = 0
 	apply_hitstop(0.3)
 	animation.play("light_hurt")
+<<<<<<< HEAD
 	_connect_hurt_animation_finished()
+=======
+	apply_damage(10)
+>>>>>>> c3d067e (save before rebase)
 
 func apply_damage(amount):
 	if get_parent().has_method("apply_damage_to_player1"):
 		get_parent().apply_damage_to_player1(amount)
 
+<<<<<<< HEAD
 func _connect_hurt_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
@@ -312,6 +326,16 @@ func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> vo
 		Engine.time_scale = slowdown_factor
 		is_in_global_hitstop = true
 
+=======
+func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> void:
+	hitstop_id += 1
+	var my_id = hitstop_id
+
+	if not is_in_global_hitstop:
+		Engine.time_scale = slowdown_factor
+		is_in_global_hitstop = true
+
+>>>>>>> c3d067e (save before rebase)
 	var end_time = Time.get_unix_time_from_system() + hitstop_duration
 	while Time.get_unix_time_from_system() < end_time:
 		await get_tree().process_frame

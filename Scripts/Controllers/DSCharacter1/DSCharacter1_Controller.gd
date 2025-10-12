@@ -21,10 +21,13 @@ var DASH_SPEED = 300
 var JUMP_FORCE = -1200.0
 var GRAVITY = ProjectSettings.get_setting("physics/2d/default_gravity")
 
+<<<<<<< HEAD
 var jump_speed = 1000  # example, tune as needed
 var fall_multiplier = 3.0
 var jump_multiplier = 1.2
 
+=======
+>>>>>>> c3d067e (save before rebase)
 # ===== AI CONFIGURATION =====
 var ruleScript = 5
 var baseline = 0.5
@@ -57,10 +60,13 @@ var dash_direction = 0
 @onready var generateScript_timer = Timer.new()
 >>>>>>> 483be1a (latest commit)
 
+<<<<<<< HEAD
 #DEFENSE 
 var last_input_time = 0.0
 var defense_delay = 0.5
 
+=======
+>>>>>>> c3d067e (save before rebase)
 # ===== AI STATE MANAGEMENT =====
 var ai_state_manager: Node
 var current_fitness = 0.5
@@ -83,6 +89,10 @@ var is_jumping = false
 var is_crouching = false
 var dash_timer = 0.0
 var dash_direction = 0
+<<<<<<< HEAD
+=======
+var prev_distance_to_enemy = 0.0
+>>>>>>> c3d067e (save before rebase)
 
 # ===== COMBAT STATE =====
 var is_attacking = false
@@ -93,9 +103,13 @@ var is_defended = false
 # ===== DEFENSE TIMERS =====
 var idle_timer = 0.0
 var backward_timer = 0.0
+<<<<<<< HEAD
 var prev_distance_to_enemy = 0.0
 
 var log_file_path = "res://training.txt"
+=======
+var last_input_time = 0.0
+>>>>>>> c3d067e (save before rebase)
 
 <<<<<<< HEAD
 #CALCULATING THE ACTION 
@@ -223,6 +237,7 @@ func initialize_character_state():
 		DSscript.append(rules[i])
 	
 <<<<<<< HEAD
+<<<<<<< HEAD
 	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
 =======
 	if not animation.is_connected("animation_finished", Callable(self, "_on_attack_finished")):
@@ -230,6 +245,9 @@ func initialize_character_state():
 	
 	DamagedSystem()
 >>>>>>> 8b50887 (added temporary damage)
+=======
+	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
+>>>>>>> c3d067e (save before rebase)
 
 func setup_connections():
 	DamagedSystem()
@@ -853,10 +871,16 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
 <<<<<<< HEAD
+<<<<<<< HEAD
 			print("Player 2 Upper body hit taken")
 			upper_attacks_taken += 1
 =======
+=======
+>>>>>>> e6c2bc7 (save before rebase)
 		print("Player 2 Upper body hit taken")
+=======
+		print("Player 2 Lower body hit taken")
+>>>>>>> c3d067e (save before rebase)
 		upper_attacks_taken += 1
 		updateDetails()
 >>>>>>> 483be1a (latest commit)
@@ -865,13 +889,22 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
 
+<<<<<<< HEAD
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 =======
 >>>>>>> 483be1a (latest commit)
+=======
+=======
+
+func _on_hurtbox_lower_body_area_entered(area: Area2D):
+	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
+>>>>>>> c3d067e (save before rebase)
+>>>>>>> e6c2bc7 (save before rebase)
 	if area.is_in_group("Player1_Hitboxes"):
 		is_recently_hit = true  # Mark as hit immediately
 		if is_defending:
@@ -890,6 +923,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			lower_attacks_taken += 1
 		_connect_hurt_animation_finished()
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
@@ -897,6 +931,12 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 =======
 	
 >>>>>>> 483be1a (latest commit)
+=======
+	
+=======
+
+>>>>>>> c3d067e (save before rebase)
+>>>>>>> e6c2bc7 (save before rebase)
 func _connect_hurt_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
@@ -949,7 +989,11 @@ func _on_animation_finished(anim_name: String):
 	match anim_name:
 		"light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick":
 			is_attacking = false
+<<<<<<< HEAD
 			#check_attack_hit()
+=======
+			check_attack_hit()
+>>>>>>> c3d067e (save before rebase)
 		"standing_block":
 			is_defending = false
 		"hurt", "crouch_hurt":
@@ -1009,11 +1053,15 @@ func load_rules(label: String):
 		print("No rules found for label: ", label)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c3d067e (save before rebase)
 func load_saved_states():
 	if Global.player1_saved_state != "":
 		load_rules(Global.player1_saved_state)
 	if Global.player2_saved_state != "":
 		load_rules(Global.player2_saved_state)
+<<<<<<< HEAD
 =======
 func _physics_process(delta):
 	if is_hurt:
@@ -1516,6 +1564,8 @@ func _on_hurt_finished(anim_name):
 		is_hurt = false
 		print("Attack animation finished:", anim_name)
 >>>>>>> 8b50887 (added temporary damage)
+=======
+>>>>>>> c3d067e (save before rebase)
 
 # ===== UTILITY AND DEBUG FUNCTIONS =====
 func printSumWeights():
