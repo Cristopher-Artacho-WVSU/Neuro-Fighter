@@ -21,177 +21,177 @@ offset_right = 1152.0
 offset_bottom = 648.0
 >>>>>>> 58b1cf1 (scaffold essential features)
 
-[node name="vb" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/vb"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Start Game"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/vb"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="LeftPlayerPanel" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer"]
+[node name="LeftPlayerPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="SideLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel"]
+[node name="SideLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
 layout_mode = 2
 text = "Left Side"
 
-[node name="AlgorithmPanel" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel"]
+[node name="AlgorithmPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
 layout_mode = 2
 
-[node name="AlgorithmLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
+[node name="AlgorithmLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "Choose Algorithm"
 
-[node name="HumanButton" type="Button" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
+[node name="HumanButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "Human"
 
-[node name="DecisionTreeButton" type="Button" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
+[node name="DecisionTreeButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "DT"
 
-[node name="DynamicScriptingButton" type="Button" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
+[node name="DynamicScriptingButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "DS"
 
-[node name="NDSButton" type="Button" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
+[node name="NDSButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "NDS"
 
-[node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel"]
+[node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
 layout_mode = 2
 
-[node name="LoadLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/LoadPanel"]
+[node name="LoadLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/LoadPanel"]
 layout_mode = 2
 text = "Load Saved"
 
-[node name="SaveStatesContainer" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/LoadPanel"]
+[node name="SavedStatesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/LoadPanel"]
 layout_mode = 2
 
-[node name="PercentageDisplay" type="HBoxContainer" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel"]
+[node name="PercentageDisplay" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
 layout_mode = 2
 
-[node name="PercentageLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/PercentageDisplay"]
+[node name="PercentageLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/PercentageDisplay"]
 layout_mode = 2
 text = "AI Performance:"
 
-[node name="PercentageValue" type="Label" parent="MarginContainer/vb/HBoxContainer/LeftPlayerPanel/PercentageDisplay"]
+[node name="PercentageValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/PercentageDisplay"]
 layout_mode = 2
 text = "100%"
 
-[node name="RightPlayerPanel" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer"]
+[node name="RightPlayerPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="SideLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel"]
+[node name="SideLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
 layout_mode = 2
 text = "Right Side"
 
-[node name="AlgorithmPanel" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel"]
+[node name="AlgorithmPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
 layout_mode = 2
 
-[node name="AlgorithmLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
+[node name="AlgorithmLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "Choose Algorithm"
 
-[node name="HumanButton" type="Button" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
+[node name="HumanButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "Human"
 
-[node name="DecisionTreeButton" type="Button" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
+[node name="DecisionTreeButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "DT"
 
-[node name="DynamicScriptingButton" type="Button" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
+[node name="DynamicScriptingButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "DS"
 
-[node name="NDSButton" type="Button" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
+[node name="NDSButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "NDS"
 
-[node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel"]
+[node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
 layout_mode = 2
 
-[node name="LoadLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/LoadPanel"]
+[node name="LoadLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/LoadPanel"]
 layout_mode = 2
 text = "Load Saved"
 
-[node name="SavedStatesContainer" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/LoadPanel"]
+[node name="SavedStatesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/LoadPanel"]
 layout_mode = 2
 
-[node name="PercentageDisplay" type="HBoxContainer" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel"]
+[node name="PercentageDisplay" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
 layout_mode = 2
 
-[node name="PercentageLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/PercentageDisplay"]
+[node name="PercentageLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/PercentageDisplay"]
 layout_mode = 2
 text = "AI Performance:"
 
-[node name="PercentageValue" type="Label" parent="MarginContainer/vb/HBoxContainer/RightPlayerPanel/PercentageDisplay"]
+[node name="PercentageValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/PercentageDisplay"]
 layout_mode = 2
 text = "100%"
 
-[node name="NDSAIPanel" type="VBoxContainer" parent="MarginContainer/vb/HBoxContainer"]
+[node name="NDSAIPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="NDSLabel" type="Label" parent="MarginContainer/vb/HBoxContainer/NDSAIPanel"]
+[node name="NDSLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel"]
 layout_mode = 2
 text = "NDS AI Parameters"
 
-[node name="NDSInput" type="LineEdit" parent="MarginContainer/vb/HBoxContainer/NDSAIPanel"]
+[node name="NDSInput" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel"]
 layout_mode = 2
 placeholder_text = "Custom Inputs"
 
-[node name="NDSDescription" type="Label" parent="MarginContainer/vb/HBoxContainer/NDSAIPanel"]
+[node name="NDSDescription" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel"]
 layout_mode = 2
 text = "Neuro-Dynamic System Settings"
 
-[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/vb"]
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="SaveButton" type="Button" parent="MarginContainer/vb/ButtonContainer"]
+[node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
 layout_mode = 2
 text = "Save AI"
 
-[node name="BackButton" type="Button" parent="MarginContainer/vb/ButtonContainer"]
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
 layout_mode = 2
 text = "Back"
 
-[node name="PlayButton" type="Button" parent="MarginContainer/vb/ButtonContainer"]
+[node name="PlayButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
 layout_mode = 2
 text = "PLAY
 "
 
-[node name="PreviewPanel" type="VBoxContainer" parent="MarginContainer/vb"]
+[node name="PreviewPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="PreviewLabel" type="Label" parent="MarginContainer/vb/PreviewPanel"]
+[node name="PreviewLabel" type="Label" parent="MarginContainer/VBoxContainer/PreviewPanel"]
 layout_mode = 2
 text = "AI Performance Review"
 
-[node name="PerformanceChart" type="TextureRect" parent="MarginContainer/vb/PreviewPanel"]
+[node name="PerformanceChart" type="TextureRect" parent="MarginContainer/VBoxContainer/PreviewPanel"]
 layout_mode = 2
 
-[node name="DebugPanel" type="VBoxContainer" parent="MarginContainer/vb"]
+[node name="DebugPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="DebugToggleButton" type="Button" parent="MarginContainer/vb/DebugPanel"]
+[node name="DebugToggleButton" type="Button" parent="MarginContainer/VBoxContainer/DebugPanel"]
 layout_mode = 2
 text = "Toggle Debug Panel"
 
-[node name="DebugLog" type="TextEdit" parent="MarginContainer/vb/DebugPanel"]
+[node name="DebugLog" type="TextEdit" parent="MarginContainer/VBoxContainer/DebugPanel"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/vb/DebugPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/DebugPanel"]
 layout_mode = 2
 
-[node name="ClearLogButton" type="Button" parent="MarginContainer/vb/DebugPanel/HBoxContainer"]
+[node name="ClearLogButton" type="Button" parent="MarginContainer/VBoxContainer/DebugPanel/HBoxContainer"]
 layout_mode = 2
 text = "Clear Log"
 
-[node name="ExportLogButton" type="Button" parent="MarginContainer/vb/DebugPanel/HBoxContainer"]
+[node name="ExportLogButton" type="Button" parent="MarginContainer/VBoxContainer/DebugPanel/HBoxContainer"]
 layout_mode = 2
 text = "Export Log"

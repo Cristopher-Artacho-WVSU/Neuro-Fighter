@@ -12,14 +12,15 @@ extends Control
 @onready var nds_ai_description = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel/NDSDescription
 @onready var play_button = $MarginContainer/VBoxContainer/ButtonContainer/PlayButton
 @onready var save_button = $MarginContainer/VBoxContainer/ButtonContainer/SaveButton
+@onready var back_button = $MarginContainer/VBoxContainer/ButtonContainer/BackButton
 @onready var performance_chart = $MarginContainer/VBoxContainer/PreviewPanel/PerformanceChart
 
 # Debug panel elements - with safe access
-@onready var debug_panel = get_node_or_null("MarginContainer/VBoxContainer/DebugPanel")
-@onready var debug_toggle = get_node_or_null("MarginContainer/VBoxContainer/DebugPanel/DebugToggle")
-@onready var debug_log_display = get_node_or_null("MarginContainer/VBoxContainer/DebugPanel/DebugLog")
-@onready var clear_log_button = get_node_or_null("MarginContainer/VBoxContainer/DebugPanel/DebugControls/ClearLogButton")
-@onready var export_log_button = get_node_or_null("MarginContainer/VBoxContainer/DebugPanel/DebugControls/ExportLogButton")
+@onready var debug_panel = $MarginContainer/VBoxContainer/DebugPanel
+@onready var debug_toggle = $MarginContainer/VBoxContainer/DebugPanel/DebugToggleButton
+@onready var debug_log_display = $MarginContainer/VBoxContainer/DebugPanel/DebugLog
+@onready var clear_log_button = $MarginContainer/VBoxContainer/DebugPanel/HBoxContainer/ClearLogButton
+@onready var export_log_button = $MarginContainer/VBoxContainer/DebugPanel/HBoxContainer/ExportLogButton
 
 # State variables
 var current_left_type = "Human"
@@ -36,7 +37,6 @@ var debug_panel_visible = false
 
 func _ready():
 	print("Enhanced Main Menu Initialized")
-	
 	# Initialize with safe node checking
 	if left_algorithm_panel and right_algorithm_panel:
 		setup_algorithm_buttons()
@@ -47,10 +47,48 @@ func _ready():
 		setup_load_sections()
 	else:
 		print("WARNING: Load panels not found!")
+		
+	# Setup main buttons
+	setup_main_buttons()
+	# Setup NDS input signals
+	setup_nds_input_signals()
 	
 	update_display()
 	setup_nds_ai_section()
 	setup_debug_panel() 
+	
+func setup_main_buttons():
+	if play_button:
+		if not play_button.is_connected("pressed", _on_play_button_pressed):
+			play_button.connect("pressed", _on_play_button_pressed)
+		print("PlayButton connected")
+	else:
+		print("WARNING: PlayButton not found!")
+	
+	if save_button:
+		if not save_button.is_connected("pressed", _on_save_button_pressed):
+			save_button.connect("pressed", _on_save_button_pressed)
+		print("SaveButton connected")
+	else:
+		print("WARNING: SaveButton not found!")
+	
+	if back_button:
+		if not back_button.is_connected("pressed", _on_back_button_pressed):
+			back_button.connect("pressed", _on_back_button_pressed)
+		print("BackButton connected")
+	else:
+		print("WARNING: BackButton not found!")
+		
+func setup_nds_input_signals():
+	if nds_ai_input:
+		if not nds_ai_input.is_connected("text_changed", _on_nds_input_text_changed):
+			nds_ai_input.connect("text_changed", _on_nds_input_text_changed)
+		if not nds_ai_input.is_connected("text_submitted", _on_nds_input_text_submitted):
+			nds_ai_input.connect("text_submitted", _on_nds_input_text_submitted)
+		print("NDSInput signals connected")
+	else:
+		print("WARNING: NDSInput not found!")
+
 
 func setup_algorithm_buttons():
 	# Left side buttons
@@ -93,7 +131,8 @@ func setup_load_sections():
 		if left_load_panel:
 			var left_button = Button.new()
 			left_button.text = "%s - %d%%" % [state_name, state.get("performance", 0.5) * 100]
-			left_button.connect("pressed", _on_left_load_pressed.bind(state_name))
+			if not left_button.is_connected("pressed", _on_left_load_pressed.bind(state_name)):
+				left_button.connect("pressed", _on_left_load_pressed.bind(state_name))
 			left_button.tooltip_text = state.get("description", "No description")
 			left_load_panel.add_child(left_button)
 		
@@ -101,7 +140,8 @@ func setup_load_sections():
 		if right_load_panel:
 			var right_button = Button.new()
 			right_button.text = "%s - %d%%" % [state_name, state.get("performance", 0.5) * 100]
-			right_button.connect("pressed", _on_right_load_pressed.bind(state_name))
+			if not right_button.is_connected("pressed", _on_right_load_pressed.bind(state_name)):
+				right_button.connect("pressed", _on_right_load_pressed.bind(state_name))
 			right_button.tooltip_text = state.get("description", "No description")
 			right_load_panel.add_child(right_button)
 
@@ -116,14 +156,18 @@ func setup_nds_ai_section():
 func setup_debug_panel():
 	if debug_panel and debug_toggle and debug_log_display:
 		debug_panel.visible = false  # Hidden by default
-		debug_toggle.connect("pressed", _on_debug_toggle_pressed)
 		
-		if clear_log_button:
+		if not debug_toggle.is_connected("pressed", _on_debug_toggle_pressed):
+			debug_toggle.connect("pressed", _on_debug_toggle_pressed)
+		
+		if clear_log_button and not clear_log_button.is_connected("pressed", _on_clear_log_pressed):
 			clear_log_button.connect("pressed", _on_clear_log_pressed)
-		if export_log_button:
+			
+		if export_log_button and not export_log_button.is_connected("pressed", _on_export_log_pressed):
 			export_log_button.connect("pressed", _on_export_log_pressed)
 		
 		update_debug_log()
+		print("Debug panel setup complete")
 	else:
 		print("WARNING: Debug panel nodes not found - debug features disabled")
 
@@ -133,10 +177,14 @@ func _on_debug_toggle_pressed():
 		debug_panel.visible = debug_panel_visible
 		if debug_panel_visible:
 			update_debug_log()
+			Global.add_log_entry("Debug panel opened", 2)
+		else:
+			Global.add_log_entry("Debug panel closed", 2)
 			
 func _on_clear_log_pressed():
 	Global.clear_debug_log()
 	update_debug_log()
+	Global.add_log_entry("Debug log cleared", 1)
 	
 func _on_export_log_pressed():
 	export_debug_log()
@@ -150,6 +198,8 @@ func export_debug_log():
 		file.close()
 		Global.add_log_entry("Debug log exported to user://debug_log.txt", 1)
 		print("Debug log exported")
+	else:
+		Global.add_log_entry("Failed to export debug log", 0)
 
 func update_debug_log():
 	if debug_log_display:
@@ -163,24 +213,28 @@ func update_debug_log():
 func _on_left_algorithm_selected(algorithm):
 	current_left_type = algorithm
 	current_left_state = null  # Reset saved state when changing algorithm
+	Global.add_log_entry("Left player algorithm changed to: " + algorithm, 2)
 	update_display()
 	update_button_styles()
 
 func _on_right_algorithm_selected(algorithm):
 	current_right_type = algorithm
 	current_right_state = null  # Reset saved state when changing algorithm
+	Global.add_log_entry("Right player algorithm changed to: " + algorithm, 2)
 	update_display()
 	update_button_styles()
 
 func _on_left_load_pressed(state_name):
 	current_left_state = Global.load_ai_state(state_name)
 	current_left_type = current_left_state.get("type", current_left_type)
+	Global.add_log_entry("Left player loaded AI state: " + state_name, 1)
 	update_display()
 	update_button_styles()
 
 func _on_right_load_pressed(state_name):
 	current_right_state = Global.load_ai_state(state_name)
 	current_right_type = current_right_state.get("type", current_right_type)
+	Global.add_log_entry("Right player loaded AI state: " + state_name, 1)
 	update_display()
 	update_button_styles()
 
@@ -189,14 +243,17 @@ func update_display():
 	var left_percent = calculate_ai_percentage(current_left_type, current_left_state)
 	var right_percent = calculate_ai_percentage(current_right_type, current_right_state)
 	
-	left_percentage_value.text = "%d%%" % (left_percent * 100)
-	right_percentage_value.text = "%d%%" % (right_percent * 100)
+	if left_percentage_value:
+		left_percentage_value.text = "%d%%" % (left_percent * 100)
+	if right_percentage_value:
+		right_percentage_value.text = "%d%%" % (right_percent * 100)
 	
 	# Update NDS AI section visibility and content
 	update_nds_ai_section()
 	
 	# Update play button state
-	play_button.disabled = (current_left_type == "Human" and current_right_type == "Human")
+	if play_button:
+		play_button.disabled = (current_left_type == "Human" and current_right_type == "Human")
 	
 	# Update performance chart preview
 	update_performance_preview()
@@ -221,21 +278,24 @@ func calculate_ai_percentage(algorithm_type: String, ai_state) -> float:
 func update_nds_ai_section():
 	# Show NDS AI section only when NDS is selected
 	var nds_panel = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel
-	nds_panel.visible = (current_left_type == "NDS" or current_right_type == "NDS")
+	if nds_panel:
+		nds_panel.visible = (current_left_type == "NDS" or current_right_type == "NDS")
 	
 	if current_left_type == "NDS" or current_right_type == "NDS":
 		var params = Global.get_nds_ai_parameters()
-		nds_ai_input.text = "LR: %.2f, Explore: %.2f, Layers: %s" % [
-			params.get("learning_rate", 0.1),
-			params.get("exploration_rate", 0.3),
-			str(params.get("network_layers", []))
-		]
+		if nds_ai_input:
+			nds_ai_input.text = "LR: %.2f, Explore: %.2f, Layers: %s" % [
+				params.get("learning_rate", 0.1),
+				params.get("exploration_rate", 0.3),
+				str(params.get("network_layers", []))
+			]
 
 func update_performance_preview():
 	# Create a simple performance chart visualization
 	# This is a placeholder - you can replace with actual chart rendering
-	var chart_texture = generate_simple_chart_texture()
-	performance_chart.texture = chart_texture
+	if performance_chart:
+		var chart_texture = generate_simple_chart_texture()
+		performance_chart.texture = chart_texture
 
 func generate_simple_chart_texture() -> ImageTexture:
 	var image = Image.create(300, 150, false, Image.FORMAT_RGBA8)
@@ -252,10 +312,12 @@ func generate_simple_chart_texture() -> ImageTexture:
 
 func update_button_styles():
 	# Update left algorithm buttons
-	update_algorithm_button_style(left_algorithm_panel, current_left_type)
+	if left_algorithm_panel:
+		update_algorithm_button_style(left_algorithm_panel, current_left_type)
 	
 	# Update right algorithm buttons  
-	update_algorithm_button_style(right_algorithm_panel, current_right_type)
+	if right_algorithm_panel:
+		update_algorithm_button_style(right_algorithm_panel, current_right_type)
 
 func update_algorithm_button_style(panel: Node, selected_algorithm: String):
 	for child in panel.get_children():
@@ -285,9 +347,11 @@ func _on_play_button_pressed():
 	get_tree().change_scene_to_file("res://Levels/Simulationv2.0.tscn")
 
 func _on_save_button_pressed():
+	Global.add_log_entry("Save button pressed", 2)
 	show_save_dialog()
 
 func _on_back_button_pressed():
+	Global.add_log_entry("Back button pressed - Exiting game", 1)
 	get_tree().quit()  # Or go back to previous menu
 
 func show_save_dialog():
@@ -313,7 +377,8 @@ func show_save_dialog():
 	save_dialog.popup_centered(Vector2(300, 200))
 	
 	# Connect to handle the result
-	save_dialog.connect("custom_action", _on_save_dialog_action.bind(name_input, desc_input, save_dialog))
+	if not save_dialog.is_connected("custom_action", _on_save_dialog_action.bind(name_input, desc_input, save_dialog)):
+		save_dialog.connect("custom_action", _on_save_dialog_action.bind(name_input, desc_input, save_dialog))
 
 func _on_save_dialog_action(action: String, name_input: LineEdit, desc_input: LineEdit, dialog: AcceptDialog):
 	if action == "save" and name_input.text.strip_edges() != "":
@@ -330,21 +395,25 @@ func _on_save_dialog_action(action: String, name_input: LineEdit, desc_input: Li
 		# Refresh load sections
 		setup_load_sections()
 		
+		Global.add_log_entry("AI state saved: " + state_name, 1)
 		print("AI state saved: %s" % state_name)
 	
 	dialog.queue_free()
 
 func apply_nds_ai_parameters():
 	# Parse and apply NDS AI parameters from input
-	var input_text = nds_ai_input.text
+	var input_text = nds_ai_input.text if nds_ai_input else ""
 	# This would parse the input and set parameters in Global
 	# For now, we'll use defaults
+	Global.add_log_entry("Applying NDS AI parameters: " + input_text, 2)
 	print("Applying NDS AI parameters: ", input_text)
 
 # Handle NDS AI input changes
 func _on_nds_input_text_changed(new_text):
 	# You can add real-time validation here
+	Global.add_log_entry("NDS parameters changed: " + new_text, 3)
 	pass
 
 func _on_nds_input_text_submitted(new_text):
+	Global.add_log_entry("NDS parameters submitted: " + new_text, 2)
 	apply_nds_ai_parameters()

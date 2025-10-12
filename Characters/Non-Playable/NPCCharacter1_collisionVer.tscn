@@ -1,6 +1,5 @@
-[gd_scene load_steps=330 format=3 uid="uid://duhi6dfogwjge"]
+[gd_scene load_steps=329 format=3 uid="uid://duhi6dfogwjge"]
 
-[ext_resource type="Script" uid="uid://cgo3wd5idwkk8" path="res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd" id="1_cl1e1"]
 [ext_resource type="Texture2D" uid="uid://5xo00djk0ee8" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0000.png" id="1_v7t0u"]
 [ext_resource type="Texture2D" uid="uid://br6aa5bq27h8e" path="res://Assets/Characters/Character 1/Crouch/Crouch0000.png" id="2_cbwdj"]
 [ext_resource type="Texture2D" uid="uid://k3kjn7sdgsl3" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0001.png" id="2_xekhk"]
@@ -9495,8 +9494,12 @@ size = Vector2(73, 34)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_44tk2"]
 size = Vector2(42, 54)
 
+<<<<<<< HEAD
 [node name="PlayerCharacter1" type="CharacterBody2D" groups=["Player2_Hitboxes"]]
 script = ExtResource("1_cl1e1")
+=======
+[node name="NPCCharacter1" type="CharacterBody2D" groups=["Player2_Hitboxes"]]
+>>>>>>> 483be1a (latest commit)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-13, 0)
