@@ -1,0 +1,109 @@
+[gd_scene load_steps=2 format=3 uid="uid://eks5e1kqp2yu"]
+
+[ext_resource type="Script" uid="uid://bkws1mfwuvev" path="res://Levels/Main.gd" id="1_6ucrw"]
+
+[node name="MarginContainer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6ucrw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Start Game"
+horizontal_alignment = 1
+
+[node name="HBoxContainerPlayerSections" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainerLeftPlayer" type="VBoxContainer" parent="VBoxContainer/HBoxContainerPlayerSections"]
+layout_mode = 2
+
+[node name="LabelLeftSide" type="Label" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerLeftPlayer"]
+layout_mode = 2
+text = "Left Side"
+
+[node name="AlgorithmSelectionLeft" type="OptionButton" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerLeftPlayer"]
+layout_mode = 2
+selected = 0
+allow_reselect = true
+item_count = 4
+popup/item_0/text = "Human"
+popup/item_0/id = 0
+popup/item_1/text = "DT"
+popup/item_1/id = 1
+popup/item_2/text = "DS"
+popup/item_2/id = 2
+popup/item_3/text = "NDS"
+popup/item_3/id = 3
+
+[node name="LoadSelectionLeft" type="VBoxContainer" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerLeftPlayer"]
+layout_mode = 2
+
+[node name="PercentageDisplayLeft" type="Label" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerLeftPlayer"]
+layout_mode = 2
+
+[node name="VBoxContainerRightPlayer" type="VBoxContainer" parent="VBoxContainer/HBoxContainerPlayerSections"]
+layout_mode = 2
+
+[node name="LabelRightSide" type="Label" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerRightPlayer"]
+layout_mode = 2
+text = "Right Side"
+
+[node name="AlgorithmSelectionRight" type="OptionButton" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerRightPlayer"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "DT"
+popup/item_0/id = 0
+popup/item_1/text = "DS"
+popup/item_1/id = 1
+popup/item_2/text = "NDS"
+popup/item_2/id = 2
+
+[node name="LoadSelectionRight" type="VBoxContainer" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerRightPlayer"]
+layout_mode = 2
+
+[node name="PercentageDisplayRight" type="Label" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerRightPlayer"]
+layout_mode = 2
+
+[node name="VBoxContainerAIConfiguration" type="VBoxContainer" parent="VBoxContainer/HBoxContainerPlayerSections"]
+layout_mode = 2
+
+[node name="NDSAIParameters" type="Label" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerAIConfiguration"]
+layout_mode = 2
+text = "NDS AI Parameters"
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerAIConfiguration"]
+layout_mode = 2
+placeholder_text = "Custom Inputs"
+
+[node name="ButtonAdvanceSettings" type="Button" parent="VBoxContainer/HBoxContainerPlayerSections/VBoxContainerAIConfiguration"]
+layout_mode = 2
+text = "Advance Settings"
+
+[node name="HBoxContainerNavButtons" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="VBoxContainer/HBoxContainerNavButtons"]
+layout_mode = 2
+text = "Back"
+
+[node name="NextButton" type="Button" parent="VBoxContainer/HBoxContainerNavButtons"]
+layout_mode = 2
+text = "Next"
+
+[node name="SaveButton" type="Button" parent="VBoxContainer/HBoxContainerNavButtons"]
+layout_mode = 2
+text = "Save"
+
+[node name="PreviewSection" type="Control" parent="VBoxContainer"]
+layout_mode = 2

@@ -1,0 +1,110 @@
+[gd_scene load_steps=8 format=3 uid="uid://dm3mo1fe15gbc"]
+
+[ext_resource type="PackedScene" uid="uid://cgbdlya664tp0" path="res://Characters/Playable/PlayerCharacter1.tscn" id="1_1ubbt"]
+[ext_resource type="Script" uid="uid://c6uggrp1fky0p" path="res://Scripts/Levels/SimulationV2.gd" id="1_rw36q"]
+[ext_resource type="PackedScene" uid="uid://cinrsvo42c74m" path="res://Characters/Non-Playable/NPCCharacter1.tscn" id="2_0smn3"]
+[ext_resource type="Script" uid="uid://dxjm4qbccwrfq" path="res://Scripts/Controllers/NPCCharacter1/NPCCharacter1_Controller.gd" id="4_8ht51"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0smn3"]
+size = Vector2(38, 846.75)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rw36q"]
+size = Vector2(20, 868)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8ht51"]
+size = Vector2(2093, 20)
+
+[node name="Simulation_Level" type="Node2D"]
+script = ExtResource("1_rw36q")
+
+[node name="Borders" type="Node2D" parent="."]
+
+[node name="Right_Border" type="StaticBody2D" parent="Borders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/Right_Border"]
+position = Vector2(2111, 430.375)
+shape = SubResource("RectangleShape2D_0smn3")
+
+[node name="Left_Border" type="StaticBody2D" parent="Borders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/Left_Border"]
+position = Vector2(-13, 425)
+shape = SubResource("RectangleShape2D_rw36q")
+
+[node name="Ground_Border" type="StaticBody2D" parent="Borders"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/Ground_Border"]
+position = Vector2(1044.5, 846)
+shape = SubResource("RectangleShape2D_8ht51")
+
+[node name="PlayerCharacter1" parent="." instance=ExtResource("1_1ubbt")]
+position = Vector2(275, 301)
+
+[node name="NPCCharacter1" parent="." instance=ExtResource("2_0smn3")]
+position = Vector2(1467, 334)
+script = ExtResource("4_8ht51")
+
+[node name="Camera_View" type="Camera2D" parent="."]
+position = Vector2(1045, 186)
+zoom = Vector2(0.55, 0.5)
+
+[node name="PlayerDetailsUI" type="Node2D" parent="."]
+
+[node name="Player1Details" type="Label" parent="PlayerDetailsUI"]
+offset_left = 1.0
+offset_top = -377.0
+offset_right = 411.0
+offset_bottom = -137.0
+theme_override_font_sizes/font_size = 20
+text = "
+Upper Hits Taken:
+Lower Hits Taken: 
+Upper Attacks Hit:
+Lower Attacks Hit: 
+Standing Defense:
+Crouching Defense: "
+
+[node name="Player2Details" type="Label" parent="PlayerDetailsUI"]
+offset_left = 1720.0
+offset_top = -386.0
+offset_right = 2090.0
+offset_bottom = -172.0
+theme_override_font_sizes/font_size = 20
+text = "
+Upper Hits Taken:
+Lower Hits Taken: 
+Upper Attacks Hit:
+Lower Attacks Hit: 
+Standing Defense:
+Crouching Defense: "
+
+[node name="MainUI" type="Node2D" parent="."]
+
+[node name="Player1_HPBar" type="ProgressBar" parent="MainUI"]
+offset_left = 3.0
+offset_top = -456.0
+offset_right = 591.0
+offset_bottom = -378.0
+
+[node name="Player2_HPBar" type="ProgressBar" parent="MainUI"]
+offset_left = 1503.0
+offset_top = -460.0
+offset_right = 2092.0
+offset_bottom = -388.0
+
+[node name="Timer" type="Timer" parent="MainUI"]
+process_callback = 0
+wait_time = 4.0
+autostart = true
+
+[node name="TimerLabel" type="Label" parent="MainUI/Timer"]
+offset_left = 950.0
+offset_top = -461.0
+offset_right = 1133.0
+offset_bottom = -381.0
+theme_override_font_sizes/font_size = 60
+text = "99"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="timeout" from="MainUI/Timer" to="." method="_on_timer_timeout"]
