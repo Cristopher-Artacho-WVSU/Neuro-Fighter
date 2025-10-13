@@ -1,6 +1,5 @@
 extends CharacterBody2D
 
-<<<<<<< HEAD
 #ADDONS
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -13,7 +12,7 @@ var jump_multiplier = 1.6
 var hitstop_id: int = 0
 var is_in_global_hitstop: bool = false
 var is_recently_hit: bool = false
-=======
+
 # ===== CONSTANTS AND CONFIGURATION =====
 var DEFENSE_TRIGGER_TIME = 1.0
 var DASH_TIME = 0.5
@@ -28,7 +27,6 @@ var maxPenalty = 0.4
 var maxReward = 0.4
 var minWeight = 0.1
 var maxWeight = 1.0
->>>>>>> 483be1a (latest commit)
 
 # ===== NODE REFERENCES =====
 @onready var animation = $AnimationPlayer
@@ -37,21 +35,12 @@ var maxWeight = 1.0
 @onready var enemyAnimation = enemy.get_node("AnimationPlayer")
 @onready var enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody")
 @onready var enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody")
-<<<<<<< HEAD
 @onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
 
-#VALUE VARIABLES
-#DASHING MOVEMENT
-var dash_speed = 300
-var dash_time = 0.5
-var dash_timer = 0.0
-var dash_direction = 0
-=======
 @onready var playerDetails = get_parent().get_node("PlayerDetailsUI/Player2Details")
 @onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
 @onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
 @onready var generateScript_timer = Timer.new()
->>>>>>> 483be1a (latest commit)
 
 #DEFENSE 
 var last_input_time = 0.0
@@ -77,9 +66,10 @@ var lower_attacks_blocked: int = 0
 var is_dashing = false
 var is_jumping = false
 var is_crouching = false
+var dash_speed = 300
+var dash_time = 0.5
 var dash_timer = 0.0
 var dash_direction = 0
-var prev_distance_to_enemy = 0.0
 
 # ===== COMBAT STATE =====
 var is_attacking = false
@@ -92,14 +82,10 @@ var idle_timer = 0.0
 var backward_timer = 0.0
 
 var log_file_path = "res://training.txt"
-
-<<<<<<< HEAD
 #CALCULATING THE ACTION 
 var last_action: String
 
-=======
 # ===== RULE SYSTEM =====
->>>>>>> 483be1a (latest commit)
 var rules = [
 	{
 		"ruleID": 1, "prioritization": 1,
@@ -180,11 +166,9 @@ var rules = [
 
 # ===== INITIALIZATION =====
 func _ready():
-<<<<<<< HEAD
 	updateDetails()
 	if enemy and enemy.has_node("AnimationPlayer"):
 		print("AnimationPlayer of Enemy detected")
-=======
 	initialize_ai_state_manager()
 	initialize_character_state()
 	setup_connections()
@@ -204,7 +188,6 @@ func initialize_character_state():
 	prev_distance_to_enemy = abs(enemy.position.x - position.x)
 	
 	# Reset all states
->>>>>>> 483be1a (latest commit)
 	is_dashing = false
 	is_jumping = false
 	is_crouching = false
@@ -222,9 +205,7 @@ func initialize_character_state():
 		animation.connect("animation_finished", Callable(self, "_on_attack_finished"))
 	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
 
-func setup_connections():
-	DamagedSystem()
-	
+func setup_connections():	
 	if not animation.is_connected("animation_finished", _on_animation_finished):
 		animation.connect("animation_finished", _on_animation_finished)
 
@@ -244,11 +225,9 @@ func _physics_process(delta):
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
 		evaluate_and_execute(rules)
 	
-<<<<<<< HEAD
 	DamagedSystem(delta)
 	debug_states()
-=======
->>>>>>> 483be1a (latest commit)
+	
 	move_and_slide()
 
 func apply_gravity(delta):
@@ -410,7 +389,6 @@ func _execute_single_action(action):
 	
 	match action:
 		"idle":
-<<<<<<< HEAD
 			if is_on_floor():
 				if not is_jumping:
 					velocity.x = 0
@@ -549,81 +527,6 @@ func debug_states():
 	#print("is_hurt state:", is_hurt)
 	#print("is_is_dashing: ", is_dashing)
 	pass
-	
-func update_facing_direction():
-	if not is_instance_valid(enemy):
-		print("Enemy not found")
-		return
-		
-	if enemy.position.x > position.x:
-		characterSprite.flip_h = false  # Face right
-		for hitbox in hitboxGroup:
-			hitbox.scale.x = 1  # Or flip_h if it's a Sprite/AnimatedSprite2D
-		for hurtbox in hurtboxGroup:
-			hurtbox.scale.x = 1
-	else:
-		characterSprite.flip_h = true   # Face left
-		for hitbox in hitboxGroup:
-			hitbox.scale.x = -1
-		for hurtbox in hurtboxGroup:
-			hurtbox.scale.x = -1
-
-#GET THE OPERATOR FROM 'op', AND COMPARE THE REQUIRED VALUES TO THE CURRENT 
-func _compare_numeric(op: String, current_value: float, rule_value: float) -> bool:
-	match op:
-		">=":
-			return current_value >= rule_value
-		"<=":
-			return current_value <= rule_value
-		">":
-			return current_value > rule_value
-		"<":
-			return current_value < rule_value
-		"==":
-			return current_value == rule_value
-		_:
-			print("Unknown comparison operator: ", op)
-			return false
-
-
-#FOR MOVEMENT
-func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
-	if is_attacking || is_jumping || is_defending || is_hurt:
-		return
-		
-	var curr_distance_to_enemy = abs(enemy.position.x - position.x)
-	
-	if not is_dashing:
-		if ai_move_direction == 1:
-			is_dashing = true
-			dash_direction = 1
-			dash_timer = dash_time
-		elif ai_move_direction == -1:
-			is_dashing = true
-			dash_direction = -1
-			dash_timer = dash_time
-		
-	if is_dashing:
-		velocity.x = dash_direction * dash_speed
-		dash_timer -= delta
-		if dash_timer <= 0:
-			is_dashing = false
-			velocity.x = 0
-
-	
-	# Movement animations
-	if velocity.x != 0:
-		if curr_distance_to_enemy < prev_distance_to_enemy:
-			animation.play("move_forward")
-		elif curr_distance_to_enemy > prev_distance_to_enemy:
-			animation.play("move_backward")
-	
-	prev_distance_to_enemy = curr_distance_to_enemy
-#
-func _sort_by_priority_desc(a_index, b_index):
-	var a_priority = rules[a_index]["prioritization"]
-	var b_priority = rules[b_index]["prioritization"]
-	return b_priority - a_priority
 
 #PASS ANIM NAME TO THE _on_animation_finished FUNCTION
 func _connect_animation_finished():
@@ -647,7 +550,6 @@ func _on_animation_finished(anim_name: String):
 			is_dashing = false
 		"move_backward":
 			is_dashing = false
-=======
 			velocity.x = 0
 			animation.play("idle")
 		"light_punch":
@@ -686,8 +588,8 @@ func _on_animation_finished(anim_name: String):
 			is_attacking = true
 			velocity.x = 0
 		_:
-			print("Unknown action: %s" % str(action))
->>>>>>> 483be1a (latest commit)
+			#print("Unknown action: %s" % str(action))
+			pass
 
 # ===== SCRIPT GENERATION AND LEARNING =====
 func generate_script():
@@ -801,8 +703,7 @@ func _reset_rule_usage():
 	lower_attacks_taken = 0
 	upper_attacks_landed = 0
 	lower_attacks_landed = 0
-
-<<<<<<< HEAD
+	
 func DamagedSystem(delta):
 #	DEFENSIVE MECHANISM
 	if last_action!= "idle":
@@ -816,15 +717,6 @@ func DamagedSystem(delta):
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
 			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
-=======
-# ===== COMBAT AND DAMAGE SYSTEM =====
-func DamagedSystem():
-	if $Hurtbox_LowerBody and not $Hurtbox_LowerBody.is_connected("area_entered", _on_hurtbox_lower_body_area_entered):
-		$Hurtbox_LowerBody.connect("area_entered", _on_hurtbox_lower_body_area_entered)
->>>>>>> 483be1a (latest commit)
-	
-	if $Hurtbox_UpperBody and not $Hurtbox_UpperBody.is_connected("area_entered", _on_hurtbox_upper_body_area_entered):
-		$Hurtbox_UpperBody.connect("area_entered", _on_hurtbox_upper_body_area_entered)
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
@@ -843,48 +735,23 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			is_hurt = true
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 			print("Player 2 Upper body hit taken")
 			upper_attacks_taken += 1
-=======
-=======
->>>>>>> e6c2bc7 (save before rebase)
 		print("Player 2 Upper body hit taken")
-=======
-=======
->>>>>>> 90a5a81 (latest commit)
+
 		print("Player 2 Lower body hit taken")
 		upper_attacks_taken += 1
 		updateDetails()
->>>>>>> 483be1a (latest commit)
 		_connect_hurt_animation_finished()
 		# Reset hit immunity after short real-time delay
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
-<<<<<<< HEAD
-<<<<<<< HEAD
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
+		
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
-=======
->>>>>>> 483be1a (latest commit)
-=======
-=======
-
-func _on_hurtbox_lower_body_area_entered(area: Area2D):
-	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
->>>>>>> c3d067e (save before rebase)
->>>>>>> e6c2bc7 (save before rebase)
-=======
-func _on_hurtbox_lower_body_area_entered(area: Area2D):
-	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
->>>>>>> 90a5a81 (latest commit)
 	if area.is_in_group("Player1_Hitboxes"):
 		is_recently_hit = true  # Mark as hit immediately
 		if is_defending:
@@ -902,25 +769,10 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			print("Player 2 Lower body hit taken")
 			lower_attacks_taken += 1
 		_connect_hurt_animation_finished()
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
 
-=======
-	
->>>>>>> 483be1a (latest commit)
-=======
-	
-=======
-
->>>>>>> c3d067e (save before rebase)
->>>>>>> e6c2bc7 (save before rebase)
-=======
-
->>>>>>> 90a5a81 (latest commit)
 func _connect_hurt_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
@@ -931,7 +783,6 @@ func apply_damage(amount):
 			
 func _on_hurt_finished(anim_name):
 #	IF is_defending, REDUCE THE DAMAGE BY 30%
-<<<<<<< HEAD
 	#if is_defending and anim_name == "standing_block":
 		#if get_parent().has_method("apply_damage_to_player1"):
 			#get_parent().apply_damage_to_player2(7)
@@ -941,14 +792,12 @@ func _on_hurt_finished(anim_name):
 	if anim_name == "light_hurt" or anim_name == "heavy_hurt":
 		if get_parent().has_method("apply_damage_to_player1"):
 			get_parent().apply_damage_to_player2(10)
-=======
 	if is_defending and anim_name == "standing_block":
 		apply_damage(7)
 	else:
 #		IF DS IS NOT DEFENDING WHENT THE DAMAGE RECEIVED
 		if anim_name == "light_hurt" or anim_name == "heavy_hurt":
 			apply_damage(10)
->>>>>>> 90a5a81 (latest commit)
 	is_hurt = false
 	is_attacking = false
 	is_defending = false
@@ -960,7 +809,6 @@ func updateDetails():
 		lower_attacks_taken, upper_attacks_taken, 
 		lower_attacks_landed, upper_attacks_landed, upper_attacks_blocked, lower_attacks_blocked]
 
-<<<<<<< HEAD
 func applyGravity(delta):
 	if not is_on_floor():
 		# If moving up (jumping), apply gravity faster than default
@@ -976,27 +824,9 @@ func applyGravity(delta):
 			velocity.y = 0
 			velocity.x = 0
 		if is_jumping:
-=======
+			pass
 func KO():
 	animation.play("knocked_down")
-
-# ===== ANIMATION HANDLING =====
-func _on_animation_finished(anim_name: String):
-	match anim_name:
-		"light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick":
-			is_attacking = false
-			#check_attack_hit()
-		"standing_block":
-			is_defending = false
-		"hurt", "crouch_hurt":
-			is_hurt = false
-		"jump":
->>>>>>> 483be1a (latest commit)
-			is_jumping = false
-		"crouch":
-			is_crouching = false
-		"move_forward", "move_backward":
-			is_dashing = false
 
 func check_attack_hit():
 	for hitbox in get_tree().get_nodes_in_group("Player2_Hitboxes"):

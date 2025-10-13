@@ -13,13 +13,8 @@ script = ExtResource("1_6ucrw")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
-<<<<<<< HEAD
-offset_right = 657.0
-offset_bottom = 301.0
-=======
 offset_right = 1152.0
 offset_bottom = 648.0
->>>>>>> 58b1cf1 (scaffold essential features)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2

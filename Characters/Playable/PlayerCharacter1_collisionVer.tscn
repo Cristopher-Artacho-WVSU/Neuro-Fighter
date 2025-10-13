@@ -9494,12 +9494,7 @@ size = Vector2(73, 34)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_44tk2"]
 size = Vector2(42, 54)
 
-<<<<<<< HEAD
 [node name="NPCCharacter1" type="CharacterBody2D" groups=["Player1_Hitboxes"]]
-script = ExtResource("1_xekhk")
-=======
-[node name="PlayerCharacter1" type="CharacterBody2D" groups=["Player1_Hitboxes"]]
->>>>>>> 483be1a (latest commit)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-13, 0)

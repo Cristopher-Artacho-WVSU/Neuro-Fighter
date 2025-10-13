@@ -32,14 +32,11 @@ var is_attacking = false
 var is_defending = false
 var is_hurt = false
 
-<<<<<<< HEAD
 #HITSTOP AND HITSTUN
-=======
 # ===== DEFENSE STATE =====
 var last_input_time = 0.0
 
 # ===== HITSTOP SYSTEM =====
->>>>>>> 483be1a (latest commit)
 var hitstop_id: int = 0
 var is_in_global_hitstop: bool = false
 var is_recently_hit: bool = false
@@ -213,7 +210,6 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group("Player2_Hitboxes"):
-<<<<<<< HEAD
 		is_recently_hit = true  # Mark as hit immediately
 		#print("Upper attack received")
 		if is_defending:
@@ -228,7 +224,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-			enemy.upper_attacks_landed +=1
+			#enemy.upper_attacks_landed +=1
 		_connect_hurt_animation_finished()
 		
 		await get_tree().create_timer(0.2, true).timeout
@@ -252,18 +248,12 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-			enemy.lower_attacks_landed +=1
+			#enemy.lower_attacks_landed +=1
 		_connect_hurt_animation_finished()
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
-=======
 		handle_damage("upper")
-
-func _on_hurtbox_lower_body_area_entered(area: Area2D):
-	if area.is_in_group("Player2_Hitboxes"):
-		handle_damage("lower")
->>>>>>> 483be1a (latest commit)
 
 func handle_damage(body_part: String):
 	if is_defending:
