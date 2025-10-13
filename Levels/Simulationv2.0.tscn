@@ -103,6 +103,6 @@ vertical_alignment = 1
 position = Vector2(594, 387)
 
 [node name="NPCCharacter1" parent="." instance=ExtResource("3_8ht51")]
-position = Vector2(1513, 304)
+position = Vector2(1495, 354)
 
 [connection signal="timeout" from="MainUI/Timer" to="." method="_on_timer_timeout"]

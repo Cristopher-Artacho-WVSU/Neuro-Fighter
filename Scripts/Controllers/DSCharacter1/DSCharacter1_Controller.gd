@@ -2,10 +2,16 @@ extends CharacterBody2D
 
 #ADDONS
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
-var jump_speed = 1000  # example, tune as needed
-var fall_multiplier = 3.0
-var jump_multiplier = 1.2
 
+#JUMP
+var jump_speed = 3000  # example, tune as needed
+var fall_multiplier = 5.0
+var jump_multiplier = 1.6
+
+#HITSTOPS
+var hitstop_id: int = 0
+var is_in_global_hitstop: bool = false
+var is_recently_hit: bool = false
 
 #ONREADY VARIABLES FOR THIS CHARACTER
 @onready var animation = $AnimationPlayer
@@ -25,7 +31,7 @@ var jump_multiplier = 1.2
 #VALUE VARIABLES
 #DASHING MOVEMENT
 var dash_speed = 300
-var dash_time = 0.5  
+var dash_time = 0.5
 var dash_timer = 0.0
 var dash_direction = 0
 
@@ -69,6 +75,9 @@ var maxWeight = 1.0
 var log_file_path = "res://training.txt"
 var cycle_used_rules = []
 
+#CALCULATING THE ACTION 
+var last_action: String
+
 var rules = [
 	{
 		"ruleID": 1, "prioritization": 1,
@@ -96,14 +105,14 @@ var rules = [
 		"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
-		"ruleID": 6, "prioritization": 21,
-		"conditions": { "enemy_anim": "light_kick", "distance": { "op": ">=", "value": 315 }, "upper_attacks_taken": { "op": ">=", "value": 1 } },
-		"enemy_action": ["standing_defense"], "weight": 0.5, "wasUsed": false, "inScript": false
+		"ruleID": 6, "prioritization": 41,
+		"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
-		"ruleID": 7, "prioritization": 22,
-		"conditions": { "enemy_anim": "light_punch", "distance": { "op": ">=", "value": 325 }, "upper_attacks_taken": { "op": ">=", "value": 1 } },
-		"enemy_action": ["standing_defense"], "weight": 0.5, "wasUsed": false, "inScript": false
+		"ruleID": 7, "prioritization": 42,
+		"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
 		"ruleID": 8, "prioritization": 2,
@@ -112,7 +121,7 @@ var rules = [
 	},
 	{
 		"ruleID": 9, "prioritization": 23,
-		"conditions": {  "enemy_anim": "light_kick", "distance": { "op": "<=", "value": 315 } },
+		"conditions": {  "enemy_anim": "light_kick", "distance": { "op": "<=", "value": 345 },  "upper_attacks_taken": { "op": ">=", "value": 1 } },
 		"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
@@ -126,13 +135,29 @@ var rules = [
 		"enemy_action": ["idle"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
-		"ruleID": 13, "prioritization": 40,
+		"ruleID": 13, "prioritization": 51,
 		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
 		"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 14, "prioritization": 42,
+		"conditions": { "distance": { "op": ">=", "value": 315 }, "lower_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["crouch_heavyPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 15, "prioritization": 52,
+		"conditions": { "distance": { "op": "<=", "value": 350 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 16, "prioritization": 53,
+		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 ]
 
 func _ready():
+	updateDetails()
 	if enemy and enemy.has_node("AnimationPlayer"):
 		print("AnimationPlayer of Enemy detected")
 	is_dashing = false
@@ -166,14 +191,15 @@ func _ready():
 	generateScript_timer.connect("timeout", Callable(self, "_on_generateScript_timer_timeout"))
 
 func _physics_process(delta):
+	updateDetails()
 	update_facing_direction()
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
 		evaluate_and_execute(rules)
 	#
 	applyGravity(delta)
 	
-	DamagedSystem()
-	#debug_states()
+	DamagedSystem(delta)
+	debug_states()
 	move_and_slide()
 
 
@@ -193,9 +219,15 @@ func evaluate_and_execute(rules: Array):
 				match_all = false
 				continue
 				
-		if match_all and "upper_attacks_taken" in conditions:
-			var cond = conditions["upper_attacks_taken"]
-			if not _compare_numeric(cond["op"], upper_attacks_taken, cond["value"]):
+		if match_all and "upper_attacks_landed" in conditions:
+			var cond = conditions["upper_attacks_landed"]
+			if not _compare_numeric(cond["op"], upper_attacks_landed, cond["value"]):
+				match_all = false
+				continue
+				
+		if match_all and "lower_attacks_landed" in conditions:
+			var cond = conditions["lower_attacks_landed"]
+			if not _compare_numeric(cond["op"], lower_attacks_landed, cond["value"]):
 				match_all = false
 				continue
 				
@@ -257,72 +289,143 @@ func _execute_single_action(action):
 		action = action.get("action", "")
 	match action:
 		"idle":
-			velocity.x = 0
-			animation.play("idle")
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					velocity.x = 0
+					animation.play("idle")
+					#_connect_animation_finished()
 		"light_punch":
-			animation.play("light_punch")
-			is_attacking = true
-			velocity.x = 0
-			velocity.y = 0
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("light_punch")
+					is_attacking = true
+					velocity.x = 0
+					velocity.y = 0
+					#_connect_animation_finished()
 		"light_kick":
-			animation.play("light_kick")
-			is_attacking = true
-			velocity.x = 0
-			velocity.y = 0
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("light_kick")
+					is_attacking = true
+					velocity.x = 0
+					velocity.y = 0
+					_connect_animation_finished()
 		"standing_defense":
-			animation.play("standing_block")
-			is_defending = true
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("standing_block")
+					is_defending = true
+					_connect_animation_finished()
 		"dash_forward":
-			var direction = 1 if enemy.global_position.x > global_position.x else -1
-			MovementSystem(direction)
-			animation.play("move_forward")
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					var direction = 1 if enemy.global_position.x > global_position.x else -1
+					MovementSystem(direction)
+					animation.play("move_forward")
+					#_connect_animation_finished()
 		"dash_backward":
-			var direction = -1 if enemy.global_position.x > global_position.x else 1
-			MovementSystem(direction)
-			animation.play("move_backward")
-			#print("dash_backward")
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					var direction = -1 if enemy.global_position.x > global_position.x else 1
+					MovementSystem(direction)
+					animation.play("move_backward")
+					#print("dash_backward")
+					#_connect_animation_finished()
 		"jump":
 			if is_on_floor():
-				velocity.y = -1200.0
-				is_jumping = true
-				animation.play("jump")
+				if not is_jumping:
+					animation.play("jump")
+					print("Jumped")
+					velocity.y = -1200.0
+					is_jumping = true
+					_connect_animation_finished()
+				
+		"jump_forward":
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("jump_forward")
+					print("Jumped")
+					var direction = 1 if enemy.global_position.x > global_position.x else -1
+					MovementSystem(direction)
+					velocity.y = -1200.0
+					is_jumping = true
+					_connect_animation_finished()
+				
+		"jump_backward":
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("jump_backward")
+					print("Jumped")
+					var direction = -1 if enemy.global_position.x > global_position.x else 1
+					MovementSystem(direction)
+					velocity.y = -1200.0
+					is_jumping = true
+					_connect_animation_finished()
+					
 		"crouch":
-			animation.play("crouch")
-			velocity.x = 0
-			velocity.y = 0
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("crouch")
+					velocity.x = 0
+					velocity.y = 0
+					_connect_animation_finished()
 		"crouch_lightKick":
-			animation.play("crouch_lightKick")
-			is_attacking = true
-			velocity.x = 0
-			velocity.y = 0
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("crouch_lightKick")
+					is_attacking = true
+					velocity.x = 0
+					velocity.y = 0
+					_connect_animation_finished()
 		"crouch_lightPunch":
-			animation.play("crouch_lightPunch")
-			is_attacking = true
-			velocity.x = 0
-			velocity.y = 0
-			#_connect_animation_finished()
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("crouch_lightPunch")
+					is_attacking = true
+					velocity.x = 0
+					velocity.y = 0
+					_connect_animation_finished()
+					
+		"heavy_punch":
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("heavy_punch")
+					is_attacking = true
+					velocity.x = 0
+					velocity.y = 0
+					#_connect_animation_finished()
+		"heavy_kick":
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("heavy_kick")
+					is_attacking = true
+					velocity.x = 0
+					velocity.y = 0
+					_connect_animation_finished()
+					
+		"crouch_lightPunch":
+			if is_on_floor():
+				if not is_jumping:
+					animation.play("crouch_heavyPunch")
+					is_attacking = true
+					velocity.x = 0
+					velocity.y = 0
+					_connect_animation_finished()
 		_:
 			print("Unknown action: %s" % str(action))
-	#print(action)
+	last_action = action
+	#print(last_action)
 	#is_dashing = false
 	_connect_animation_finished()
 
 func debug_states():
-	print("is_dashing: ", is_dashing)
-	print("is_jumping state: ", is_jumping)
-	print("is_crouching: ", is_crouching)
-	print("is_attacking state:", is_attacking)
+	#print("is_dashing: ", is_dashing)
+	#print("is_jumping state: ", is_jumping)
+	#print("is_crouching: ", is_crouching)
+	#print("is_attacking state:", is_attacking)
 	print("is_defending: ", is_defending)
-	print("is_hurt state:", is_hurt)
-	print("is_is_dashing: ", is_dashing)
+	#print("is_hurt state:", is_hurt)
+	#print("is_is_dashing: ", is_dashing)
 	pass
 	
 func update_facing_direction():
@@ -591,7 +694,16 @@ func KO():
 	animation.play("knocked_down")
 	_connect_hurt_animation_finished()
 
-func DamagedSystem():
+func DamagedSystem(delta):
+#	DEFENSIVE MECHANISM
+	if last_action!= "idle":
+		last_input_time = 0.0
+		is_defending = false
+	else:
+		last_input_time += delta
+		if last_input_time >= defense_delay:
+			is_defending = true
+			
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
 			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
@@ -601,34 +713,54 @@ func DamagedSystem():
 			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
+	if is_recently_hit:
+		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group("Player1_Hitboxes"):
+		is_recently_hit = true  # Mark as hit immediately
 		if is_defending:
 			velocity.x = 0
+			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("standing_block") 
 			upper_attacks_blocked += 1
+			if get_parent().has_method("apply_damage_to_player1"):
+				get_parent().apply_damage_to_player2(7)
+			print(" Upper Damaged From Blocking")
 		else:
 			is_hurt = true
+			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-		print("Player 2 Lower body hit taken")
-		upper_attacks_taken += 1
-		updateDetails()
+			print("Player 2 Upper body hit taken")
+			upper_attacks_taken += 1
 		_connect_hurt_animation_finished()
+		# Reset hit immunity after short real-time delay
+		await get_tree().create_timer(0.2, true).timeout
+		is_recently_hit = false
 
 
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
+	if is_recently_hit:
+		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group("Player1_Hitboxes"):
+		is_recently_hit = true  # Mark as hit immediately
 		if is_defending:
 			velocity.x = 0
+			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("standing_block")
+			if get_parent().has_method("apply_damage_to_player1"):
+				get_parent().apply_damage_to_player2(7)
 			lower_attacks_blocked += 1
+			print("Lower Damaged From Blocking")
 		else:
 			is_hurt = true
+			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-		print("Player 2 Lower body hit taken")
-		lower_attacks_taken += 1
-		updateDetails()
+			print("Player 2 Lower body hit taken")
+			lower_attacks_taken += 1
 		_connect_hurt_animation_finished()
+		
+		await get_tree().create_timer(0.2, true).timeout
+		is_recently_hit = false
 
 func _connect_hurt_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
@@ -637,18 +769,20 @@ func _connect_hurt_animation_finished():
 	
 func _on_hurt_finished(anim_name):
 #	IF is_defending, REDUCE THE DAMAGE BY 30%
-	if is_defending and anim_name == "standing_block":
-		if get_parent().has_method("apply_damage_to_player1"):
-			get_parent().apply_damage_to_player2(7)
-	else:
+	#if is_defending and anim_name == "standing_block":
+		#if get_parent().has_method("apply_damage_to_player1"):
+			#get_parent().apply_damage_to_player2(7)
+			#print("Damaged From Blocking")
+	#else:
 #		IF DS IS NOT DEFENDING WHENT THE DAMAGE RECEIVED
-		if anim_name == "light_hurt" or anim_name == "heavy_hurt":
-			if get_parent().has_method("apply_damage_to_player1"):
-				get_parent().apply_damage_to_player2(10)
+	if anim_name == "light_hurt" or anim_name == "heavy_hurt":
+		if get_parent().has_method("apply_damage_to_player1"):
+			get_parent().apply_damage_to_player2(10)
 	is_hurt = false
 	is_attacking = false
 	is_defending = false
 	is_dashing = false
+	animation.play("idle")
 
 func updateDetails():
 	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d \nUpper Attacks Blocked: %d \nLower Attacks Landed: %d" % [
@@ -663,7 +797,6 @@ func applyGravity(delta):
 		else:
 			# If moving down (falling), apply even stronger gravity
 			velocity.y += gravity * fall_multiplier * delta
-
 		if not is_jumping:
 			is_jumping = true
 	else:
@@ -677,3 +810,31 @@ func applyGravity(delta):
 func _on_generateScript_timer_timeout():
 	print("Timeout")
 	generate_script()
+	
+func displacement_small():
+	velocity.x = 100
+	
+func displacement_verySmall():
+	velocity.x = 50
+
+func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> void:
+	hitstop_id += 1
+	var my_id = hitstop_id
+
+	# Apply immediately
+	if not is_in_global_hitstop:
+		Engine.time_scale = slowdown_factor
+		is_in_global_hitstop = true
+
+	# Manual real-time delay (does not wait for next frame)
+	var end_time = Time.get_unix_time_from_system() + hitstop_duration
+	while Time.get_unix_time_from_system() < end_time:
+		await get_tree().process_frame
+
+	# Prevent older hitstops from overwriting new ones
+	if my_id != hitstop_id:
+		return
+
+	# Restore immediately
+	Engine.time_scale = 1.0
+	is_in_global_hitstop = false

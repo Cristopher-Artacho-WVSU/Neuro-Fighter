@@ -36,9 +36,10 @@ var is_attacking = false
 var is_defending = false
 var is_hurt = false
 
-#TIMERS
+#HITSTOP AND HITSTUN
 var hitstop_id: int = 0
 var is_in_global_hitstop: bool = false
+var is_recently_hit: bool = false
 
 #INITIATE VARIABLES, SETUP WHEN THE GAME STARTS
 func _ready():
@@ -217,8 +218,11 @@ func DamagedSystem(delta):
 			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
+	if is_recently_hit:
+		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group("Player2_Hitboxes"):
-		print("Upper attack received")
+		is_recently_hit = true  # Mark as hit immediately
+		#print("Upper attack received")
 		if is_defending:
 			print("Player 1 blocked the attack (upper body)")
 			velocity.x = 0
@@ -226,16 +230,24 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			animation.play("standing_block")  # play block only on hit
 			
 		else:
-			print("Player 1 Lower body hit taken")
+			print("Player 1 Upper body hit taken")
 			is_hurt = true
 			velocity.x = 0
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			enemy.upper_attacks_landed +=1
 		_connect_hurt_animation_finished()
+		
+		await get_tree().create_timer(0.2, true).timeout
+		is_recently_hit = false
 
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
-	print("Upper attack received")
+	#print("Upper attack received")
+	if is_recently_hit:
+		return  # Ignore duplicate hits during hitstop/hitstun
+	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group("Player2_Hitboxes"):
+		is_recently_hit = true  # Mark as hit immediately
 		if is_defending:
 			print("Player 1 blocked the attack (lower body)")
 			velocity.x = 0
@@ -247,7 +259,11 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			enemy.lower_attacks_landed +=1
 		_connect_hurt_animation_finished()
+		
+		await get_tree().create_timer(0.2, true).timeout
+		is_recently_hit = false
 
 
 func _connect_hurt_animation_finished():
