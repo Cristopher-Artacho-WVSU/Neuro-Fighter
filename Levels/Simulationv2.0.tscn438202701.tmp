@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://btnwujqn158ui"]
+[gd_scene load_steps=7 format=3 uid="uid://dm3mo1fe15gbc"]
 
 [ext_resource type="Script" uid="uid://c6uggrp1fky0p" path="res://Scripts/Levels/SimulationV2.gd" id="1_rw36q"]
 [ext_resource type="PackedScene" uid="uid://duhi6dfogwjge" path="res://Characters/Non-Playable/NPCCharacter1_collisionVer.tscn" id="3_8ht51"]

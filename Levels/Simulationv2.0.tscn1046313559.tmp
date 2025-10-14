@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://btnwujqn158ui"]
+[gd_scene load_steps=8 format=3 uid="uid://dm3mo1fe15gbc"]
 
+[ext_resource type="PackedScene" uid="uid://cgbdlya664tp0" path="res://Characters/Playable/PlayerCharacter1.tscn" id="1_1ubbt"]
 [ext_resource type="Script" uid="uid://c6uggrp1fky0p" path="res://Scripts/Levels/SimulationV2.gd" id="1_rw36q"]
-[ext_resource type="PackedScene" uid="uid://duhi6dfogwjge" path="res://Characters/Non-Playable/NPCCharacter1_collisionVer.tscn" id="3_8ht51"]
-[ext_resource type="PackedScene" uid="uid://dlstoxbgip6b2" path="res://Characters/Playable/PlayerCharacter1_collisionVer.tscn" id="3_rw36q"]
+[ext_resource type="PackedScene" uid="uid://cinrsvo42c74m" path="res://Characters/Non-Playable/NPCCharacter1.tscn" id="2_0smn3"]
+[ext_resource type="Script" uid="uid://dxjm4qbccwrfq" path="res://Scripts/Controllers/NPCCharacter1/NPCCharacter1_Controller.gd" id="4_8ht51"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0smn3"]
 size = Vector2(38, 846.75)
@@ -35,6 +36,13 @@ shape = SubResource("RectangleShape2D_rw36q")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/Ground_Border"]
 position = Vector2(1044.5, 846)
 shape = SubResource("RectangleShape2D_8ht51")
+
+[node name="PlayerCharacter1" parent="." instance=ExtResource("1_1ubbt")]
+position = Vector2(275, 301)
+
+[node name="NPCCharacter1" parent="." instance=ExtResource("2_0smn3")]
+position = Vector2(1467, 334)
+script = ExtResource("4_8ht51")
 
 [node name="Camera_View" type="Camera2D" parent="."]
 position = Vector2(1045, 186)
@@ -98,13 +106,5 @@ theme_override_font_sizes/font_size = 60
 text = "99"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="PlayerCharacter1" parent="." instance=ExtResource("3_rw36q")]
-position = Vector2(594, 387)
-script = null
-
-[node name="NPCCharacter1" parent="." instance=ExtResource("3_8ht51")]
-position = Vector2(1513, 304)
-script = null
 
 [connection signal="timeout" from="MainUI/Timer" to="." method="_on_timer_timeout"]
