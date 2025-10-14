@@ -248,7 +248,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-			#enemy.lower_attacks_landed +=1
+			#enemy.lower_attacks_landed +=1c
 		_connect_hurt_animation_finished()
 		
 		await get_tree().create_timer(0.2, true).timeout

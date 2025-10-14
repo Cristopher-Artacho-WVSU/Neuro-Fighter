@@ -717,6 +717,10 @@ func DamagedSystem(delta):
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
 			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
+			
+	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
+		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
+			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
@@ -728,8 +732,8 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("standing_block") 
 			upper_attacks_blocked += 1
-			if get_parent().has_method("apply_damage_to_player1"):
-				get_parent().apply_damage_to_player2(7)
+			#if get_parent().has_method("apply_damage_to_player2"):
+				#get_parent().apply_damage_to_player2(7)
 			print(" Upper Damaged From Blocking")
 		else:
 			is_hurt = true
@@ -758,8 +762,8 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.3)  # brief pause (0.2 seconds)
 			animation.play("standing_block")
-			if get_parent().has_method("apply_damage_to_player1"):
-				get_parent().apply_damage_to_player2(7)
+			#if get_parent().has_method("apply_damage_to_player2"):
+				#get_parent().apply_damage_to_player2(7)
 			lower_attacks_blocked += 1
 			print("Lower Damaged From Blocking")
 		else:
@@ -778,7 +782,7 @@ func _connect_hurt_animation_finished():
 		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 		
 func apply_damage(amount):
-	if get_parent().has_method("apply_damage_to_player1"):
+	if get_parent().has_method("apply_damage_to_player2"):
 			get_parent().apply_damage_to_player2(amount)
 			
 func _on_hurt_finished(anim_name):
@@ -789,9 +793,9 @@ func _on_hurt_finished(anim_name):
 			#print("Damaged From Blocking")
 	#else:
 #		IF DS IS NOT DEFENDING WHENT THE DAMAGE RECEIVED
-	if anim_name == "light_hurt" or anim_name == "heavy_hurt":
-		if get_parent().has_method("apply_damage_to_player1"):
-			get_parent().apply_damage_to_player2(10)
+	#if anim_name == "light_hurt" or anim_name == "heavy_hurt":
+		#if get_parent().has_method("apply_damage_to_player1"):
+			#get_parent().apply_damage_to_player2(10)
 	if is_defending and anim_name == "standing_block":
 		apply_damage(7)
 	else:
@@ -998,12 +1002,13 @@ func _on_attack_finished(anim_name):
 		"light_punch", "light_kick":
 			is_attacking = false
 			for hitbox in get_tree().get_nodes_in_group("Player2_Hitboxes"):
-				if hitbox.overlaps_area(enemy_UpperHurtbox):
-					upper_attacks_landed += 1
-					updateDetails()
-				elif hitbox.overlaps_area(enemy_LowerHurtbox):
-					lower_attacks_landed += 1
-					updateDetails()
+#c				if hitbox.overlaps_area(enemy_UpperHurtbox):
+					#upper_attacks_landed += 1
+					#updateDetails()
+				#elif hitbox.overlaps_area(enemy_LowerHurtbox):
+					#lower_attacks_landed += 1
+					#updateDetails()
+					pass
 		"standing_block":
 			end_defense()
 		"dash_forward", "dash_backward":
