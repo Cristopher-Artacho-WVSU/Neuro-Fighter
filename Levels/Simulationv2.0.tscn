@@ -101,10 +101,8 @@ vertical_alignment = 1
 
 [node name="PlayerCharacter1" parent="." instance=ExtResource("3_rw36q")]
 position = Vector2(594, 387)
-script = null
 
 [node name="NPCCharacter1" parent="." instance=ExtResource("3_8ht51")]
 position = Vector2(1513, 304)
-script = null
 
 [connection signal="timeout" from="MainUI/Timer" to="." method="_on_timer_timeout"]
