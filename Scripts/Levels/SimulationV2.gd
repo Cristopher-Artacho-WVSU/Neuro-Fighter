@@ -103,6 +103,7 @@ func monitorHP(delta):
 	
 	if player2HP.value <= 0:
 		print("Player 1 Wins")
+		player2.KO()
 		game_over()
 	if player1HP.value <= 0:
 		print("Player 2 Wins")
@@ -115,20 +116,12 @@ func apply_damage_to_player2(amount):
 	P2_CurrentHP = max(0, P2_CurrentHP - amount)
 	player2HP.value = P2_CurrentHP
 	print("Player 2 HP:", P2_CurrentHP)
-
-	if P2_CurrentHP <= 0:
-		player2.KO()
-		print("Player 2 KO!")
 		
 #APPLIES DAMAGE TO PLAYER 2 REFERENCING THE amount GIVEN FROM on_hurt_finished of PLAYER1
 func apply_damage_to_player1(amount):
 	P1_CurrentHP = max(0, P1_CurrentHP - amount)
 	player1HP.value = P1_CurrentHP
 	print("Player 2 HP:", P1_CurrentHP)
-	
-	if P2_CurrentHP <= 0:
-		player1.KO()
-		print("Player 1 KO!")
 
 func game_over():
 	await get_tree().create_timer(2.1).timeout

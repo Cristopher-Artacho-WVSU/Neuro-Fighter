@@ -42,9 +42,6 @@ func _ready():
 	#	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
-	#	FOR DAMAGED ANIMATONS
-	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 
  
 func _physics_process(delta):
@@ -240,18 +237,18 @@ func _connect_hurt_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 		
+func applyDamage(amount: int):
+	if get_parent().has_method("apply_damage_to_player1"):
+		get_parent().apply_damage_to_player1(amount)
+		
 func _on_hurt_finished(anim_name):
 #	IF is_defending, REDUCE THE DAMAGE BY 30%
 	if is_defending or anim_name == "standing_block":
-		if get_parent().has_method("apply_damage_to_player1"):
-			get_parent().apply_damage_to_player1(7)
+		applyDamage(7)
 		animation.play("idle")
 	else:
-#		IF PLAYER IS NOT DEFENDING WHENT HE DAMAGE RECEIVED
-		if anim_name == "light_hurt" or anim_name == "heavy_hurt":
-			if get_parent().has_method("apply_damage_to_player1"):
-				get_parent().apply_damage_to_player1(7)
-			animation.play("idle")
+		applyDamage(10)
+		animation.play("idle")
 	is_hurt = false
 	is_attacking = false
 	is_defending = false
