@@ -1,68 +1,62 @@
 extends CharacterBody2D
 
-# ===== CONSTANTS AND CONFIGURATION =====
-var DEFENSE_DELAY = 0.5
-var DASH_SPEED = 300
-var DASH_TIME = 0.5
-var JUMP_FORCE = -1200.0
-var GRAVITY = ProjectSettings.get_setting("physics/2d/default_gravity")
-
-# ===== PHYSICS CONFIGURATION =====
-var jump_speed = 3000
-var fall_multiplier = 5.0
-var jump_multiplier = 1.6
-
-# ===== NODE REFERENCES =====
+#ONREADY VARIABLES
 @onready var animation = $AnimationPlayer
 @onready var characterSprite = $AnimatedSprite2D
 @onready var enemy = get_parent().get_node("NPCCharacter1")
 @onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
 @onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
+@onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
 
-# ===== MOVEMENT STATE =====
+#ADDONS
+var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+
+#JUMP PARAMETERS
+var jump_speed = 3000
+var fall_multiplier = 5.0
+var jump_multiplier = 1.6
+var jump_force = -1200.0
+#MOVEMENT
+var dash_speed = 300
+var dash_time = 0.5
+var dash_timer = 0.0
+var dash_direction = 0
+#DEFENSE
+var last_input_time = 0.0
+var defense_delay = 0.5
+
+#BOOL STATES
 var is_dashing = false
 var is_jumping = false
 var is_crouching = false
-var dash_timer = 0.0
-var dash_direction = 0
-var prev_distance_to_enemy = 0.0
-
-# ===== COMBAT STATE =====
 var is_attacking = false
 var is_defending = false
 var is_hurt = false
 
 #HITSTOP AND HITSTUN
-# ===== DEFENSE STATE =====
-var last_input_time = 0.0
-
-# ===== HITSTOP SYSTEM =====
 var hitstop_id: int = 0
 var is_in_global_hitstop: bool = false
 var is_recently_hit: bool = false
 
-# ===== INITIALIZATION =====
 func _ready():
-	prev_distance_to_enemy = abs(enemy.position.x - position.x)
-	setup_animation_connections()
-	setup_damage_connections()
+	#	FOR MOST ANIMATIONS
+	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
+		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+	#	FOR DAMAGED ANIMATONS
+	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
+		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 
-func setup_animation_connections():
-	if not animation.is_connected("animation_finished", _on_animation_finished):
-		animation.connect("animation_finished", _on_animation_finished)
-
-# ===== PHYSICS PROCESS =====
+ 
 func _physics_process(delta):
 	update_facing_direction()
-	apply_gravity(delta)
+	applyGravity(delta)
 	
 	MovementSystem(delta)
 	AttackSystem()
 	DefenseSystem(delta)
-	
+	#debug_states()
 	move_and_slide()
 
-# ===== MOVEMENT SYSTEM =====
 func MovementSystem(delta):
 	if is_attacking || is_defending || is_hurt:
 		return
@@ -75,11 +69,17 @@ func MovementSystem(delta):
 	
 	# Handle Jump
 	if jump and not is_jumping:
-		perform_jump()
+		animation.play("jump")
+		print("Jumped")
+		velocity.y = -1200.0
+		is_jumping = true
+		_connect_animation_finished()
 	
 	# Handle Crouch
 	if crouch and not is_jumping:
-		perform_crouch()
+		animation.play("crouch")
+		is_crouching = true
+		_connect_animation_finished()
 	
 	# Handle Dash
 	handle_dash_movement(forward, backward, delta)
@@ -89,14 +89,6 @@ func MovementSystem(delta):
 	
 	prev_distance_to_enemy = curr_distance_to_enemy
 
-func perform_jump():
-	animation.play("jump")
-	velocity.y = JUMP_FORCE
-	is_jumping = true
-
-func perform_crouch():
-	animation.play("crouch")
-	is_crouching = true
 
 func handle_dash_movement(forward: bool, backward: bool, delta: float):
 	if not is_dashing and not is_jumping:
@@ -106,10 +98,11 @@ func handle_dash_movement(forward: bool, backward: bool, delta: float):
 			start_dash(-1)
 	
 	if is_dashing and not is_jumping:
-		velocity.x = dash_direction * DASH_SPEED
+		velocity.x = dash_direction * dash_speed
 		dash_timer -= delta
 		if dash_timer <= 0:
-			end_dash()
+			is_dashing = false
+			velocity.x = 0
 
 func handle_movement_animations(curr_distance_to_enemy: float):
 	if not is_crouching and not is_jumping and not is_dashing:
@@ -119,22 +112,23 @@ func handle_movement_animations(curr_distance_to_enemy: float):
 	if velocity.x != 0 and is_jumping:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
 			animation.play("jump_forward")
+			_connect_animation_finished()
 		elif curr_distance_to_enemy > prev_distance_to_enemy:
 			animation.play("jump_backward")
-	elif velocity.x != 0:
+			_connect_animation_finished()
+	elif velocity.x != 0 and not is_jumping:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
 			animation.play("move_forward")
+			_connect_animation_finished()
 		elif curr_distance_to_enemy > prev_distance_to_enemy:
 			animation.play("move_backward")
+			_connect_animation_finished()
 
 func start_dash(direction):
 	is_dashing = true
 	dash_direction = direction
-	dash_timer = DASH_TIME
+	dash_timer = dash_time
 
-func end_dash():
-	is_dashing = false
-	velocity.x = 0
 
 # ===== COMBAT SYSTEM =====
 func AttackSystem():
@@ -173,33 +167,20 @@ func perform_attack(attack_type: String):
 		animation.play(crouch_attack_animations[attack_type])
 	else:
 		animation.play(attack_animations[attack_type])
-	
 	is_attacking = true
 	velocity.x = 0
+	_connect_animation_finished()
 
 # ===== DEFENSE AND DAMAGE SYSTEM =====
 func DefenseSystem(delta):
-	if any_input_pressed():
+	if 	Input.is_action_pressed("move_right") or Input.is_action_pressed("move_left") or Input.is_action_pressed("jump") or Input.is_action_pressed("crouch") or Input.is_action_pressed("punch") or Input.is_action_pressed("kick"):
 		last_input_time = 0.0
 		is_defending = false
 	else:
 		last_input_time += delta
-		if last_input_time >= DEFENSE_DELAY:
+		if last_input_time >= defense_delay:
 			is_defending = true
 	
-	setup_damage_connections()
-
-func any_input_pressed() -> bool:
-	return (
-		Input.is_action_pressed("move_right") or 
-		Input.is_action_pressed("move_left") or
-		Input.is_action_pressed("jump") or 
-		Input.is_action_pressed("crouch") or
-		Input.is_action_pressed("punch") or 
-		Input.is_action_pressed("kick")
-	)
-
-func setup_damage_connections():
 	if $Hurtbox_UpperBody and not $Hurtbox_UpperBody.is_connected("area_entered", _on_hurtbox_upper_body_area_entered):
 		$Hurtbox_UpperBody.connect("area_entered", _on_hurtbox_upper_body_area_entered)
 		
@@ -215,14 +196,14 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 		if is_defending:
 			print("Player 1 blocked the attack (upper body)")
 			velocity.x = 0
-			apply_hitstop(0.3)  # brief pause (0.2 seconds)
+			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block")  # play block only on hit
 			
 		else:
 			print("Player 1 Upper body hit taken")
 			is_hurt = true
 			velocity.x = 0
-			apply_hitstop(0.3)  # brief pause (0.2 seconds)
+			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
 			#enemy.upper_attacks_landed +=1
 		_connect_hurt_animation_finished()
@@ -240,45 +221,20 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 		if is_defending:
 			print("Player 1 blocked the attack (lower body)")
 			velocity.x = 0
-			apply_hitstop(0.3)  # brief pause (0.2 seconds)
+			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block")  # play block only on hit
 		else:
 			print("Player 1 Lower body hit taken")
 			is_hurt = true
 			velocity.x = 0
-			apply_hitstop(0.3)  # brief pause (0.2 seconds)
+			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
 			#enemy.lower_attacks_landed +=1c
 		_connect_hurt_animation_finished()
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
-		handle_damage("upper")
 
-func handle_damage(body_part: String):
-	if is_defending:
-		handle_blocked_attack(body_part)
-	else:
-		handle_taken_damage(body_part)
-
-func handle_blocked_attack(body_part: String):
-	print("Player 1 blocked the attack (", body_part, " body)")
-	velocity.x = 0
-	apply_hitstop(0.3)
-	animation.play("standing_block")
-	_connect_hurt_animation_finished()
-
-func handle_taken_damage(body_part: String):
-	print("Player 1 ", body_part, " body hit taken")
-	is_hurt = true
-	velocity.x = 0
-	apply_hitstop(0.3)
-	animation.play("light_hurt")
-	_connect_hurt_animation_finished()
-
-func apply_damage(amount):
-	if get_parent().has_method("apply_damage_to_player1"):
-		get_parent().apply_damage_to_player1(amount)
 
 func _connect_hurt_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
@@ -287,14 +243,19 @@ func _connect_hurt_animation_finished():
 func _on_hurt_finished(anim_name):
 #	IF is_defending, REDUCE THE DAMAGE BY 30%
 	if is_defending or anim_name == "standing_block":
-		apply_damage(7)
+		if get_parent().has_method("apply_damage_to_player1"):
+			get_parent().apply_damage_to_player1(7)
 		animation.play("idle")
-		
 	else:
 #		IF PLAYER IS NOT DEFENDING WHENT HE DAMAGE RECEIVED
 		if anim_name == "light_hurt" or anim_name == "heavy_hurt":
-			apply_damage(10)
+			if get_parent().has_method("apply_damage_to_player1"):
+				get_parent().apply_damage_to_player1(7)
 			animation.play("idle")
+	is_hurt = false
+	is_attacking = false
+	is_defending = false
+	is_dashing = false
 
 func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> void:
 	hitstop_id += 1
@@ -314,6 +275,10 @@ func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> vo
 	Engine.time_scale = 1.0
 	is_in_global_hitstop = false
 
+func _connect_animation_finished():
+	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
+		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+
 # ===== ANIMATION HANDLING =====
 func _on_animation_finished(anim_name):
 	match anim_name:
@@ -328,12 +293,6 @@ func _on_animation_finished(anim_name):
 			is_jumping = false
 		"standing_block":
 			is_defending = false
-			animation.play("idle")
-		"light_hurt", "heavy_hurt":
-			is_hurt = false
-			is_attacking = false
-			is_defending = false
-			is_dashing = false
 			animation.play("idle")
 
 func KO():
@@ -354,12 +313,12 @@ func update_facing_direction():
 		for hurtbox in hurtboxGroup:
 			hurtbox.scale.x = -1
 
-func apply_gravity(delta):
+func applyGravity(delta):
 	if not is_on_floor():
 		if velocity.y < 0:
-			velocity.y += GRAVITY * jump_multiplier * delta
+			velocity.y += gravity * jump_multiplier * delta
 		else:
-			velocity.y += GRAVITY * fall_multiplier * delta
+			velocity.y += gravity * fall_multiplier * delta
 		if not is_jumping:
 			is_jumping = true
 	else:
@@ -382,3 +341,5 @@ func debug_states():
 	print("is_attacking state: ", is_attacking)
 	print("is_defending: ", is_defending)
 	print("is_hurt state: ", is_hurt)
+	
+	
