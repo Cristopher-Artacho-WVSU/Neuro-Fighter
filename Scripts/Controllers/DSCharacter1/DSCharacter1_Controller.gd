@@ -85,81 +85,81 @@ var last_action: String
 @onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
 
 var rules = [
-	{
-		"ruleID": 1, "prioritization": 1,
-		"conditions": { "distance": { "op": ">=", "value": 325 } },
-		"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 2, "prioritization": 11,
-		"conditions": { "distance": { "op": "<=", "value": 325 } },
-		"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 3, "prioritization": 12,
-		"conditions": { "distance": { "op": "<=", "value": 315 } },
-		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 4, "prioritization": 13,
-		"conditions": { "distance": { "op": "<=", "value": 325 } },
-		"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 5, "prioritization": 14,
-		"conditions": { "distance": { "op": "<=", "value": 315 } },
-		"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 6, "prioritization": 41,
-		"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
-		"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 7, "prioritization": 42,
-		"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
-		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 8, "prioritization": 2,
-		"conditions": { "distance": { "op": "<=", "value": 315 } },
-		"enemy_action": ["dash_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 9, "prioritization": 23,
-		"conditions": {  "enemy_anim": "light_kick", "distance": { "op": "<=", "value": 345 },  "upper_attacks_taken": { "op": ">=", "value": 1 } },
-		"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 10, "prioritization": 24,
-		"conditions": {  "enemy_anim": "light_punch", "distance": { "op": "<=", "value": 315 } },
-		"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 11, "prioritization": 100,
-		"conditions": { "player_anim": "idle" },
-		"enemy_action": ["idle"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 12, "prioritization": 51,
-		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-		{
-		"ruleID": 13, "prioritization": 42,
-		"conditions": { "distance": { "op": ">=", "value": 315 }, "lower_attacks_landed": { "op": ">=", "value": 1 } },
-		"enemy_action": ["crouch_heavyPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-		{
-		"ruleID": 14, "prioritization": 52,
-		"conditions": { "distance": { "op": "<=", "value": 350 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
-		{
-		"ruleID": 15, "prioritization": 53,
-		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	},
+	#{
+		#"ruleID": 1, "prioritization": 1,
+		#"conditions": { "distance": { "op": ">=", "value": 325 } },
+		#"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 2, "prioritization": 11,
+		#"conditions": { "distance": { "op": "<=", "value": 325 } },
+		#"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 3, "prioritization": 12,
+		#"conditions": { "distance": { "op": "<=", "value": 315 } },
+		#"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 4, "prioritization": 13,
+		#"conditions": { "distance": { "op": "<=", "value": 325 } },
+		#"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 5, "prioritization": 14,
+		#"conditions": { "distance": { "op": "<=", "value": 315 } },
+		#"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 6, "prioritization": 41,
+		#"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
+		#"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 7, "prioritization": 42,
+		#"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
+		#"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 8, "prioritization": 2,
+		#"conditions": { "distance": { "op": "<=", "value": 315 } },
+		#"enemy_action": ["dash_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 9, "prioritization": 23,
+		#"conditions": {  "enemy_anim": "light_kick", "distance": { "op": "<=", "value": 345 },  "upper_attacks_taken": { "op": ">=", "value": 1 } },
+		#"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 10, "prioritization": 24,
+		#"conditions": {  "enemy_anim": "light_punch", "distance": { "op": "<=", "value": 315 } },
+		#"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 11, "prioritization": 100,
+		#"conditions": { "player_anim": "idle" },
+		#"enemy_action": ["idle"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 12, "prioritization": 51,
+		#"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		#"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+		#{
+		#"ruleID": 13, "prioritization": 42,
+		#"conditions": { "distance": { "op": ">=", "value": 315 }, "lower_attacks_landed": { "op": ">=", "value": 1 } },
+		#"enemy_action": ["crouch_heavyPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+		#{
+		#"ruleID": 14, "prioritization": 52,
+		#"conditions": { "distance": { "op": "<=", "value": 350 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		#"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+		#{
+		#"ruleID": 15, "prioritization": 53,
+		#"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		#"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
 ]
 
 # ===== INITIALIZATION =====
@@ -692,8 +692,6 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block") 
 			upper_attacks_blocked += 1
-			if get_parent().has_method("apply_damage_to_player1"):
-				get_parent().apply_damage_to_player2(7)
 			print(" Upper Damaged From Blocking")
 		else:
 			is_hurt = true
@@ -716,8 +714,6 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block")
-			if get_parent().has_method("apply_damage_to_player1"):
-				get_parent().apply_damage_to_player2(7)
 			lower_attacks_blocked += 1
 			print("Lower Damaged From Blocking")
 		else:
@@ -735,11 +731,16 @@ func _connect_hurt_animation_finished():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 		
+func applyDamage(amount: int):
+	if get_parent().has_method("apply_damage_to_player2"):
+		get_parent().apply_damage_to_player2(amount)
 			
 func _on_hurt_finished(anim_name):
 #		IF DS IS NOT DEFENDING WHENT THE DAMAGE RECEIVED
-	if anim_name == "light_hurt" or anim_name == "heavy_hurt":
-		get_parent().apply_damage_to_player2(10)
+	if is_defending:
+		applyDamage(7)
+	else:
+		applyDamage(10)
 	is_hurt = false
 	is_attacking = false
 	is_defending = false
