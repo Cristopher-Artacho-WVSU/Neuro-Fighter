@@ -1,0 +1,1 @@
+DS attacks stats not working (check_attack_hit function)

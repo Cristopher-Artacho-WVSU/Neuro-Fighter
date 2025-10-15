@@ -1,6 +1,5 @@
-[gd_scene load_steps=236 format=3 uid="uid://cinrsvo42c74m"]
+[gd_scene load_steps=235 format=3 uid="uid://cinrsvo42c74m"]
 
-[ext_resource type="Script" uid="uid://cgo3wd5idwkk8" path="res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd" id="1_juauv"]
 [ext_resource type="Texture2D" uid="uid://5xo00djk0ee8" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0000.png" id="1_v7t0u"]
 [ext_resource type="Texture2D" uid="uid://br6aa5bq27h8e" path="res://Assets/Characters/Character 1/Crouch/Crouch0000.png" id="2_cbwdj"]
 [ext_resource type="Texture2D" uid="uid://k3kjn7sdgsl3" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0001.png" id="2_xekhk"]
@@ -6562,8 +6561,11 @@ size = Vector2(73, 34)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_44tk2"]
 size = Vector2(42, 54)
 
+<<<<<<< HEAD
 [node name="NPCCharacter1" type="CharacterBody2D"]
-script = ExtResource("1_juauv")
+=======
+[node name="PlayerCharacter1" type="CharacterBody2D"]
+>>>>>>> 8b50887 (added temporary damage)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-13, 0)

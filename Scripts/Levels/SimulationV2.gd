@@ -25,21 +25,52 @@ func _ready():
 		"Human":
 			# Use human controller script
 			player1.set_script(load("res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd"))
+			print(Global.player1_controller)
+			player1._ready()  # This will initialize @onready variables
+			player1.set_physics_process(true)
+		"DecisionTree":
+			# Use decision tree controller
+			player1.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+			#print(Global.player2_controller)
+			#print(player2.get_script().resource_path)
+			player1._ready()
+			player1.set_physics_process(true)
+		"DynamicScripting":
+			# Use dynamic scripting controller
+			player1.set_script(load("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
+			player1._ready()  # This will initialize @onready variables
+			player1.set_physics_process(true)
 		"NDS":
 			# Use NDS controller script
 			player1.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+			player1._ready()  # This will initialize @onready variables
+			player1.set_physics_process(true)
 	
 	# Set up player 2 controller
 	match Global.player2_controller:
+		"Human":
+			# Use human controller script
+			player2.set_script(load("res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd"))
+			print(Global.player1_controller)
+			player2._ready()  # This will initialize @onready variables
+			player2.set_physics_process(true)
 		"DecisionTree":
 			# Use decision tree controller
 			player2.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+			#print(Global.player2_controller)
+			#print(player2.get_script().resource_path)
+			player2._ready()
+			player2.set_physics_process(true)
 		"DynamicScripting":
 			# Use dynamic scripting controller
 			player2.set_script(load("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
+			player2._ready()  # This will initialize @onready variables
+			player2.set_physics_process(true)
 		"NDS":
 			# Use NDS controller
 			player2.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+			player2._ready()  # This will initialize @onready variables
+			player2.set_physics_process(true)
 
 func _physics_process(delta):
 	monitorHP(delta)
@@ -97,7 +128,7 @@ func apply_damage_to_player1(amount):
 	
 	if P2_CurrentHP <= 0:
 		player1.KO()
-		print("Player 2 KO!")
+		print("Player 1 KO!")
 
 func game_over():
 	await get_tree().create_timer(2.1).timeout
