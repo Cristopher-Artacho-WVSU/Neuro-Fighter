@@ -281,7 +281,8 @@ func _on_animation_finished(anim_name):
 			is_attacking = false
 			is_defending = false
 			is_dashing = false
-	animation.play("iddle")
+	velocity.x = 0
+	animation.play("idle")
 
 func KO():
 	animation.play("knocked_down")

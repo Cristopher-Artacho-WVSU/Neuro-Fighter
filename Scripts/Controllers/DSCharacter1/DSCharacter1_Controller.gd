@@ -443,7 +443,7 @@ func _execute_single_action(action):
 				if not is_jumping:
 					animation.play("jump_forward")
 					print("Jumped")
-					var direction = 1 if enemy.global_position.x > global_position.x else -1
+					var direction = -1 if enemy.global_position.x > global_position.x else 1
 					MovementSystem(direction)
 					velocity.y = jump_force
 					is_jumping = true
