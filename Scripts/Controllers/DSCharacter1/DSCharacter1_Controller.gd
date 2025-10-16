@@ -1,3 +1,5 @@
+#res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd
+
 extends CharacterBody2D
 
 #ADDONS
@@ -85,81 +87,81 @@ var last_action: String
 @onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
 
 var rules = [
-	#{
-		#"ruleID": 1, "prioritization": 1,
-		#"conditions": { "distance": { "op": ">=", "value": 325 } },
-		#"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 2, "prioritization": 11,
-		#"conditions": { "distance": { "op": "<=", "value": 325 } },
-		#"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 3, "prioritization": 12,
-		#"conditions": { "distance": { "op": "<=", "value": 315 } },
-		#"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 4, "prioritization": 13,
-		#"conditions": { "distance": { "op": "<=", "value": 325 } },
-		#"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 5, "prioritization": 14,
-		#"conditions": { "distance": { "op": "<=", "value": 315 } },
-		#"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 6, "prioritization": 41,
-		#"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
-		#"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 7, "prioritization": 42,
-		#"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
-		#"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 8, "prioritization": 2,
-		#"conditions": { "distance": { "op": "<=", "value": 315 } },
-		#"enemy_action": ["dash_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 9, "prioritization": 23,
-		#"conditions": {  "enemy_anim": "light_kick", "distance": { "op": "<=", "value": 345 },  "upper_attacks_taken": { "op": ">=", "value": 1 } },
-		#"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 10, "prioritization": 24,
-		#"conditions": {  "enemy_anim": "light_punch", "distance": { "op": "<=", "value": 315 } },
-		#"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 11, "prioritization": 100,
-		#"conditions": { "player_anim": "idle" },
-		#"enemy_action": ["idle"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 12, "prioritization": 51,
-		#"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		#"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-		#{
-		#"ruleID": 13, "prioritization": 42,
-		#"conditions": { "distance": { "op": ">=", "value": 315 }, "lower_attacks_landed": { "op": ">=", "value": 1 } },
-		#"enemy_action": ["crouch_heavyPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-		#{
-		#"ruleID": 14, "prioritization": 52,
-		#"conditions": { "distance": { "op": "<=", "value": 350 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		#"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-		#{
-		#"ruleID": 15, "prioritization": 53,
-		#"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		#"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
+	{
+		"ruleID": 1, "prioritization": 1,
+		"conditions": { "distance": { "op": ">=", "value": 325 } },
+		"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 2, "prioritization": 11,
+		"conditions": { "distance": { "op": "<=", "value": 325 } },
+		"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 3, "prioritization": 12,
+		"conditions": { "distance": { "op": "<=", "value": 315 } },
+		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 4, "prioritization": 13,
+		"conditions": { "distance": { "op": "<=", "value": 325 } },
+		"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 5, "prioritization": 14,
+		"conditions": { "distance": { "op": "<=", "value": 315 } },
+		"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 6, "prioritization": 41,
+		"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 7, "prioritization": 42,
+		"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 8, "prioritization": 2,
+		"conditions": { "distance": { "op": "<=", "value": 315 } },
+		"enemy_action": ["dash_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 9, "prioritization": 23,
+		"conditions": {  "enemy_anim": "light_kick", "distance": { "op": "<=", "value": 345 },  "upper_attacks_taken": { "op": ">=", "value": 1 } },
+		"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 10, "prioritization": 24,
+		"conditions": {  "enemy_anim": "light_punch", "distance": { "op": "<=", "value": 315 } },
+		"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 11, "prioritization": 100,
+		"conditions": { "player_anim": "idle" },
+		"enemy_action": ["idle"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 12, "prioritization": 51,
+		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 13, "prioritization": 42,
+		"conditions": { "distance": { "op": ">=", "value": 315 }, "lower_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["crouch_heavyPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 14, "prioritization": 52,
+		"conditions": { "distance": { "op": "<=", "value": 350 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 15, "prioritization": 53,
+		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
 ]
 
 # ===== INITIALIZATION =====
@@ -171,6 +173,14 @@ func _ready():
 	initialize_ai_state_manager()
 	initialize_character_state()
 	start_script_generation_timer()
+	
+	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
+		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
+			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
+			
+	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
+		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
+			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
 
 func initialize_ai_state_manager():
 	ai_state_manager = get_node("/root/AI_StateManager")
@@ -198,12 +208,9 @@ func initialize_character_state():
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
 		DSscript.append(rules[i])
-#	FOR MOST ANIMATIONS
+##	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
-#	FOR DAMAGED ANIMATONS
-	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 		
 	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
 
@@ -400,13 +407,13 @@ func _execute_single_action(action):
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		"standing_defense":
 			if is_on_floor():
 				if not is_jumping:
 					animation.play("standing_block")
 					is_defending = true
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		"dash_forward":
 			if is_on_floor():
 				if not is_jumping:
@@ -429,7 +436,7 @@ func _execute_single_action(action):
 					print("Jumped")
 					velocity.y = jump_force
 					is_jumping = true
-					_connect_animation_finished()
+					#_connect_animation_finished()
 				
 		"jump_forward":
 			if is_on_floor():
@@ -440,7 +447,7 @@ func _execute_single_action(action):
 					MovementSystem(direction)
 					velocity.y = jump_force
 					is_jumping = true
-					_connect_animation_finished()
+					#_connect_animation_finished()
 				
 		"jump_backward":
 			if is_on_floor():
@@ -451,7 +458,7 @@ func _execute_single_action(action):
 					MovementSystem(direction)
 					velocity.y = jump_force
 					is_jumping = true
-					_connect_animation_finished()
+					#_connect_animation_finished()
 					
 		"crouch":
 			if is_on_floor():
@@ -459,7 +466,7 @@ func _execute_single_action(action):
 					animation.play("crouch")
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		"crouch_lightKick":
 			if is_on_floor():
 				if not is_jumping:
@@ -467,7 +474,7 @@ func _execute_single_action(action):
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		"crouch_lightPunch":
 			if is_on_floor():
 				if not is_jumping:
@@ -475,7 +482,7 @@ func _execute_single_action(action):
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 					
 		"heavy_punch":
 			if is_on_floor():
@@ -492,22 +499,22 @@ func _execute_single_action(action):
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 					
-		"crouch_lightPunch":
+		"crouch_heavyPunch":
 			if is_on_floor():
 				if not is_jumping:
 					animation.play("crouch_heavyPunch")
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		_:
 			print("Unknown action: %s" % str(action))
 	last_action = action
 	#print(last_action)
 	#is_dashing = false
-	_connect_animation_finished()
+	#_connect_animation_finished()
 
 func debug_states():
 	print("is_dashing: ", is_dashing)
@@ -520,11 +527,6 @@ func debug_states():
 	print("is_on_floor(): ", is_on_floor())
 	pass
 
-#PASS ANIM NAME TO THE _on_animation_finished FUNCTION
-func _connect_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
-
 #FOR ANIMATIONS IN ORDER TO NOT GET CUT OFF
 func _on_animation_finished(anim_name: String):
 	match anim_name:
@@ -532,18 +534,19 @@ func _on_animation_finished(anim_name: String):
 			is_attacking = false
 		"standing_block":
 			is_defending = false
-		"hurt", "crouch_hurt":
+		"hurt", "crouch_hurt", "light_hurt", "heavy_hurt"	:
 			is_hurt = false
-		"jump":
+			is_attacking = false
+			is_defending = false
+			is_dashing = false
+		"jump", "jump_forward", "jump_backward":
 			is_jumping = false
 		"crouch":
 			is_crouching = false
-		"move_forward":
-			is_dashing = false
-		"move_backward":
+		"move_forward", "move_backward":
 			is_dashing = false
 			velocity.x = 0
-			animation.play("idle")
+	#animation.play("idle")
 			
 
 func generate_script():
@@ -673,14 +676,6 @@ func DamagedSystem(delta):
 		last_input_time += delta
 		if last_input_time >= defense_delay:
 			is_defending = true
-			
-	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
-		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
-			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
-			
-	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
-		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
-			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
@@ -692,18 +687,19 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block") 
 			upper_attacks_blocked += 1
+			applyDamage(7)
 			print(" Upper Damaged From Blocking")
 		else:
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-			print("Player 2 Upper body hit taken")
 			upper_attacks_taken += 1
-		_connect_hurt_animation_finished()
+			applyDamage(10)
+			print("Player 2 Upper body hit taken")
 		# Reset hit immunity after short real-time delay
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
-
+		
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
@@ -715,37 +711,22 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block")
 			lower_attacks_blocked += 1
+			applyDamage(7)
 			print("Lower Damaged From Blocking")
 		else:
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-			print("Player 2 Lower body hit taken")
 			lower_attacks_taken += 1
-		_connect_hurt_animation_finished()
+			applyDamage(10)
+			print("Player 2 Lower body hit taken")
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
-
-func _connect_hurt_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 		
 func applyDamage(amount: int):
 	if get_parent().has_method("apply_damage_to_player2"):
 		get_parent().apply_damage_to_player2(amount)
-			
-func _on_hurt_finished(anim_name):
-#		IF DS IS NOT DEFENDING WHENT THE DAMAGE RECEIVED
-	if is_defending:
-		applyDamage(7)
-	else:
-		applyDamage(10)
-	is_hurt = false
-	is_attacking = false
-	is_defending = false
-	is_dashing = false
-	animation.play("idle")
 
 func updateDetails():
 	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d \nUpper Attacks Blocked: %d \nLower Attacks Blocked: %d" % [

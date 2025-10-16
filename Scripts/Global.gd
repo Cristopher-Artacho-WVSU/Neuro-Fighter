@@ -13,40 +13,6 @@ var player2_saved_state = ""
 var debug_mode = true
 var debug_log_level = 1  # 0: None, 1: Basic, 2: Detailed, 3: Verbose
 
-# AI Difficulty and Saved States
-var saved_ai_states = {
-	"Level 1": {
-		"type": "DynamicScripting", 
-		"weights": {}, 
-		"performance": 0.65,
-		"description": "Basic trained AI"
-	},
-	"Level 2": {
-		"type": "DynamicScripting", 
-		"weights": {}, 
-		"performance": 0.78,
-		"description": "Intermediate trained AI"
-	},
-	"Level 3": {
-		"type": "DynamicScripting", 
-		"weights": {}, 
-		"performance": 0.85,
-		"description": "Advanced trained AI"
-	},
-	"Boss Level": {
-		"type": "DynamicScripting", 
-		"weights": {}, 
-		"performance": 0.92,
-		"description": "Expert level AI"
-	},
-	"20 Min Trained": {
-		"type": "DynamicScripting", 
-		"weights": {}, 
-		"performance": 0.75,
-		"description": "Quick training session"
-	}
-}
-
 # Current selected AI states
 var player1_ai_state = null
 var player2_ai_state = null
@@ -74,11 +40,12 @@ var nds_ai_parameters = {
 # Debug logging
 var debug_log_entries = []
 
+# Pause state
+var game_paused = false
+
 func _ready():
-	# Load saved states from file if exists
-	load_saved_states()
 	if debug_mode:
-		add_log_entry("Global.gd initialized - Debug Mode: ON")
+		add_log_entry("Global.gd initialized - Debug Mode: ON", 1)
 
 func set_controllers(p1_type: String, p2_type: String, p1_state = null, p2_state = null):
 	player1_controller = p1_type
@@ -92,46 +59,77 @@ func set_controllers(p1_type: String, p2_type: String, p1_state = null, p2_state
 	if p2_state:
 		add_log_entry("P2 AI State: %s" % p2_state.get("description", "Custom"), 2)
 
-func save_ai_state(state_name: String, controller_type: String, weights: Dictionary, performance: float, description: String = ""):
-	saved_ai_states[state_name] = {
+# AI State Management through AI_StateManager
+func save_ai_state(state_name: String, controller_type: String, rules: Array, performance: float, description: String = ""):
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	if not ai_state_manager:
+		add_log_entry("ERROR: AI_StateManager not found", 0)
+		return false
+	
+	var metadata = {
 		"type": controller_type,
-		"weights": weights.duplicate(true),
 		"performance": performance,
 		"description": description,
 		"timestamp": Time.get_datetime_string_from_system()
 	}
-	save_saved_states()
-	add_log_entry("AI State Saved: " + state_name, 1)
+	
+	var success = ai_state_manager.save_state(state_name, rules, metadata)
+	if success:
+		add_log_entry("AI State Saved: " + state_name, 1)
+	else:
+		add_log_entry("Failed to save AI State: " + state_name, 0)
+	return success
 
 func load_ai_state(state_name: String) -> Dictionary:
-	var state = saved_ai_states.get(state_name, {}).duplicate(true)
-	if state.is_empty():
-		add_log_entry("AI State not found: " + state_name, 2)
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	if not ai_state_manager:
+		add_log_entry("ERROR: AI_StateManager not found", 0)
+		return {}
+	
+	var rules = ai_state_manager.load_state(state_name)
+	var metadata = ai_state_manager.get_state_metadata(state_name)
+	
+	if rules.size() > 0:
+		var state_data = {
+			"type": metadata.get("type", ""),
+			"weights": extract_weights_from_rules(rules),
+			"performance": metadata.get("performance", 0.5),
+			"description": metadata.get("description", ""),
+			"timestamp": metadata.get("timestamp", ""),
+			"rules": rules
+		}
+		add_log_entry("AI State loaded: " + state_name, 1)
+		return state_data
 	else:
-		add_log_entry("AI State loaded: " + state_name, 2)
-	return state
+		add_log_entry("AI State not found: " + state_name, 2)
+		return {}
+
+func extract_weights_from_rules(rules: Array) -> Dictionary:
+	var weights = {}
+	for rule in rules:
+		if rule.has("ruleID") and rule.has("weight"):
+			weights[str(rule["ruleID"])] = rule["weight"]
+	return weights
 
 func get_saved_state_names() -> Array:
-	return saved_ai_states.keys()
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	if ai_state_manager:
+		return ai_state_manager.get_saved_state_labels()
+	return []
 
-func save_saved_states():
-	var save_game = FileAccess.open("user://saved_ai_states.save", FileAccess.WRITE)
-	if save_game:
-		save_game.store_var(saved_ai_states)
-		save_game.close()
-		add_log_entry("AI states saved to file", 2)
-	else:
-		add_log_entry("Error saving AI states to file", 0)
+func get_saved_states_for_algorithm(algorithm_type: String) -> Array:
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	if ai_state_manager:
+		return ai_state_manager.get_saved_states_for_algorithm(algorithm_type)
+	return []
 
-func load_saved_states():
-	if FileAccess.file_exists("user://saved_ai_states.save"):
-		var save_game = FileAccess.open("user://saved_ai_states.save", FileAccess.READ)
-		if save_game:
-			var loaded_data = save_game.get_var()
-			if loaded_data:
-				saved_ai_states = loaded_data
-				add_log_entry("Loaded " + str(saved_ai_states.size()) + " AI states from file", 1)
-			save_game.close()
+func auto_save_ds_state(rules: Array, performance: float = 0.5) -> String:
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	if ai_state_manager:
+		var label = ai_state_manager.auto_save_state(rules, "DynamicScripting", performance)
+		add_log_entry("Auto-saved DS AI state: " + label, 1)
+		return label
+	return ""
 
 func add_performance_data(ai_type: String, performance_metric: float):
 	if not ai_performance_data.has(ai_type):
@@ -182,11 +180,13 @@ func clear_debug_log():
 	debug_log_entries.clear()
 	add_log_entry("Debug log cleared", 1)
 
-# Performance metrics
-func calculate_ai_performance(ai_type: String, matches_won: int, total_matches: int) -> float:
-	if total_matches == 0:
-		return 0.5  # Default performance
-	
-	var win_rate = float(matches_won) / float(total_matches)
-	add_log_entry("AI Performance Calculated: " + ai_type + " Win Rate: " + str(win_rate), 2)
-	return win_rate
+# Pause functionality
+func toggle_pause():
+	game_paused = !game_paused
+	get_tree().paused = game_paused
+	add_log_entry("Game " + ("paused" if game_paused else "unpaused"), 1)
+
+func set_pause(paused: bool):
+	game_paused = paused
+	get_tree().paused = game_paused
+	add_log_entry("Game " + ("paused" if game_paused else "unpaused"), 1)
