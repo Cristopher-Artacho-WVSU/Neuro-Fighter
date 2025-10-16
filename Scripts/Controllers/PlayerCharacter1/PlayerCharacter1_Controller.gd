@@ -42,6 +42,12 @@ func _ready():
 	#	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+	
+	if $Hurtbox_UpperBody and not $Hurtbox_UpperBody.is_connected("area_entered", _on_hurtbox_upper_body_area_entered):
+		$Hurtbox_UpperBody.connect("area_entered", _on_hurtbox_upper_body_area_entered)
+		
+	if $Hurtbox_LowerBody and not $Hurtbox_LowerBody.is_connected("area_entered", _on_hurtbox_lower_body_area_entered):
+		$Hurtbox_LowerBody.connect("area_entered", _on_hurtbox_lower_body_area_entered)
 
  
 func _physics_process(delta):
@@ -70,13 +76,11 @@ func MovementSystem(delta):
 		print("Jumped")
 		velocity.y = -1200.0
 		is_jumping = true
-		_connect_animation_finished()
 	
 	# Handle Crouch
 	if crouch and not is_jumping:
 		animation.play("crouch")
 		is_crouching = true
-		_connect_animation_finished()
 	
 	# Handle Dash
 	handle_dash_movement(forward, backward, delta)
@@ -102,24 +106,20 @@ func handle_dash_movement(forward: bool, backward: bool, delta: float):
 			velocity.x = 0
 
 func handle_movement_animations(curr_distance_to_enemy: float):
-	if not is_crouching and not is_jumping and not is_dashing:
+	if not is_crouching and not is_jumping and not is_dashing and not is_attacking and not is_hurt:
 		animation.play("idle")
 		velocity.x = 0
 	
 	if velocity.x != 0 and is_jumping:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
 			animation.play("jump_forward")
-			_connect_animation_finished()
 		elif curr_distance_to_enemy > prev_distance_to_enemy:
 			animation.play("jump_backward")
-			_connect_animation_finished()
 	elif velocity.x != 0 and not is_jumping:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
 			animation.play("move_forward")
-			_connect_animation_finished()
 		elif curr_distance_to_enemy > prev_distance_to_enemy:
 			animation.play("move_backward")
-			_connect_animation_finished()
 
 func start_dash(direction):
 	is_dashing = true
@@ -166,7 +166,6 @@ func perform_attack(attack_type: String):
 		animation.play(attack_animations[attack_type])
 	is_attacking = true
 	velocity.x = 0
-	_connect_animation_finished()
 
 # ===== DEFENSE AND DAMAGE SYSTEM =====
 func DefenseSystem(delta):
@@ -177,12 +176,6 @@ func DefenseSystem(delta):
 		last_input_time += delta
 		if last_input_time >= defense_delay:
 			is_defending = true
-	
-	if $Hurtbox_UpperBody and not $Hurtbox_UpperBody.is_connected("area_entered", _on_hurtbox_upper_body_area_entered):
-		$Hurtbox_UpperBody.connect("area_entered", _on_hurtbox_upper_body_area_entered)
-		
-	if $Hurtbox_LowerBody and not $Hurtbox_LowerBody.is_connected("area_entered", _on_hurtbox_lower_body_area_entered):
-		$Hurtbox_LowerBody.connect("area_entered", _on_hurtbox_lower_body_area_entered)
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
@@ -195,6 +188,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block")  # play block only on hit
+			applyDamage(7)
 			
 		else:
 			print("Player 1 Upper body hit taken")
@@ -202,8 +196,8 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			applyDamage(10)
 			#enemy.upper_attacks_landed +=1
-		_connect_hurt_animation_finished()
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
@@ -220,22 +214,18 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block")  # play block only on hit
+			applyDamage(7)
 		else:
 			print("Player 1 Lower body hit taken")
 			is_hurt = true
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			applyDamage(10)
 			#enemy.lower_attacks_landed +=1c
-		_connect_hurt_animation_finished()
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
-
-
-func _connect_hurt_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 		
 func applyDamage(amount: int):
 	if get_parent().has_method("apply_damage_to_player1"):
@@ -272,10 +262,6 @@ func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> vo
 	Engine.time_scale = 1.0
 	is_in_global_hitstop = false
 
-func _connect_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
-
 # ===== ANIMATION HANDLING =====
 func _on_animation_finished(anim_name):
 	match anim_name:
@@ -290,7 +276,12 @@ func _on_animation_finished(anim_name):
 			is_jumping = false
 		"standing_block":
 			is_defending = false
-			animation.play("idle")
+		"light_hurt", "heavy_hurt":
+			is_hurt = false
+			is_attacking = false
+			is_defending = false
+			is_dashing = false
+	animation.play("iddle")
 
 func KO():
 	animation.play("knocked_down")

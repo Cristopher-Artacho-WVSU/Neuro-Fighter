@@ -11,7 +11,8 @@ var hitboxes = []
 var GRAVITY = ProjectSettings.get_setting("physics/2d/default_gravity")
 const SPEED = 300
 const ATTACK_RANGE_PUNCH = 200
-const ATTACK_RANGE_KICK = 300
+const ATTACK_RANGE_KICK = 320
+const ATTACK_RANGE_LIMIT = 400
 const MOVE_THRESHOLD = 250
 
 # STATE VARIABLES
@@ -130,10 +131,10 @@ func DTAttackSystem():
 	var current_distance = global_position.distance_to(enemy.global_position)
 	
 	# Choose attack based on distance
-	if current_distance <= ATTACK_RANGE_PUNCH:
+	if  current_distance <= ATTACK_RANGE_KICK:
 		# Close range - use punch
 		start_attack("light_punch", current_distance)
-	elif current_distance <= ATTACK_RANGE_KICK:
+	elif current_distance >= ATTACK_RANGE_KICK and current_distance <= ATTACK_RANGE_LIMIT:
 		# Medium range - use kick
 		start_attack("light_kick", current_distance)
 	# If farther than ATTACK_RANGE_KICK, don't attack

@@ -56,6 +56,91 @@ func _ready():
 	update_display()
 	setup_nds_ai_section()
 	setup_debug_panel() 
+
+func setup_load_sections():
+	# Clear existing buttons safely
+	if left_load_panel:
+		for child in left_load_panel.get_children():
+			child.queue_free()
+	
+	if right_load_panel:
+		for child in right_load_panel.get_children():
+			child.queue_free()
+	
+	# Show/hide load panels based on algorithm type
+	update_load_panel_visibility()
+	
+	# Create load buttons for saved states specific to each algorithm
+	update_load_buttons()
+
+func update_load_panel_visibility():
+	if left_load_panel and left_load_panel.get_parent():
+		left_load_panel.get_parent().visible = (current_left_type == "DynamicScripting" or current_left_type == "NDS")
+	
+	if right_load_panel and right_load_panel.get_parent():
+		right_load_panel.get_parent().visible = (current_right_type == "DynamicScripting" or current_right_type == "NDS")
+
+# Scan saved states from file and append as button
+func update_load_buttons():
+	# Get ALL saved states first
+	var all_states = Global.get_saved_state_names()
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	
+	if not ai_state_manager:
+		print("WARNING: AI_StateManager not found for loading states")
+		return
+	
+	# Left side load buttons
+	if left_load_panel and (current_left_type == "DynamicScripting" or current_left_type == "NDS"):
+		for state_name in all_states:
+			var metadata = ai_state_manager.get_state_metadata(state_name)
+			var state_type = metadata.get("type", "")
+			
+			# Show state if it matches current algorithm OR if type is not specified (manual saves)
+			if state_type == current_left_type or state_type == "":
+				var left_button = Button.new()
+				var performance = metadata.get("performance", 0.5) * 100
+				var description = metadata.get("description", "No description")
+				var is_autosave = metadata.get("is_autosave", false)
+				
+				# Format display text
+				var display_text = state_name
+				if is_autosave:
+					display_text = "[AUTO] " + state_name.replace("autosave_", "")
+				display_text += " - %d%%" % performance
+				
+				left_button.text = display_text
+				if not left_button.is_connected("pressed", _on_left_load_pressed.bind(state_name)):
+					left_button.connect("pressed", _on_left_load_pressed.bind(state_name))
+				left_button.tooltip_text = description
+				left_load_panel.add_child(left_button)
+	
+	# Right side load buttons
+	if right_load_panel and (current_right_type == "DynamicScripting" or current_right_type == "NDS"):
+		for state_name in all_states:
+			var metadata = ai_state_manager.get_state_metadata(state_name)
+			var state_type = metadata.get("type", "")
+			
+			# Show state if it matches current algorithm OR if type is not specified (manual saves)
+			if state_type == current_right_type or state_type == "":
+				var right_button = Button.new()
+				var performance = metadata.get("performance", 0.5) * 100
+				var description = metadata.get("description", "No description")
+				var is_autosave = metadata.get("is_autosave", false)
+				
+				# Format display text
+				var display_text = state_name
+				if is_autosave:
+					display_text = "[AUTO] " + state_name.replace("autosave_", "")
+				display_text += " - %d%%" % performance
+				
+				right_button.text = display_text
+				if not right_button.is_connected("pressed", _on_right_load_pressed.bind(state_name)):
+					right_button.connect("pressed", _on_right_load_pressed.bind(state_name))
+				right_button.tooltip_text = description
+				right_load_panel.add_child(right_button)
+				
+	print("Load buttons updated. Left: %d, Right: %d" % [left_load_panel.get_child_count(), right_load_panel.get_child_count()])
 	
 func setup_main_buttons():
 	if play_button:
@@ -113,38 +198,6 @@ func setup_algorithm_buttons():
 	if right_ds: right_ds.connect("pressed", _on_right_algorithm_selected.bind("DynamicScripting"))
 	if right_nds: right_nds.connect("pressed", _on_right_algorithm_selected.bind("NDS"))
 
-func setup_load_sections():
-	# Clear existing buttons safely
-	if left_load_panel:
-		for child in left_load_panel.get_children():
-			child.queue_free()
-	
-	if right_load_panel:
-		for child in right_load_panel.get_children():
-			child.queue_free()
-	
-	# Create load buttons for saved states
-	for state_name in Global.get_saved_state_names():
-		var state = Global.load_ai_state(state_name)
-		
-		# Left side load button
-		if left_load_panel:
-			var left_button = Button.new()
-			left_button.text = "%s - %d%%" % [state_name, state.get("performance", 0.5) * 100]
-			if not left_button.is_connected("pressed", _on_left_load_pressed.bind(state_name)):
-				left_button.connect("pressed", _on_left_load_pressed.bind(state_name))
-			left_button.tooltip_text = state.get("description", "No description")
-			left_load_panel.add_child(left_button)
-		
-		# Right side load button
-		if right_load_panel:
-			var right_button = Button.new()
-			right_button.text = "%s - %d%%" % [state_name, state.get("performance", 0.5) * 100]
-			if not right_button.is_connected("pressed", _on_right_load_pressed.bind(state_name)):
-				right_button.connect("pressed", _on_right_load_pressed.bind(state_name))
-			right_button.tooltip_text = state.get("description", "No description")
-			right_load_panel.add_child(right_button)
-
 func setup_nds_ai_section():
 	if nds_ai_input:
 		nds_ai_input.placeholder_text = "Enter NDS AI parameters..."
@@ -191,12 +244,12 @@ func _on_export_log_pressed():
 	
 func export_debug_log():
 	var log_entries = Global.get_debug_log()
-	var file = FileAccess.open("user://debug_log.txt", FileAccess.WRITE)
+	var file = FileAccess.open("res://debug_log.txt", FileAccess.WRITE)
 	if file:
 		for entry in log_entries:
 			file.store_string(entry + "\n")
 		file.close()
-		Global.add_log_entry("Debug log exported to user://debug_log.txt", 1)
+		Global.add_log_entry("Debug log exported to res://debug_log.txt", 1)
 		print("Debug log exported")
 	else:
 		Global.add_log_entry("Failed to export debug log", 0)
@@ -216,6 +269,7 @@ func _on_left_algorithm_selected(algorithm):
 	Global.add_log_entry("Left player algorithm changed to: " + algorithm, 2)
 	update_display()
 	update_button_styles()
+	setup_load_sections()
 
 func _on_right_algorithm_selected(algorithm):
 	current_right_type = algorithm
@@ -223,18 +277,27 @@ func _on_right_algorithm_selected(algorithm):
 	Global.add_log_entry("Right player algorithm changed to: " + algorithm, 2)
 	update_display()
 	update_button_styles()
+	setup_load_sections()
 
 func _on_left_load_pressed(state_name):
 	current_left_state = Global.load_ai_state(state_name)
-	current_left_type = current_left_state.get("type", current_left_type)
-	Global.add_log_entry("Left player loaded AI state: " + state_name, 1)
+	if current_left_state and not current_left_state.is_empty():
+		current_left_type = current_left_state.get("type", current_left_type)
+		Global.add_log_entry("Left player loaded AI state: " + state_name, 1)
+	else:
+		Global.add_log_entry("Failed to load AI state: " + state_name, 0)
+		current_left_state = null
 	update_display()
 	update_button_styles()
 
 func _on_right_load_pressed(state_name):
 	current_right_state = Global.load_ai_state(state_name)
-	current_right_type = current_right_state.get("type", current_right_type)
-	Global.add_log_entry("Right player loaded AI state: " + state_name, 1)
+	if current_right_state and not current_right_state.is_empty():
+		current_right_type = current_right_state.get("type", current_right_type)
+		Global.add_log_entry("Right player loaded AI state: " + state_name, 1)
+	else:
+		Global.add_log_entry("Failed to load AI state: " + state_name, 0)
+		current_right_state = null
 	update_display()
 	update_button_styles()
 
@@ -355,14 +418,34 @@ func _on_back_button_pressed():
 	get_tree().quit()  # Or go back to previous menu
 
 func show_save_dialog():
+	# Determine which AI to save
+	var ai_to_save_type = ""
+	var ai_to_save_state = null
+	
+	if current_right_type != "Human":
+		ai_to_save_type = current_right_type
+		ai_to_save_state = current_right_state
+	elif current_left_type != "Human":
+		ai_to_save_type = current_left_type
+		ai_to_save_state = current_left_state
+	else:
+		# Show error - no AI to save
+		var error_dialog = AcceptDialog.new()
+		error_dialog.title = "Cannot Save"
+		error_dialog.dialog_text = "No AI controller selected to save. Please select an AI algorithm for at least one player."
+		add_child(error_dialog)
+		error_dialog.popup_centered()
+		error_dialog.connect("close_requested", error_dialog.queue_free)
+		return
+		
 	# Create a simple save dialog
 	var save_dialog = AcceptDialog.new()
 	save_dialog.title = "Save AI State"
-	save_dialog.dialog_text = "Enter a name for this AI state:"
+	save_dialog.dialog_text = "Enter a name for this AI state: " % ai_to_save_type
 	
 	var input_container = VBoxContainer.new()
 	var name_input = LineEdit.new()
-	name_input.placeholder_text = "e.g., My Trained AI"
+	name_input.placeholder_text = "e.g., My Trained AI " + ai_to_save_type
 	var desc_input = LineEdit.new()
 	desc_input.placeholder_text = "Description (optional)"
 	
@@ -374,29 +457,48 @@ func show_save_dialog():
 	save_dialog.add_button("Cancel", true, "cancel")
 	
 	add_child(save_dialog)
-	save_dialog.popup_centered(Vector2(300, 200))
+	save_dialog.popup_centered(Vector2(400, 200))
 	
 	# Connect to handle the result
-	if not save_dialog.is_connected("custom_action", _on_save_dialog_action.bind(name_input, desc_input, save_dialog)):
-		save_dialog.connect("custom_action", _on_save_dialog_action.bind(name_input, desc_input, save_dialog))
+	if not save_dialog.is_connected("custom_action", _on_save_dialog_action.bind(name_input, desc_input, save_dialog, ai_to_save_type, ai_to_save_state)):
+		save_dialog.connect("custom_action", _on_save_dialog_action.bind(name_input, desc_input, save_dialog, ai_to_save_type, ai_to_save_state))
 
-func _on_save_dialog_action(action: String, name_input: LineEdit, desc_input: LineEdit, dialog: AcceptDialog):
+func _on_save_dialog_action(action: String, name_input: LineEdit, desc_input: LineEdit, dialog: AcceptDialog, ai_type: String, ai_state):
 	if action == "save" and name_input.text.strip_edges() != "":
 		var state_name = name_input.text.strip_edges()
 		var description = desc_input.text.strip_edges()
 		
-		# Determine which AI to save (prioritize right side for now)
-		var ai_to_save = current_right_type if current_right_type != "Human" else current_left_type
-		var performance = calculate_ai_percentage(ai_to_save, current_right_state if current_right_type != "Human" else current_left_state)
+		# Calculate performance based on current state or use default
+		var performance = 0.5
+		if ai_state and ai_state.has("performance"):
+			performance = ai_state["performance"]
+		else:
+			performance = calculate_ai_percentage(ai_type, null)
+			
+		var rules = []
+		if ai_state and ai_state.has("rules"):
+			rules = ai_state["rules"]
+		else:
+			# If no current rules, we can't save properly
+			var error_dialog = AcceptDialog.new()
+			error_dialog.title = "Save Error"
+			error_dialog.dialog_text = "Cannot save AI state: No current AI rules available. Please load an AI state first or play a game to generate rules."
+			add_child(error_dialog)
+			error_dialog.popup_centered()
+			error_dialog.connect("close_requested", error_dialog.queue_free)
+			dialog.queue_free()
+			return
+			
+		# Save the state with proper metadata for manual saves
+		var success = Global.save_ai_state(state_name, ai_type, rules, performance, description)
 		
-		# For now, save empty weights - in practice, you'd get these from the AI controller
-		Global.save_ai_state(state_name, ai_to_save, {}, performance, description)
-		
-		# Refresh load sections
-		setup_load_sections()
-		
-		Global.add_log_entry("AI state saved: " + state_name, 1)
-		print("AI state saved: %s" % state_name)
+		if success:
+			# Refresh load sections to show the new save
+			setup_load_sections()
+			Global.add_log_entry("AI state manually saved: " + state_name, 1)
+			print("AI state manually saved: %s" % state_name)
+		else:
+			Global.add_log_entry("Failed to save AI state: " + state_name, 0)
 	
 	dialog.queue_free()
 
