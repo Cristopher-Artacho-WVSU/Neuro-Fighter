@@ -64,8 +64,17 @@ const crouch_lightKick_Range = 325
 
 
 func _ready() -> void:
+	var is_defending = false
+	var is_hurt = false
+	var is_attacking = false
+	var is_dashing = false
+	var is_jumping = false
+	var is_crouching = false
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+		
+	print("Animation connected:", animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")))
+	
 	if $Hurtbox_UpperBody and not $Hurtbox_UpperBody.is_connected("area_entered", _on_hurtbox_upper_body_area_entered):
 			$Hurtbox_UpperBody.connect("area_entered", _on_hurtbox_upper_body_area_entered)
 		
@@ -123,6 +132,7 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 			is_dashing = true
 			dash_direction = 1
 			dash_timer = dash_time
+			
 		elif ai_move_direction == -1:
 			is_dashing = true
 			dash_direction = -1
@@ -148,11 +158,11 @@ func DamagedSystem(delta):
 #	DEFENSIVE MECHANISM
 	if not is_dashing and not is_jumping and not is_crouching and not is_attacking and not is_defending and not is_hurt:
 		last_input_time = 0.0
-		is_defending = false
+		is_defending = true
 	else:
 		last_input_time += delta
 		if last_input_time >= defense_delay:
-			is_defending = true
+			is_defending = false
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
@@ -169,6 +179,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			print("Current animation:", animation.current_animation)
 			applyDamage(10)
 			print("Player 2 Upper body hit taken")
 		# Reset hit immunity after short real-time delay
@@ -191,6 +202,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			print("Current animation:", animation.current_animation)
 			applyDamage(10)
 			print("Player 2 Lower body hit taken")
 		
@@ -310,7 +322,8 @@ func debug_states():
 	print("is_defending: ", is_defending)
 	print("is_hurt state: ", is_hurt)
 	
-	
+func KO():
+	animation.play("knocked_down")
 	#
 	## Choose attack based on distance
 	#if  current_distance <= ATTACK_RANGE_KICK:
