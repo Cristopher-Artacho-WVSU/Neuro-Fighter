@@ -190,8 +190,6 @@ func initialize_ai_state_manager():
 			print("WARNING: AI_StateManager not found - state saving disabled")
 			ai_state_manager = Node.new()
 
-	load_saved_states()
-
 func initialize_character_state():
 	prev_distance_to_enemy = abs(enemy.position.x - position.x)
 	
@@ -780,7 +778,9 @@ func load_rules(label: String):
 		
 	var loaded_rules = ai_state_manager.load_state(label)
 	if loaded_rules and loaded_rules.size() > 0:
+		print("PREVIOUS RULES: ", rules)
 		rules = loaded_rules
+		print("LOADED RULES: ", rules)
 		_create_new_script()
 		print("Rules loaded successfully: ", label)
 		
@@ -790,12 +790,13 @@ func load_rules(label: String):
 			print("Loaded fitness: ", current_fitness)
 	else:
 		print("No rules found for label: ", label)
-
-func load_saved_states():
-	if Global.player1_saved_state != "":
-		load_rules(Global.player1_saved_state)
-	if Global.player2_saved_state != "":
-		load_rules(Global.player2_saved_state)
+		
+func set_external_rules(external_rules: Array):
+	if external_rules and external_rules.size() > 0:
+		rules = external_rules
+		_create_new_script()
+	else:
+		print("No valid external rules provided")
 
 func log_script_generation():
 	var timestamp = Time.get_datetime_string_from_system()

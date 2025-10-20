@@ -85,9 +85,11 @@ func setup_controllers():
 		"DynamicScripting":
 			player1.set_script(load("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
 			player1._ready()
+			if Global.player1_ai_state and Global.player1_ai_state.has("rules"):
+				player1.set_external_rules(Global.player1_ai_state["rules"])
 			player1.set_physics_process(true)
 		"NDS":
-			player1.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+			player1.set_script(load("res://Scripts/Cont	rollers/NPCCharacter1/DTCharacter1.gd"))
 			player1._ready()
 			player1.set_physics_process(true)
 	
@@ -104,6 +106,8 @@ func setup_controllers():
 		"DynamicScripting":
 			player2.set_script(load("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
 			player2._ready()
+			if Global.player2_ai_state and Global.player2_ai_state.has("rules"):
+				player2.set_external_rules(Global.player2_ai_state["rules"])
 			player2.set_physics_process(true)
 		"NDS":
 			player2.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))

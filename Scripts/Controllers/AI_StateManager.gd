@@ -81,6 +81,7 @@ func load_saved_states():
 			if data is Array:
 				saved_states = data
 				print("Loaded ", saved_states.size(), " AI states from file")
+				print("DATA are: ", saved_states)
 			file.close()
 	else:
 		print("No saved AI states file found, starting with empty states")

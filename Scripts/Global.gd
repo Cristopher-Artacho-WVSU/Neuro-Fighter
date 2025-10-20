@@ -6,16 +6,16 @@ var player1_controller = "Human"
 var player2_controller = "DecisionTree"
 
 # AI State references
-var player1_saved_state = ""
-var player2_saved_state = ""
-
-# Debug settings
-var debug_mode = true
-var debug_log_level = 1  # 0: None, 1: Basic, 2: Detailed, 3: Verbose
+var player1_saved_state_name = "" 
+var player2_saved_state_name = "" 
 
 # Current selected AI states
 var player1_ai_state = null
 var player2_ai_state = null
+
+# Debug settings
+var debug_mode = true
+var debug_log_level = 1  # 0: None, 1: Basic, 2: Detailed, 3: Verbose
 
 # Training metadata
 var current_training_labels = {
@@ -47,17 +47,23 @@ func _ready():
 	if debug_mode:
 		add_log_entry("Global.gd initialized - Debug Mode: ON", 1)
 
-func set_controllers(p1_type: String, p2_type: String, p1_state = null, p2_state = null):
+func set_controllers(p1_type: String, p2_type: String, p1_state = null, p2_state = null, p1_state_name: String = "", p2_state_name: String = ""):
 	player1_controller = p1_type
 	player2_controller = p2_type
 	player1_ai_state = p1_state
 	player2_ai_state = p2_state
+	player1_saved_state_name = p1_state_name
+	player2_saved_state_name = p2_state_name
 	
 	add_log_entry("Controllers set: P1=%s, P2=%s" % [p1_type, p2_type], 1)
 	if p1_state:
 		add_log_entry("P1 AI State: %s" % p1_state.get("description", "Custom"), 2)
 	if p2_state:
 		add_log_entry("P2 AI State: %s" % p2_state.get("description", "Custom"), 2)
+	if p1_state_name:
+		add_log_entry("P1 Saved State Name: %s" % p1_state_name, 2)
+	if p2_state_name:
+		add_log_entry("P2 Saved State Name: %s" % p2_state_name, 2)
 
 # AI State Management through AI_StateManager
 func save_ai_state(state_name: String, controller_type: String, rules: Array, performance: float, description: String = ""):

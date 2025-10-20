@@ -1,1 +1,2 @@
-DS attacks stats not working (check_attack_hit function)
+DS attacks stats not working (check_attack_hit function) - resolved
+[format problems] - when ai_state_manager loaded rules the ruleId format turns into float

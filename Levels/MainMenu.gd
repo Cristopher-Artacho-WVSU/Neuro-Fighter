@@ -402,8 +402,18 @@ func _on_play_button_pressed():
 	# Apply NDS AI parameters if NDS is selected
 	if current_left_type == "NDS" or current_right_type == "NDS":
 		apply_nds_ai_parameters()
+		
+	# Get the saved state names from the loaded states
+	var p1_state_name = ""
+	var p2_state_name = ""
+
+	if current_left_state and current_left_state.has("description"):
+		p1_state_name = current_left_state.get("description", "left_loaded_state")
 	
-	Global.set_controllers(current_left_type, current_right_type, current_left_state, current_right_state)
+	if current_right_state and current_right_state.has("description"):
+		p2_state_name = current_right_state.get("description", "right_loaded_state")
+	
+	Global.set_controllers(current_left_type, current_right_type, current_left_state, current_right_state, p1_state_name, p2_state_name)
 	print("Starting game with controllers: P1=%s, P2=%s" % [current_left_type, current_right_type])
 	
 	# Transition to game scene
