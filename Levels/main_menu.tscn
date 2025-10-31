@@ -57,6 +57,10 @@ text = "DS"
 layout_mode = 2
 text = "NDS"
 
+[node name="FSMButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
+layout_mode = 2
+text = "FSM"
+
 [node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
 layout_mode = 2
 
@@ -107,6 +111,10 @@ text = "DS"
 [node name="NDSButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
 text = "NDS"
+
+[node name="FSMButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
+layout_mode = 2
+text = "FSM"
 
 [node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
 layout_mode = 2
