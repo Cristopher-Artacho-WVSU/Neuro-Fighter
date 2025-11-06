@@ -181,22 +181,26 @@ func setup_algorithm_buttons():
 	var left_dt = left_algorithm_panel.get_node_or_null("DecisionTreeButton")
 	var left_ds = left_algorithm_panel.get_node_or_null("DynamicScriptingButton")
 	var left_nds = left_algorithm_panel.get_node_or_null("NDSButton")
+	var left_fsm = left_algorithm_panel.get_node_or_null("FSMButton")
 	
 	if left_human: left_human.connect("pressed", _on_left_algorithm_selected.bind("Human"))
 	if left_dt: left_dt.connect("pressed", _on_left_algorithm_selected.bind("DecisionTree"))
 	if left_ds: left_ds.connect("pressed", _on_left_algorithm_selected.bind("DynamicScripting"))
 	if left_nds: left_nds.connect("pressed", _on_left_algorithm_selected.bind("NDS"))
+	if left_fsm: left_fsm.connect("pressed", _on_left_algorithm_selected.bind("FSM"))
 	
 	# Right side buttons
 	var right_human = right_algorithm_panel.get_node_or_null("HumanButton")
 	var right_dt = right_algorithm_panel.get_node_or_null("DecisionTreeButton")
 	var right_ds = right_algorithm_panel.get_node_or_null("DynamicScriptingButton")
 	var right_nds = right_algorithm_panel.get_node_or_null("NDSButton")
+	var right_fsm = right_algorithm_panel.get_node_or_null("FSMButton")
 	
 	if right_human: right_human.connect("pressed", _on_right_algorithm_selected.bind("Human"))
 	if right_dt: right_dt.connect("pressed", _on_right_algorithm_selected.bind("DecisionTree"))
 	if right_ds: right_ds.connect("pressed", _on_right_algorithm_selected.bind("DynamicScripting"))
 	if right_nds: right_nds.connect("pressed", _on_right_algorithm_selected.bind("NDS"))
+	if right_fsm: right_fsm.connect("pressed", _on_right_algorithm_selected.bind("FSM"))
 
 func setup_nds_ai_section():
 	if nds_ai_input:
