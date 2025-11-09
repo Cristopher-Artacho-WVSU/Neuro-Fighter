@@ -63,11 +63,13 @@ var maxWeight = 1.0
 #LOGGING PURPOSES
 var log_file_path = "res://training.txt"
 var cycle_used_rules = []
+var log_cycles = 0
+
 
 var ai_state_manager: Node
 #SAVED AI FITNESS
 var current_fitness = 0.5
-
+var fitness = 0.5
 #CALCULATING THE ACTION 
 var last_action: String
 
@@ -173,6 +175,7 @@ func _ready():
 	initialize_ai_state_manager()
 	initialize_character_state()
 	start_script_generation_timer()
+	init_log_file()
 	
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
@@ -566,7 +569,7 @@ func generate_script():
 		return
 		
 	inactive = ruleScript - active
-	var fitness = calculateFitness()
+	fitness = calculateFitness()
 	
 	# Calculate weight adjustment
 	var weightAdjustment = calculateAdjustment(fitness)
@@ -798,31 +801,52 @@ func load_saved_states():
 		load_rules(Global.player2_saved_state)
 
 func log_script_generation():
+	print("logging works")
 	var timestamp = Time.get_datetime_string_from_system()
 	var file = FileAccess.open(log_file_path, FileAccess.READ_WRITE)
 	if file:
-		file.seek_end()
-		
-		# Header with timestamp
-		file.store_string("\n--- Script Generated (Timer Update) | Timestamp: %s ---\n" % timestamp)
-		
-		# Generated Script section
-		file.store_string("Generated Script:\n")
-		file.store_string(JSON.stringify(DSscript, "  "))
-		
-		# Rules used in this cycle
-		file.store_string("\nRules Executed in Last Cycle:\n")
-		file.store_string(JSON.stringify(cycle_used_rules))
-		
-		# Parameters section
-		file.store_string("\n--- End Log Entry ---")
-		file.store_string("\n--- Parameters: %s ---\n" % JSON.stringify({
-			"upper_attacks_taken": upper_attacks_taken,
-			"lower_attacks_taken": lower_attacks_taken,
-			"upper_attacks_landed": upper_attacks_landed,
-			"lower_attacks_landed": lower_attacks_landed
-		}))
-		
+		file.seek_end()  # append to the end
+
+	# Step 1: Simplify all rules in DSscript
+	var simplified_rules = []
+	for rule in DSscript:
+		if rule.has("conditions") and rule["conditions"].has("distance"):
+			var condition = rule["conditions"]["distance"]
+			var action = ""
+			if rule.has("enemy_action") and rule["enemy_action"].size() > 0:
+				action = rule["enemy_action"][0]
+
+			simplified_rules.append({
+				"rule_id": rule["ruleID"],
+				"distance": condition["value"],
+				"action": action,
+				"weight": rule["weight"],
+				"was_used": rule["wasUsed"]
+			})
+
+	# Step 2: Write the log entry once (after collecting all rules)
+	file.store_string("Timestamp: %s\n" % timestamp)
+	file.store_string("cycle_id: %d\n" % log_cycles)
+	file.store_string("script:\n" + JSON.stringify(simplified_rules, "  ") + "\n")
+	
+	file.store_string("executed_rules:\n" + JSON.stringify(cycle_used_rules) + "\n")
+	
+	file.store_string("parameters: %s\n" % JSON.stringify({
+		"upper_attacks_taken": upper_attacks_taken,
+		"lower_attacks_taken": lower_attacks_taken,
+		"upper_attacks_landed": upper_attacks_landed,
+		"lower_attacks_landed": lower_attacks_landed
+	}))
+	file.store_string("fitness: %.3f\n" % fitness)
+	log_cycles += 1
+	file.close()
+
+#	ERASE CONTENT
+func init_log_file():
+	print("file content erased")
+	var file = FileAccess.open(log_file_path, FileAccess.WRITE)
+	if file:
+		file.store_string("")
 		file.close()
 
 # ===== UTILITY AND DEBUG FUNCTIONS =====
@@ -841,6 +865,7 @@ func get_total_rule_weight() -> float:
 
 # ===== TIMER CALLBACKS =====
 func _on_generateScript_timer_timeout():
+	print("generating new script")
 	generate_script()
 	
 func displacement_small():

@@ -90,7 +90,7 @@ func _physics_process(delta):
 	MovementSystem(direction)
 	attackSystem()
 	DamagedSystem(delta)
-	debug_states()
+	#debug_states()
 	move_and_slide()
 	
 func applyGravity(delta):
