@@ -87,7 +87,7 @@ func setup_controllers():
 			player1._ready()
 			player1.set_physics_process(true)
 		"NDS":
-			player1.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+			player1.set_script(load("res://Scripts/Controllers/NDSCharacter1/NDSCharacter1_Controller.gd"))
 			player1._ready()
 			player1.set_physics_process(true)
 		"FSM":
@@ -110,7 +110,7 @@ func setup_controllers():
 			player2._ready()
 			player2.set_physics_process(true)
 		"NDS":
-			player2.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
+			player2.set_script(load("res://Scripts/Controllers/NDSCharacter1/NDSCharacter1_Controller.gd"))
 			player2._ready()
 			player2.set_physics_process(true)
 		"FSM":
