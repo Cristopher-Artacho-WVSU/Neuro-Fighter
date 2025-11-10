@@ -9,6 +9,7 @@ extends Node2D
 @onready var player2 = $NPCCharacter1
 @onready var player1 = $PlayerCharacter1
 @onready var pause_menu = $PauseMenu
+@onready var chart_panel = $RealTimeChartPanel
 
 #OTHER VARIABLES
 var totalTimerAmount = 99
@@ -30,6 +31,8 @@ func _ready():
 	init_HPBar()
 	setup_controllers()
 	
+	setup_chart_panel()
+	
 	# Connect pause menu signals
 	if pause_menu:
 		pause_menu.connect("resume_game", _on_resume_game)
@@ -40,6 +43,10 @@ func _input(event):
 	if event.is_action_pressed("close"):  # ESC key
 		print("ESC pressed in SimulationV2 - Game Paused: ", Global.game_paused)
 		toggle_pause_menu()
+		
+	# ADD CHART TOGGLE KEY (C key)
+	if event.is_action_pressed("ui_accept"):  # Using Enter key for charts
+		toggle_chart_panel()
 
 func toggle_pause_menu():
 	if not pause_menu:
@@ -60,6 +67,10 @@ func hide_pause_menu():
 	if pause_menu:
 		pause_menu.hide()
 		Global.set_pause(false)
+
+func toggle_chart_panel():
+	if chart_panel and chart_panel.has_method("toggle_visibility"):
+		chart_panel.toggle_visibility()
 
 func _on_resume_game():
 	hide_pause_menu()
@@ -117,6 +128,14 @@ func setup_controllers():
 			player2.set_script(load("res://Scripts/Controllers/FSMCharacter1/FSMCharacter1_Controller.gd"))
 			player2._ready()
 			player2.set_physics_process(true)
+			
+func setup_chart_panel():
+	if chart_panel:
+		chart_panel.set_player_reference(player1)
+		
+		# Set chart panel reference in player 1 if it's DS
+		if player1.has_method("set_chart_panel"):
+			player1.set_chart_panel(chart_panel)
 
 func _physics_process(delta):
 	if Global.game_paused:

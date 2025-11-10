@@ -1,0 +1,57 @@
+[gd_scene load_steps=4 format=3 uid="uid://dajo0c6i7a1h5"]
+
+[ext_resource type="Script" uid="uid://b2k4b5tl13i2n" path="res://Scripts/ui/RealTimeChartPanel.gd" id="1_ysmcs"]
+[ext_resource type="Script" uid="uid://rv0ky2hggqgk" path="res://Scripts/ui/LineChart.gd" id="2_lba7m"]
+[ext_resource type="Script" uid="uid://bou5g88by8c5m" path="res://Scripts/ui/HorizontalBarChart.gd" id="3_lba7m"]
+
+[node name="RealTimeChartPanel" type="CanvasLayer"]
+script = ExtResource("1_ysmcs")
+
+[node name="Panel" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.14901961, 0.14901961, 0.14901961, 0)
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 0
+offset_right = 745.0
+offset_bottom = 644.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="ChartTitle" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Chart Title"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ChartToggle" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+text = "Chart Toggle"
+
+[node name="CloseButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Close
+"
+
+[node name="LineChart" type="Control" parent="Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+script = ExtResource("2_lba7m")
+metadata/_custom_type_script = "uid://rv0ky2hggqgk"
+
+[node name="BarChart" type="Control" parent="Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+script = ExtResource("3_lba7m")
+metadata/_custom_type_script = "uid://bou5g88by8c5m"
+
+[node name="StatsLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Stats Info"
