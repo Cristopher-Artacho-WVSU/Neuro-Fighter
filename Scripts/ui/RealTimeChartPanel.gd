@@ -109,11 +109,12 @@ func update_fitness_data():
 func update_hp_difference_data():
 	# Calculate HP difference (Player 1 HP - Player 2 HP)
 	var game_scene = get_parent()
-	if game_scene and game_scene.has_method("get_player_hp"):
+	if game_scene:
 		var p1_hp = game_scene.P1_CurrentHP
 		var p2_hp = game_scene.P2_CurrentHP
 		var hp_difference = p1_hp - p2_hp
 		hp_difference_history.append(hp_difference)
+		print("Hp difference: ", hp_difference)
 		
 		# Keep only last 50 data points
 		if hp_difference_history.size() > 50:
@@ -192,7 +193,7 @@ func toggle_visibility():
 		# Reset data when showing charts
 		fitness_history.clear()
 		hp_difference_history.clear()
-		reset_rule_tracking()
+		#reset_rule_tracking()
 
 func _on_chart_toggle_pressed():
 	# Switch between line and bar chart

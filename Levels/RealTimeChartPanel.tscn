@@ -17,7 +17,7 @@ color = Color(0.14901961, 0.14901961, 0.14901961, 0)
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
 layout_mode = 0
-offset_right = 745.0
+offset_right = 846.0
 offset_bottom = 644.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
