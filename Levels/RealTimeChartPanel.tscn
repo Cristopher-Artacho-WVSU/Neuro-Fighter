@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b2k4b5tl13i2n" path="res://Scripts/ui/RealTimeChartPanel.gd" id="1_ysmcs"]
 [ext_resource type="Script" uid="uid://rv0ky2hggqgk" path="res://Scripts/ui/LineChart.gd" id="2_lba7m"]
-[ext_resource type="Script" uid="uid://bou5g88by8c5m" path="res://Scripts/ui/HorizontalBarChart.gd" id="3_lba7m"]
+[ext_resource type="Script" uid="uid://bou5g88by8c5m" path="res://Scripts/ui/BarChart.gd" id="3_lba7m"]
 
 [node name="RealTimeChartPanel" type="CanvasLayer"]
 script = ExtResource("1_ysmcs")

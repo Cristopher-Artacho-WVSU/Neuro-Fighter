@@ -48,8 +48,8 @@ func setup_charts():
 	line_chart.set_axis_labels("Time", "Fitness Score")
 	
 	# Setup horizontal bar chart
-	bar_chart.set_title("Rule Usage Distribution", "Top 10 Most Used Rules")
-	bar_chart.set_axis_labels("Usage Percentage", "Rule ID")
+	bar_chart.set_title("Rule Usage Distribution")
+	bar_chart.set_axis_labels("Rules", "Usage %")
 	bar_chart.show_values = true
 	
 	# Initial visibility
@@ -151,14 +151,12 @@ func refresh_line_chart():
 	if fitness_history.size() == 0:
 		return
 	
-	var labels = []
-	var values = []
+	# Convert fitness values to percentages for the heart monitor
+	var fitness_values = []
+	for fitness in fitness_history:
+		fitness_values.append(fitness * 100)
 	
-	for i in range(fitness_history.size()):
-		labels.append(str(i))
-		values.append(fitness_history[i] * 100)
-	
-	line_chart.set_data(0, values, labels)
+	line_chart.set_data(fitness_values)
 
 func refresh_bar_chart():
 	if total_rules_used == 0:
@@ -179,11 +177,10 @@ func refresh_bar_chart():
 		var rule = sorted_rules[i]
 		var usage_percentage = (float(rule.count) / total_rules_used) * 100
 		
-		labels.append("Rule " + str(rule.id))
+		labels.append("R" + str(rule.id))
 		values.append(usage_percentage)
-		colors.append(Color.from_hsv(i * 0.1, 0.8, 0.9))
 	
-	bar_chart.set_data(labels, values, colors)
+	bar_chart.set_data(labels, values)
 	
 	last_rule_usage_count = rule_usage_count.duplicate()
 
