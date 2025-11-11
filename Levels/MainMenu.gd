@@ -4,8 +4,8 @@ extends Control
 # UI elements - Use @onready but with null checks
 @onready var left_algorithm_panel = $MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel
 @onready var right_algorithm_panel = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel
-@onready var left_load_panel = $MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/LoadPanel/SavedStatesContainer
-@onready var right_load_panel = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/LoadPanel/SavedStatesContainer
+@onready var left_load_panel = $MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/ScrollContainer/LoadPanel/SavedStatesContainer
+@onready var right_load_panel = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/ScrollContainer/LoadPanel/SavedStatesContainer
 @onready var left_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/PercentageDisplay/PercentageValue
 @onready var right_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/PercentageDisplay/PercentageValue
 @onready var nds_ai_input = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel/NDSInput
