@@ -38,6 +38,16 @@ var hitstop_id: int = 0
 var is_in_global_hitstop: bool = false
 var is_recently_hit: bool = false
 
+# DOUBLE DASH
+var last_move_input_time: float = 0.0
+var last_move_direction: int = 0
+var double_tap_threshold: float = 0.3  # Time window for double tap
+var is_sliding: bool = false
+var slide_speed: float = 600  # Faster than normal dash
+var slide_duration: float = 0.4
+var slide_timer: float = 0.0
+var slide_direction: int = 0
+
 func _ready():
 	#	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
@@ -57,6 +67,7 @@ func _physics_process(delta):
 	MovementSystem(delta)
 	AttackSystem()
 	DefenseSystem(delta)
+	handle_double_tap_movement(delta)
 	#debug_states()
 	move_and_slide()
 
@@ -125,6 +136,54 @@ func start_dash(direction):
 	is_dashing = true
 	dash_direction = direction
 	dash_timer = dash_time
+
+func handle_double_tap_movement(delta):
+	if is_sliding:
+		slide_timer -= delta
+		velocity.x = slide_direction * slide_speed
+		
+		if slide_timer <= 0:
+			is_sliding = false
+			velocity.x = 0
+		return
+	
+	# Don't process double taps while sliding
+	if is_sliding:
+		return
+	
+	var current_time = Time.get_unix_time_from_system()
+	var input_direction = 0
+	
+	# Check for movement input
+	if Input.is_action_pressed("ui_right"):
+		input_direction = 1
+	elif Input.is_action_pressed("ui_left"):
+		input_direction = -1
+	else:
+		return
+	
+	# Check for double tap
+	if input_direction == last_move_direction and (current_time - last_move_input_time) < double_tap_threshold:
+		start_slide(input_direction)
+	
+	last_move_direction = input_direction
+	last_move_input_time = current_time
+
+func start_slide(direction: int):
+	if is_attacking || is_jumping || is_defending || is_hurt || is_sliding:
+		return
+	
+	is_sliding = true
+	slide_direction = direction
+	slide_timer = slide_duration
+	
+	# Play slide animation if available, otherwise use dash animation
+	if animation.has_animation("slide"):
+		animation.play("slide")
+	else:
+		animation.play("move_forward" if direction > 0 else "move_backward")
+	
+	print("Slide movement activated!")
 
 
 # ===== COMBAT SYSTEM =====
@@ -265,6 +324,8 @@ func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> vo
 # ===== ANIMATION HANDLING =====
 func _on_animation_finished(anim_name):
 	match anim_name:
+		"slide":
+			is_sliding = false
 		"light_punch", "light_kick", "heavy_punch", "heavy_kick":
 			is_attacking = false
 		"crouch_lightKick", "crouch_lightPunch", "crouch_heavyPunch":
