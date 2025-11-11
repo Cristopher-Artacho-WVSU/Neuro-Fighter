@@ -827,9 +827,9 @@ func log_script_generation():
 	# Step 2: Write the log entry once (after collecting all rules)
 	file.store_string("Timestamp: %s\n" % timestamp)
 	file.store_string("cycle_id: %d\n" % log_cycles)
-	file.store_string("script:\n" + JSON.stringify(simplified_rules, "  ") + "\n")
+	file.store_string("script:" + JSON.stringify(simplified_rules, "  ") + "\n")
 	
-	file.store_string("executed_rules:\n" + JSON.stringify(cycle_used_rules) + "\n")
+	file.store_string("executed_rules:" + JSON.stringify(cycle_used_rules) + "\n")
 	
 	file.store_string("parameters: %s\n" % JSON.stringify({
 		"upper_attacks_taken": upper_attacks_taken,
