@@ -617,18 +617,18 @@ func generate_script():
 	
 	DistributeRemainder()
 	_create_new_script()
-	_reset_rule_usage()
+	send_script_to_lstm()
 	print("New script generated with weights")
 	printSumWeights()
+	_reset_rule_usage()
 	
 	# ✅ Send the new script to LSTM server
-	var script_data = {
-		"timestamp": Time.get_datetime_string_from_system(),
-		"cycle_id": log_cycles,
-		"script": DSscript,
-		"fitness": fitness
-	}
-	send_script_to_lstm(script_data)
+	#var script_data = {
+		#"timestamp": Time.get_datetime_string_from_system(),
+		#"cycle_id": log_cycles,
+		#"script": DSscript,
+		#"fitness": fitness
+	#}
 	#print("Sent script:" script_data)
 
 func calculateFitness():
@@ -974,13 +974,59 @@ func _on_data_received():
 		print("📨 LSTM suggestion received:", data)
 		_apply_lstm_recommendations(data)
 
-func send_script_to_lstm(script_data: Dictionary):
-	if connected:
-		var json_data = JSON.stringify(script_data)
-		websocket.send_text(json_data)
-		print("📤 Script sent to LSTM server:", script_data)
-	else:
-		print("⚠️ Not connected to LSTM server")
+func send_script_to_lstm():
+	if not connected:
+			print("⚠️ Not connected to LSTM server — skipping send.")
+			return
+	
+	if not FileAccess.file_exists(log_file_path):
+		print("⚠️ Log file not found:", log_file_path)
+		return
+	
+	var file = FileAccess.open(log_file_path, FileAccess.READ)
+	if not file:
+		print("⚠️ Failed to open log file.")
+		return
+	
+	# Read the entire file content
+	var content = file.get_as_text()
+	file.close()
+	
+	# Split the content by lines
+	var lines = content.split("\n", false)
+	var latest_cycle_data = []
+	var found_latest = false
+	
+	# We look for the last occurrence of "cycle_id:"
+	for i in range(lines.size() - 1, -1, -1):
+		if lines[i].begins_with("cycle_id:"):
+			# Found the start of the latest cycle
+			found_latest = true
+			# Collect lines from here to the next Timestamp (or end)
+			for j in range(i, lines.size()):
+				if lines[j].begins_with("Timestamp:") and j != i:
+					break
+				latest_cycle_data.append(lines[j])
+			break
+	
+	if not found_latest:
+		print("⚠️ No cycle_id found in log file.")
+		return
+	
+	# ✅ Join manually (Godot 4 fix)
+	var latest_block = ""
+	for line in latest_cycle_data:
+		latest_block += line + "\n"
+	
+	print("📄 Latest log cycle content:\n" + latest_block)
+	
+	# ✅ Send this entire formatted text to LSTM
+	websocket.send_text(latest_block)
+	print("📤 Sent latest log cycle to LSTM server.")
+
+
+
+
 
 
 func _apply_lstm_recommendations(recommendations):
