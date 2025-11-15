@@ -5,7 +5,7 @@ script:[
     "action": "dash_forward",
     "distance": 325,
     "rule_id": 1,
-    "was_used": true,
+    "was_used": false,
     "weight": 0.5
   },
   {
@@ -77,6 +77,13 @@ script:[
     "rule_id": 2,
     "was_used": false,
     "weight": 0.5
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": true,
+    "weight": 0.5
   }
 ]
 executed_rules:[5,3]
@@ -107,9 +114,9 @@ script:[
     "weight": 0.502666666666667
   },
   {
-    "action": "crouch_lightKick",
-    "distance": 325,
-    "rule_id": 4,
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
     "was_used": false,
     "weight": 0.5
   },

@@ -83,6 +83,11 @@ var fitness = 0.5
 #CALCULATING THE ACTION 
 var last_action: String
 
+# Chart-related variables
+var chart_panel: Node = null
+var recent_used_rules_this_cycle: Array = []
+var total_rules_used: int
+
 #ONREADY VARIABLES FOR THE CURRENT PLAYER
 @onready var animation = $AnimationPlayer
 @onready var characterSprite = $AnimatedSprite2D
@@ -213,6 +218,8 @@ func _ready():
 	start_script_generation_timer()
 	init_log_file()
 	
+	initialize_chart_support()
+	
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
 			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
@@ -252,7 +259,65 @@ func initialize_character_state():
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
 		
 	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
+	
+func initialize_chart_support():
+	# This will be called from the game scene to set up chart reference
+	pass
 
+func set_chart_panel(panel_node):
+	chart_panel = panel_node
+	
+func get_rule_ids() -> Array:
+	var ids = []
+	for rule in rules:
+		ids.append(rule["ruleID"])
+	return ids
+	
+func get_recent_used_rules() -> Array:
+	var recent = recent_used_rules_this_cycle.duplicate()
+	recent_used_rules_this_cycle.clear()
+	return recent
+
+func get_advanced_metrics() -> Dictionary:
+	var metrics = {
+		"aggression_score": calculate_aggression_score(),
+		"defense_score": calculate_defense_score(),
+		"efficiency_score": calculate_efficiency_score(),
+		"adaptability_score": calculate_adaptability_score()
+	}
+	return metrics
+
+func calculate_aggression_score() -> float:
+	var total_attacks = upper_attacks_landed + lower_attacks_landed
+	var total_actions = total_rules_used
+	if total_actions == 0:
+		return 0.0
+	return float(total_attacks) / total_actions
+
+func calculate_defense_score() -> float:
+	var total_defenses = upper_attacks_blocked + lower_attacks_blocked
+	var total_hits_taken = upper_attacks_taken + lower_attacks_taken
+	if total_hits_taken == 0:
+		return 1.0
+	return float(total_defenses) / total_hits_taken
+
+func calculate_efficiency_score() -> float:
+	var successful_attacks = upper_attacks_landed + lower_attacks_landed
+	var total_attacks_attempted = successful_attacks + (upper_attacks_blocked + lower_attacks_blocked)
+	if total_attacks_attempted == 0:
+		return 0.0
+	return float(successful_attacks) / total_attacks_attempted
+
+func calculate_adaptability_score() -> float:
+	# Measure how many different rules are being used
+	var unique_rules_used = 0
+	for rule in rules:
+		if rule.get("wasUsed", false):
+			unique_rules_used += 1
+	
+	if rules.size() == 0:
+		return 0.0
+	return float(unique_rules_used) / rules.size()
 
 func start_script_generation_timer():
 	add_child(generateScript_timer)
@@ -421,10 +486,17 @@ func evaluate_and_execute(rules: Array):
 
 	# Sort matched rules by prioritization (highest first)
 	matched_rules.sort_custom(_sort_by_priority_desc)
+	
 
 	if matched_rules.size() > 0:
 		var rule_index = matched_rules[0]
 		var rule = rules[rule_index]
+		
+		# TRACK RULE USAGE FOR CHARTS
+		recent_used_rules_this_cycle.append(rule["ruleID"])
+		if chart_panel and chart_panel.has_method("record_rule_usage"):
+			chart_panel.record_rule_usage(rule["ruleID"])
+
 		var actions = rule.get("enemy_actions", [])
 
 		if actions.size() == 0:
@@ -472,6 +544,7 @@ func _execute_actions(actions: Array):
 		return
 	
 	for action in actions:
+		total_rules_used += 1
 		_execute_single_action(action)
 
 func _execute_single_action(action):

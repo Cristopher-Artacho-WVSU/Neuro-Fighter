@@ -1,4 +1,4 @@
-# res://Scripts/UI/MainMenuEnhanced.gd
+# res://Scripts/UI/MainMenu.gd
 extends Control
 
 # UI elements - Use @onready but with null checks
