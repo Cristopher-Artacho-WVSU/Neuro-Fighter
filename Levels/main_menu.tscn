@@ -61,16 +61,6 @@ text = "NDS"
 layout_mode = 2
 text = "FSM"
 
-[node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
-layout_mode = 2
-
-[node name="LoadLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/LoadPanel"]
-layout_mode = 2
-text = "Load Saved"
-
-[node name="SavedStatesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/LoadPanel"]
-layout_mode = 2
-
 [node name="PercentageDisplay" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
 layout_mode = 2
 
@@ -81,6 +71,21 @@ text = "AI Performance:"
 [node name="PercentageValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/PercentageDisplay"]
 layout_mode = 2
 text = "100%"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/ScrollContainer"]
+layout_mode = 2
+
+[node name="LoadLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/ScrollContainer/LoadPanel"]
+layout_mode = 2
+text = "Load Saved"
+
+[node name="SavedStatesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/ScrollContainer/LoadPanel"]
+layout_mode = 2
 
 [node name="RightPlayerPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -116,16 +121,6 @@ text = "NDS"
 layout_mode = 2
 text = "FSM"
 
-[node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
-layout_mode = 2
-
-[node name="LoadLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/LoadPanel"]
-layout_mode = 2
-text = "Load Saved"
-
-[node name="SavedStatesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/LoadPanel"]
-layout_mode = 2
-
 [node name="PercentageDisplay" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
 layout_mode = 2
 
@@ -136,6 +131,21 @@ text = "AI Performance:"
 [node name="PercentageValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/PercentageDisplay"]
 layout_mode = 2
 text = "100%"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="LoadPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/ScrollContainer"]
+layout_mode = 2
+
+[node name="LoadLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/ScrollContainer/LoadPanel"]
+layout_mode = 2
+text = "Load Saved"
+
+[node name="SavedStatesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/ScrollContainer/LoadPanel"]
+layout_mode = 2
 
 [node name="NDSAIPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
