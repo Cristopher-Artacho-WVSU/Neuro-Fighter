@@ -10,11 +10,11 @@ extends CharacterBody2D
 @onready var generateScript_timer = Timer.new()
 
 #ONREADY VARIABLES FOR THE OTHER PLAYER
-@onready var enemy = get_parent().get_node("PlayerCharacter1")
-@onready var enemyAnimation = enemy.get_node("AnimationPlayer")
-@onready var enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody")
-@onready var enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody")
-@onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
+var enemy: CharacterBody2D = null
+var enemyAnimation: AnimationPlayer = null
+var enemy_UpperHurtbox: Area2D = null
+var enemy_LowerHurtbox: Area2D = null
+var prev_distance_to_enemy: float = 0.0
 
 #ADDONS
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -61,9 +61,30 @@ const crouch_heavyPunch_Range = 315
 const crouch_lightPunch_Range = 315
 const crouch_lightKick_Range = 325
 
-
+func find_enemy_automatically():
+	# Look for other CharacterBody2D in parent scene
+	var parent = get_parent()
+	if parent:
+		for child in parent.get_children():
+			if child is CharacterBody2D and child != self:
+				enemy = child
+				break
+	
+	if not enemy:
+		push_error("No enemy found for controller: " + name)
+	
+	if enemy:
+		cache_enemy_components()
+	
+func cache_enemy_components():
+	if enemy:
+		enemyAnimation = enemy.get_node("AnimationPlayer") if enemy.has_node("AnimationPlayer") else null
+		enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody") if enemy.has_node("Hurtbox_UpperBody") else null
+		enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody") if enemy.has_node("Hurtbox_LowerBody") else null
+		prev_distance_to_enemy = abs(enemy.position.x - position.x)
 
 func _ready() -> void:
+	find_enemy_automatically()
 	var is_defending = false
 	var is_hurt = false
 	var is_attacking = false

@@ -3,10 +3,10 @@ extends CharacterBody2D
 #ONREADY VARIABLES
 @onready var animation = $AnimationPlayer
 @onready var characterSprite = $AnimatedSprite2D
-@onready var enemy = get_parent().get_node("NPCCharacter1")
+@onready var enemy: CharacterBody2D = null
 @onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
 @onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
-@onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
+@onready var prev_distance_to_enemy: float = 0.0
 
 #ADDONS
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -48,7 +48,23 @@ var slide_duration: float = 0.4
 var slide_timer: float = 0.0
 var slide_direction: int = 0
 
+func find_enemy_automatically():
+	# Look for other CharacterBody2D in parent scene
+	var parent = get_parent()
+	if parent:
+		for child in parent.get_children():
+			if child is CharacterBody2D and child != self:
+				enemy = child
+				break
+	
+	if not enemy:
+		push_error("No enemy found for controller: " + name)
+	
+	if enemy:
+		prev_distance_to_enemy = abs(enemy.position.x - position.x)
+		
 func _ready():
+	find_enemy_automatically()
 	#	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
@@ -59,7 +75,6 @@ func _ready():
 	if $Hurtbox_LowerBody and not $Hurtbox_LowerBody.is_connected("area_entered", _on_hurtbox_lower_body_area_entered):
 		$Hurtbox_LowerBody.connect("area_entered", _on_hurtbox_lower_body_area_entered)
 
- 
 func _physics_process(delta):
 	update_facing_direction()
 	applyGravity(delta)
