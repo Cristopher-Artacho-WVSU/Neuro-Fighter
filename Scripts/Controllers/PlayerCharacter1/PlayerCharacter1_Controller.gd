@@ -38,15 +38,24 @@ var hitstop_id: int = 0
 var is_in_global_hitstop: bool = false
 var is_recently_hit: bool = false
 
-# DOUBLE DASH
+#DOUBLE TAP SYSTEM
 var last_move_input_time: float = 0.0
 var last_move_direction: int = 0
-var double_tap_threshold: float = 0.3  # Time window for double tap
+var double_tap_threshold: float = 0.25 #DOUBLE TAP WINDOW TO TRIGGER SLIDE
 var is_sliding: bool = false
-var slide_speed: float = 800  # Faster than normal dash
-var slide_duration: float = 0.4
+var slide_speed: float = 800 #SLIDE SPEED
+var slide_duration: float = 0.4 #SLIDE DURATION
 var slide_timer: float = 0.0
 var slide_direction: int = 0
+var can_slide: bool = true
+var slide_cooldown: float = 0.5 #COOLDOWN TO SLIDE AGAIN
+var slide_cooldown_timer: float = 0.0
+var left_key_just_pressed: bool = false
+var right_key_just_pressed: bool = false
+var input_buffer: Array = []
+var max_buffer_size: int = 4
+
+
 
 func find_enemy_automatically():
 	# Look for other CharacterBody2D in parent scene
@@ -64,6 +73,7 @@ func find_enemy_automatically():
 		prev_distance_to_enemy = abs(enemy.position.x - position.x)
 		
 func _ready():
+	set_process_input(true)
 	find_enemy_automatically()
 	#	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
@@ -75,18 +85,86 @@ func _ready():
 	if $Hurtbox_LowerBody and not $Hurtbox_LowerBody.is_connected("area_entered", _on_hurtbox_lower_body_area_entered):
 		$Hurtbox_LowerBody.connect("area_entered", _on_hurtbox_lower_body_area_entered)
 
+func _input(event):
+	if not event is InputEventKey or not event.pressed or event.echo:
+		return
+	
+	if event.is_action("move_left") or event.is_action("ui_left"):
+		handle_double_tap_input(-1, "left")
+	elif event.is_action("move_right") or event.is_action("ui_right"):
+		handle_double_tap_input(1, "right")
+
+func handle_double_tap_input(direction: int, input_name: String):
+	var current_time = Time.get_unix_time_from_system()
+
+	input_buffer.push_back({"time": current_time, "direction": direction, "name": input_name})
+	
+	if input_buffer.size() > max_buffer_size:
+		input_buffer.pop_front()
+	
+	check_double_tap_pattern()
+
+func check_double_tap_pattern():
+	var current_time = Time.get_unix_time_from_system()
+	
+	# We need at least 2 inputs to check for double tap
+	if input_buffer.size() < 2:
+		return
+	
+	# Get the two most recent inputs
+	var first_input = input_buffer[input_buffer.size() - 2]
+	var second_input = input_buffer[input_buffer.size() - 1]
+	
+	# Check if they're the same direction and within threshold
+	if (first_input.direction == second_input.direction and 
+		(second_input.time - first_input.time) < double_tap_threshold):
+		
+		# Attempt to slide
+		if can_slide and not is_sliding:
+			start_slide(second_input.direction)
+			
+			# Clear buffer after successful double tap to prevent immediate re-trigger
+			input_buffer.clear()
+			last_move_input_time = 0.0
+			last_move_direction = 0
+
+
 func _physics_process(delta):
 	update_facing_direction()
 	applyGravity(delta)
 	
-	MovementSystem(delta)
-	AttackSystem()
-	DefenseSystem(delta)
-	handle_double_tap_movement(delta)
-	#debug_states()
+	# Update slide cooldown
+	if slide_cooldown_timer > 0:
+		slide_cooldown_timer -= delta
+		if slide_cooldown_timer <= 0:
+			can_slide = true
+			
+	if is_sliding:
+		handle_slide_movement(delta)
+	else:
+		# Only process normal movement when not sliding
+		MovementSystem(delta)
+		AttackSystem()
+		DefenseSystem(delta)
+	
 	move_and_slide()
 
+func handle_slide_movement(delta):
+	slide_timer -= delta
+	velocity.x = slide_direction * slide_speed
+	
+	## Apply braking in the last 20% of slide for smooth stop
+	#if slide_timer <= slide_duration * 0.2:
+		#velocity.x = lerp(velocity.x, 0.0, 0.3)
+	
+	# End slide completely when timer expires
+	if slide_timer <= 0:
+		end_slide()
+
 func MovementSystem(delta):
+	if is_sliding:
+		return
+		
 	if is_attacking || is_defending || is_hurt:
 		return
 	
@@ -118,6 +196,9 @@ func MovementSystem(delta):
 
 
 func handle_dash_movement(forward: bool, backward: bool, delta: float):
+	if is_sliding:
+		return
+		
 	if not is_dashing and not is_jumping:
 		if forward:
 			start_dash(1)
@@ -132,6 +213,9 @@ func handle_dash_movement(forward: bool, backward: bool, delta: float):
 			velocity.x = 0
 
 func handle_movement_animations(curr_distance_to_enemy: float):
+	if is_sliding:
+		return
+		
 	if not is_crouching and not is_jumping and not is_dashing and not is_attacking and not is_hurt:
 		animation.play("idle")
 		velocity.x = 0
@@ -150,47 +234,19 @@ func handle_movement_animations(curr_distance_to_enemy: float):
 func start_dash(direction):
 	is_dashing = true
 	dash_direction = direction
-	dash_timer = dash_time
-
-func handle_double_tap_movement(delta):
-	if is_sliding:
-		slide_timer -= delta
-		velocity.x = slide_direction * slide_speed
-		
-		if slide_timer <= 0:
-			is_sliding = false
-			velocity.x = 0
-		return
-	
-	# Don't process double taps while sliding
-	if is_sliding:
-		return
-	
-	var current_time = Time.get_unix_time_from_system()
-	var input_direction = 0
-	
-	# Check for movement input
-	if Input.is_action_pressed("ui_right"):
-		input_direction = 1
-	elif Input.is_action_pressed("ui_left"):
-		input_direction = -1
-	else:
-		return
-	
-	# Check for double tap
-	if input_direction == last_move_direction and (current_time - last_move_input_time) < double_tap_threshold:
-		start_slide(input_direction)
-	
-	last_move_direction = input_direction
-	last_move_input_time = current_time
+	dash_timer = dash_time	
 
 func start_slide(direction: int):
-	if is_attacking || is_jumping || is_defending || is_hurt || is_sliding:
+	if is_attacking || is_jumping || is_defending || is_hurt || is_sliding || !can_slide:
+		print("Cannot slide - blocked by current state")
 		return
 	
 	is_sliding = true
 	slide_direction = direction
 	slide_timer = slide_duration
+	
+	is_dashing = false
+	velocity.x = 0
 	
 	# Play slide animation if available, otherwise use dash animation
 	if animation.has_animation("slide"):
@@ -200,6 +256,12 @@ func start_slide(direction: int):
 	
 	print("Slide movement activated!")
 
+func end_slide():
+	is_sliding = false
+	velocity.x = 0
+	slide_cooldown_timer = slide_cooldown
+	can_slide = false
+	print("Slide ended. Cooldown: ", slide_cooldown, " seconds")
 
 # ===== COMBAT SYSTEM =====
 func AttackSystem():
@@ -357,8 +419,10 @@ func _on_animation_finished(anim_name):
 			is_attacking = false
 			is_defending = false
 			is_dashing = false
-	velocity.x = 0
-	animation.play("idle")
+			
+	if not is_sliding and not is_attacking and not is_hurt:
+		velocity.x = 0
+		animation.play("idle")
 
 func KO():
 	animation.play("knocked_down")
