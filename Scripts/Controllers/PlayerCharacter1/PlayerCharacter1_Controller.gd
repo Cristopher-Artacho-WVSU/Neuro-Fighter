@@ -178,7 +178,7 @@ func MovementSystem(delta):
 	if jump and not is_jumping:
 		animation.play("jump")
 		print("Jumped")
-		velocity.y = -1200.0
+		velocity.y = -1700.0
 		is_jumping = true
 	
 	# Handle Crouch
