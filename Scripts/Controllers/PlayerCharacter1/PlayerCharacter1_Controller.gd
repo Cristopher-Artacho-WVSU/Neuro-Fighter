@@ -13,9 +13,9 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 #JUMP PARAMETERS
 var jump_speed = 3000
-var fall_multiplier = 5.0
-var jump_multiplier = 1.6
-var jump_force = -1200.0
+var fall_multiplier = 7.0
+var jump_multiplier = 2.6
+var jump_force = -2000.0
 #MOVEMENT
 var dash_speed = 300
 var dash_time = 0.5
