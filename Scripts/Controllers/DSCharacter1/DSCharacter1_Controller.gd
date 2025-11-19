@@ -1,3 +1,5 @@
+#res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd
+
 extends CharacterBody2D
 
 #ADDONS
@@ -36,6 +38,16 @@ var is_attacking = false
 var is_defending = false
 var is_hurt = false
 
+# DOUBLE DASH
+var is_sliding: bool = false
+var slide_speed: float = 800
+var slide_duration: float = 0.4
+var slide_timer: float = 0.0
+var slide_direction: int = 0
+var can_slide: bool = true
+var slide_cooldown: float = 0.5
+var slide_cooldown_timer: float = 0.0
+
 #SCRIPT VALUES
 var ruleScript = 5
 var current_rule_dict: Dictionary = {}
@@ -61,13 +73,20 @@ var maxWeight = 1.0
 #LOGGING PURPOSES
 var log_file_path = "res://training.txt"
 var cycle_used_rules = []
+var log_cycles = 0
+
 
 var ai_state_manager: Node
 #SAVED AI FITNESS
 var current_fitness = 0.5
-
+var fitness = 0.5
 #CALCULATING THE ACTION 
 var last_action: String
+
+# Chart-related variables
+var chart_panel: Node = null
+var recent_used_rules_this_cycle: Array = []
+var total_rules_used: int
 
 #ONREADY VARIABLES FOR THE CURRENT PLAYER
 @onready var animation = $AnimationPlayer
@@ -77,100 +96,157 @@ var last_action: String
 @onready var playerDetails = get_parent().get_node("PlayerDetailsUI/Player2Details")
 @onready var generateScript_timer = Timer.new()
 
-#ONREADY VARIABLES FOR THE OTHER PLAYER
-@onready var enemy = get_parent().get_node("PlayerCharacter1")
-@onready var enemyAnimation = enemy.get_node("AnimationPlayer")
-@onready var enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody")
-@onready var enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody")
-@onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
+var enemy: CharacterBody2D = null
+var enemyAnimation: AnimationPlayer = null
+var enemy_UpperHurtbox: Area2D = null
+var enemy_LowerHurtbox: Area2D = null
+var prev_distance_to_enemy: float = 0.0
 
 var rules = [
-	#{
-		#"ruleID": 1, "prioritization": 1,
-		#"conditions": { "distance": { "op": ">=", "value": 325 } },
-		#"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 2, "prioritization": 11,
-		#"conditions": { "distance": { "op": "<=", "value": 325 } },
-		#"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 3, "prioritization": 12,
-		#"conditions": { "distance": { "op": "<=", "value": 315 } },
-		#"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 4, "prioritization": 13,
-		#"conditions": { "distance": { "op": "<=", "value": 325 } },
-		#"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 5, "prioritization": 14,
-		#"conditions": { "distance": { "op": "<=", "value": 315 } },
-		#"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 6, "prioritization": 41,
-		#"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
-		#"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 7, "prioritization": 42,
-		#"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
-		#"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 8, "prioritization": 2,
-		#"conditions": { "distance": { "op": "<=", "value": 315 } },
-		#"enemy_action": ["dash_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 9, "prioritization": 23,
-		#"conditions": {  "enemy_anim": "light_kick", "distance": { "op": "<=", "value": 345 },  "upper_attacks_taken": { "op": ">=", "value": 1 } },
-		#"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 10, "prioritization": 24,
-		#"conditions": {  "enemy_anim": "light_punch", "distance": { "op": "<=", "value": 315 } },
-		#"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 11, "prioritization": 100,
-		#"conditions": { "player_anim": "idle" },
-		#"enemy_action": ["idle"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-	#{
-		#"ruleID": 12, "prioritization": 51,
-		#"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		#"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-		#{
-		#"ruleID": 13, "prioritization": 42,
-		#"conditions": { "distance": { "op": ">=", "value": 315 }, "lower_attacks_landed": { "op": ">=", "value": 1 } },
-		#"enemy_action": ["crouch_heavyPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-		#{
-		#"ruleID": 14, "prioritization": 52,
-		#"conditions": { "distance": { "op": "<=", "value": 350 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		#"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
-		#{
-		#"ruleID": 15, "prioritization": 53,
-		#"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
-		#"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
-	#},
+	{
+		"ruleID": 1, "prioritization": 1,
+		"conditions": { "distance": { "op": ">=", "value": 325 } },
+		"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 2, "prioritization": 11,
+		"conditions": { "distance": { "op": "<=", "value": 325 } },
+		"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 3, "prioritization": 12,
+		"conditions": { "distance": { "op": "<=", "value": 315 } },
+		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 4, "prioritization": 13,
+		"conditions": { "distance": { "op": "<=", "value": 325 } },
+		"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 5, "prioritization": 14,
+		"conditions": { "distance": { "op": "<=", "value": 315 } },
+		"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 6, "prioritization": 41,
+		"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 7, "prioritization": 42,
+		"conditions": { "distance": { "op": ">=", "value": 345 }, "upper_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 8, "prioritization": 2,
+		"conditions": { "distance": { "op": "<=", "value": 315 } },
+		"enemy_action": ["dash_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 9, "prioritization": 23,
+		"conditions": {  "enemy_anim": "light_kick", "distance": { "op": "<=", "value": 345 },  "upper_attacks_taken": { "op": ">=", "value": 1 } },
+		"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 10, "prioritization": 24,
+		"conditions": {  "enemy_anim": "light_punch", "distance": { "op": "<=", "value": 315 } },
+		"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 11, "prioritization": 100,
+		"conditions": { "player_anim": "idle" },
+		"enemy_action": ["idle"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 12, "prioritization": 51,
+		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 13, "prioritization": 42,
+		"conditions": { "distance": { "op": ">=", "value": 315 }, "lower_attacks_landed": { "op": ">=", "value": 1 } },
+		"enemy_action": ["crouch_heavyPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 14, "prioritization": 52,
+		"conditions": { "distance": { "op": "<=", "value": 350 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 15, "prioritization": 53,
+		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
+		"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 16, "prioritization": 44,
+		"conditions": { 
+			"distance": { "op": ">=", "value": 400 },
+			"rand_chance": { "op": ">=", "value": 0.3 }
+		},
+		"enemy_action": ["slide_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 17, "prioritization": 55,
+		"conditions": { 
+			"distance": { "op": "<=", "value": 180 },
+			"upper_attacks_taken": { "op": ">=", "value": 2 },
+			"rand_chance": { "op": ">=", "value": 0.4 }
+		},
+		"enemy_action": ["slide_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 18, "prioritization": 33,
+		"conditions": { 
+			"distance": { "op": ">=", "value": 350 },
+			"lower_attacks_landed": { "op": ">=", "value": 1 },
+			"rand_chance": { "op": ">=", "value": 0.5 }
+		},
+		"enemy_action": ["slide_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	}
 ]
+
+func find_enemy_automatically():
+	# Look for other CharacterBody2D in parent scene
+	var parent = get_parent()
+	if parent:
+		for child in parent.get_children():
+			if child is CharacterBody2D and child != self:
+				enemy = child
+				break
+	
+	if not enemy:
+		push_error("No enemy found for controller: " + name)
+	
+	if enemy:
+		cache_enemy_components()
+
+func cache_enemy_components():
+	if enemy:
+		enemyAnimation = enemy.get_node("AnimationPlayer") if enemy.has_node("AnimationPlayer") else null
+		enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody") if enemy.has_node("Hurtbox_UpperBody") else null
+		enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody") if enemy.has_node("Hurtbox_LowerBody") else null
+		prev_distance_to_enemy = abs(enemy.position.x - position.x)
 
 # ===== INITIALIZATION =====
 func _ready():
+	find_enemy_automatically()
 	updateDetails()
-	if enemy and enemy.has_node("AnimationPlayer"):
-		print("AnimationPlayer of Enemy detected")
 	
 	initialize_ai_state_manager()
 	initialize_character_state()
 	start_script_generation_timer()
+	init_log_file()
+	
+	initialize_chart_support()
+	
+	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
+		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
+			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
+			
+	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
+		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
+			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
 
 func initialize_ai_state_manager():
 	ai_state_manager = get_node("/root/AI_StateManager")
@@ -198,15 +274,70 @@ func initialize_character_state():
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
 		DSscript.append(rules[i])
-#	FOR MOST ANIMATIONS
+##	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
-#	FOR DAMAGED ANIMATONS
-	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 		
 	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
+	
+func initialize_chart_support():
+	# This will be called from the game scene to set up chart reference
+	pass
 
+func set_chart_panel(panel_node):
+	chart_panel = panel_node
+	
+func get_rule_ids() -> Array:
+	var ids = []
+	for rule in rules:
+		ids.append(rule["ruleID"])
+	return ids
+	
+func get_recent_used_rules() -> Array:
+	var recent = recent_used_rules_this_cycle.duplicate()
+	recent_used_rules_this_cycle.clear()
+	return recent
+
+func get_advanced_metrics() -> Dictionary:
+	var metrics = {
+		"aggression_score": calculate_aggression_score(),
+		"defense_score": calculate_defense_score(),
+		"efficiency_score": calculate_efficiency_score(),
+		"adaptability_score": calculate_adaptability_score()
+	}
+	return metrics
+
+func calculate_aggression_score() -> float:
+	var total_attacks = upper_attacks_landed + lower_attacks_landed
+	var total_actions = total_rules_used
+	if total_actions == 0:
+		return 0.0
+	return float(total_attacks) / total_actions
+
+func calculate_defense_score() -> float:
+	var total_defenses = upper_attacks_blocked + lower_attacks_blocked
+	var total_hits_taken = upper_attacks_taken + lower_attacks_taken
+	if total_hits_taken == 0:
+		return 1.0
+	return float(total_defenses) / total_hits_taken
+
+func calculate_efficiency_score() -> float:
+	var successful_attacks = upper_attacks_landed + lower_attacks_landed
+	var total_attacks_attempted = successful_attacks + (upper_attacks_blocked + lower_attacks_blocked)
+	if total_attacks_attempted == 0:
+		return 0.0
+	return float(successful_attacks) / total_attacks_attempted
+
+func calculate_adaptability_score() -> float:
+	# Measure how many different rules are being used
+	var unique_rules_used = 0
+	for rule in rules:
+		if rule.get("wasUsed", false):
+			unique_rules_used += 1
+	
+	if rules.size() == 0:
+		return 0.0
+	return float(unique_rules_used) / rules.size()
 
 func start_script_generation_timer():
 	add_child(generateScript_timer)
@@ -220,6 +351,8 @@ func _physics_process(delta):
 	updateDetails()
 	update_facing_direction()
 	applyGravity(delta)
+	
+	handle_slide_movement(delta)
 	
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
 		evaluate_and_execute(rules)
@@ -277,7 +410,43 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 			animation.play("move_backward")
 	
 	prev_distance_to_enemy = curr_distance_to_enemy
+	
+func handle_slide_movement(delta):
+	# Update slide cooldown
+	if slide_cooldown_timer > 0:
+		slide_cooldown_timer -= delta
+		if slide_cooldown_timer <= 0:
+			can_slide = true
+	
+	if is_sliding:
+		slide_timer -= delta
+		velocity.x = slide_direction * slide_speed
+		
+		if slide_timer <= 0:
+			is_sliding = false
+			velocity.x = 0
+			# Start cooldown
+			slide_cooldown_timer = slide_cooldown
+			can_slide = false
+			
+func start_slide(direction: int):
+	if is_attacking || is_jumping || is_defending || is_hurt || is_sliding || !can_slide:
+		return
+	
+	is_sliding = true
+	slide_direction = direction
+	slide_timer = slide_duration
+	
+	# Play slide animation
+	if animation.has_animation("slide"):
+		animation.play("slide")
+	else:
+		animation.play("move_forward" if direction > 0 else "move_backward")
+	
+	print("AI Slide movement activated!")
 
+func can_perform_slide() -> bool:
+	return can_slide and not is_sliding and is_on_floor() and not is_jumping
 
 func evaluate_and_execute(rules: Array):
 	var enemy_anim = enemyAnimation.current_animation
@@ -288,6 +457,22 @@ func evaluate_and_execute(rules: Array):
 		var rule = DSscript[i]
 		var conditions = rule["conditions"]
 		var match_all = true
+		
+		# Check if this is a slide rule and if sliding is available
+		var is_slide_rule = false
+		var actions = rule.get("enemy_actions", [])
+		if actions.size() == 0:
+			var raw_action = rule.get("enemy_action", "idle")
+			actions = [raw_action] if typeof(raw_action) == TYPE_STRING else raw_action
+		
+		for action in actions:
+			if action == "slide_forward" or action == "slide_backward":
+				is_slide_rule = true
+				break
+		
+		# Skip slide rules if sliding is not available
+		if is_slide_rule and not can_perform_slide():
+			continue
 		
 		if match_all and "distance" in conditions:
 			var cond = conditions["distance"]
@@ -321,10 +506,17 @@ func evaluate_and_execute(rules: Array):
 
 	# Sort matched rules by prioritization (highest first)
 	matched_rules.sort_custom(_sort_by_priority_desc)
+	
 
 	if matched_rules.size() > 0:
 		var rule_index = matched_rules[0]
 		var rule = rules[rule_index]
+		
+		# TRACK RULE USAGE FOR CHARTS
+		recent_used_rules_this_cycle.append(rule["ruleID"])
+		if chart_panel and chart_panel.has_method("record_rule_usage"):
+			chart_panel.record_rule_usage(rule["ruleID"])
+
 		var actions = rule.get("enemy_actions", [])
 
 		if actions.size() == 0:
@@ -372,6 +564,7 @@ func _execute_actions(actions: Array):
 		return
 	
 	for action in actions:
+		total_rules_used += 1
 		_execute_single_action(action)
 
 func _execute_single_action(action):
@@ -400,13 +593,13 @@ func _execute_single_action(action):
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		"standing_defense":
 			if is_on_floor():
 				if not is_jumping:
 					animation.play("standing_block")
 					is_defending = true
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		"dash_forward":
 			if is_on_floor():
 				if not is_jumping:
@@ -422,6 +615,15 @@ func _execute_single_action(action):
 					animation.play("move_backward")
 					#print("dash_backward")
 					#_connect_animation_finished()
+		"slide_forward":
+			if is_on_floor() and not is_jumping and can_slide:
+				var direction = 1 if enemy.global_position.x > global_position.x else -1
+				start_slide(direction)
+				
+		"slide_backward":
+			if is_on_floor() and not is_jumping and can_slide:
+				var direction = -1 if enemy.global_position.x > global_position.x else 1
+				start_slide(direction)
 		"jump":
 			if is_on_floor():
 				if not is_jumping:
@@ -429,18 +631,18 @@ func _execute_single_action(action):
 					print("Jumped")
 					velocity.y = jump_force
 					is_jumping = true
-					_connect_animation_finished()
+					#_connect_animation_finished()
 				
 		"jump_forward":
 			if is_on_floor():
 				if not is_jumping:
 					animation.play("jump_forward")
 					print("Jumped")
-					var direction = 1 if enemy.global_position.x > global_position.x else -1
+					var direction = -1 if enemy.global_position.x > global_position.x else 1
 					MovementSystem(direction)
 					velocity.y = jump_force
 					is_jumping = true
-					_connect_animation_finished()
+					#_connect_animation_finished()
 				
 		"jump_backward":
 			if is_on_floor():
@@ -451,7 +653,7 @@ func _execute_single_action(action):
 					MovementSystem(direction)
 					velocity.y = jump_force
 					is_jumping = true
-					_connect_animation_finished()
+					#_connect_animation_finished()
 					
 		"crouch":
 			if is_on_floor():
@@ -459,7 +661,7 @@ func _execute_single_action(action):
 					animation.play("crouch")
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		"crouch_lightKick":
 			if is_on_floor():
 				if not is_jumping:
@@ -467,7 +669,7 @@ func _execute_single_action(action):
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		"crouch_lightPunch":
 			if is_on_floor():
 				if not is_jumping:
@@ -475,7 +677,7 @@ func _execute_single_action(action):
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 					
 		"heavy_punch":
 			if is_on_floor():
@@ -492,22 +694,22 @@ func _execute_single_action(action):
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 					
-		"crouch_lightPunch":
+		"crouch_heavyPunch":
 			if is_on_floor():
 				if not is_jumping:
 					animation.play("crouch_heavyPunch")
 					is_attacking = true
 					velocity.x = 0
 					velocity.y = 0
-					_connect_animation_finished()
+					#_connect_animation_finished()
 		_:
 			print("Unknown action: %s" % str(action))
 	last_action = action
 	#print(last_action)
 	#is_dashing = false
-	_connect_animation_finished()
+	#_connect_animation_finished()
 
 func debug_states():
 	print("is_dashing: ", is_dashing)
@@ -520,11 +722,6 @@ func debug_states():
 	print("is_on_floor(): ", is_on_floor())
 	pass
 
-#PASS ANIM NAME TO THE _on_animation_finished FUNCTION
-func _connect_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
-
 #FOR ANIMATIONS IN ORDER TO NOT GET CUT OFF
 func _on_animation_finished(anim_name: String):
 	match anim_name:
@@ -532,18 +729,22 @@ func _on_animation_finished(anim_name: String):
 			is_attacking = false
 		"standing_block":
 			is_defending = false
-		"hurt", "crouch_hurt":
+		"hurt", "crouch_hurt", "light_hurt", "heavy_hurt"	:
 			is_hurt = false
-		"jump":
+			is_attacking = false
+			is_defending = false
+			is_dashing = false
+		"jump", "jump_forward", "jump_backward":
 			is_jumping = false
 		"crouch":
 			is_crouching = false
-		"move_forward":
-			is_dashing = false
-		"move_backward":
+		"move_forward", "move_backward":
 			is_dashing = false
 			velocity.x = 0
-			animation.play("idle")
+		"slide":
+			is_sliding = false
+			velocity.x = 0
+	#animation.play("idle")
 			
 
 func generate_script():
@@ -563,7 +764,7 @@ func generate_script():
 		return
 		
 	inactive = ruleScript - active
-	var fitness = calculateFitness()
+	fitness = calculateFitness()
 	
 	# Calculate weight adjustment
 	var weightAdjustment = calculateAdjustment(fitness)
@@ -673,14 +874,6 @@ func DamagedSystem(delta):
 		last_input_time += delta
 		if last_input_time >= defense_delay:
 			is_defending = true
-			
-	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
-		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
-			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
-			
-	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
-		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
-			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
@@ -692,18 +885,19 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block") 
 			upper_attacks_blocked += 1
+			applyDamage(7)
 			print(" Upper Damaged From Blocking")
 		else:
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-			print("Player 2 Upper body hit taken")
 			upper_attacks_taken += 1
-		_connect_hurt_animation_finished()
+			applyDamage(10)
+			print("Player 2 Upper body hit taken")
 		# Reset hit immunity after short real-time delay
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
-
+		
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
@@ -715,37 +909,22 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block")
 			lower_attacks_blocked += 1
+			applyDamage(7)
 			print("Lower Damaged From Blocking")
 		else:
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
-			print("Player 2 Lower body hit taken")
 			lower_attacks_taken += 1
-		_connect_hurt_animation_finished()
+			applyDamage(10)
+			print("Player 2 Lower body hit taken")
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
-
-func _connect_hurt_animation_finished():
-	if not animation.is_connected("animation_finished", Callable(self, "_on_hurt_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_hurt_finished"))
 		
 func applyDamage(amount: int):
 	if get_parent().has_method("apply_damage_to_player2"):
 		get_parent().apply_damage_to_player2(amount)
-			
-func _on_hurt_finished(anim_name):
-#		IF DS IS NOT DEFENDING WHENT THE DAMAGE RECEIVED
-	if is_defending:
-		applyDamage(7)
-	else:
-		applyDamage(10)
-	is_hurt = false
-	is_attacking = false
-	is_defending = false
-	is_dashing = false
-	animation.play("idle")
 
 func updateDetails():
 	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d \nUpper Attacks Blocked: %d \nLower Attacks Blocked: %d" % [
@@ -817,31 +996,52 @@ func load_saved_states():
 		load_rules(Global.player2_saved_state)
 
 func log_script_generation():
+	print("logging works")
 	var timestamp = Time.get_datetime_string_from_system()
 	var file = FileAccess.open(log_file_path, FileAccess.READ_WRITE)
 	if file:
-		file.seek_end()
-		
-		# Header with timestamp
-		file.store_string("\n--- Script Generated (Timer Update) | Timestamp: %s ---\n" % timestamp)
-		
-		# Generated Script section
-		file.store_string("Generated Script:\n")
-		file.store_string(JSON.stringify(DSscript, "  "))
-		
-		# Rules used in this cycle
-		file.store_string("\nRules Executed in Last Cycle:\n")
-		file.store_string(JSON.stringify(cycle_used_rules))
-		
-		# Parameters section
-		file.store_string("\n--- End Log Entry ---")
-		file.store_string("\n--- Parameters: %s ---\n" % JSON.stringify({
-			"upper_attacks_taken": upper_attacks_taken,
-			"lower_attacks_taken": lower_attacks_taken,
-			"upper_attacks_landed": upper_attacks_landed,
-			"lower_attacks_landed": lower_attacks_landed
-		}))
-		
+		file.seek_end()  # append to the end
+
+	# Step 1: Simplify all rules in DSscript
+	var simplified_rules = []
+	for rule in DSscript:
+		if rule.has("conditions") and rule["conditions"].has("distance"):
+			var condition = rule["conditions"]["distance"]
+			var action = ""
+			if rule.has("enemy_action") and rule["enemy_action"].size() > 0:
+				action = rule["enemy_action"][0]
+
+			simplified_rules.append({
+				"rule_id": rule["ruleID"],
+				"distance": condition["value"],
+				"action": action,
+				"weight": rule["weight"],
+				"was_used": rule["wasUsed"]
+			})
+
+	# Step 2: Write the log entry once (after collecting all rules)
+	file.store_string("Timestamp: %s\n" % timestamp)
+	file.store_string("cycle_id: %d\n" % log_cycles)
+	file.store_string("script:" + JSON.stringify(simplified_rules, "  ") + "\n")
+	
+	file.store_string("executed_rules:" + JSON.stringify(cycle_used_rules) + "\n")
+	
+	file.store_string("parameters: %s\n" % JSON.stringify({
+		"upper_attacks_taken": upper_attacks_taken,
+		"lower_attacks_taken": lower_attacks_taken,
+		"upper_attacks_landed": upper_attacks_landed,
+		"lower_attacks_landed": lower_attacks_landed
+	}))
+	file.store_string("fitness: %.3f\n" % fitness)
+	log_cycles += 1
+	file.close()
+
+#	ERASE CONTENT
+func init_log_file():
+	print("file content erased")
+	var file = FileAccess.open(log_file_path, FileAccess.WRITE)
+	if file:
+		file.store_string("")
 		file.close()
 
 # ===== UTILITY AND DEBUG FUNCTIONS =====
@@ -860,6 +1060,7 @@ func get_total_rule_weight() -> float:
 
 # ===== TIMER CALLBACKS =====
 func _on_generateScript_timer_timeout():
+	print("generating new script")
 	generate_script()
 	
 func displacement_small():
