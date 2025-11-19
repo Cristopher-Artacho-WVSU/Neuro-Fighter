@@ -171,6 +171,32 @@ var rules = [
 		"conditions": { "distance": { "op": "<=", "value": 250 }, "rand_chance": { "op": ">=", "value": 0.5 } },
 		"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
+	{
+		"ruleID": 16, "prioritization": 44,
+		"conditions": { 
+			"distance": { "op": ">=", "value": 400 },
+			"rand_chance": { "op": ">=", "value": 0.3 }
+		},
+		"enemy_action": ["slide_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 17, "prioritization": 55,
+		"conditions": { 
+			"distance": { "op": "<=", "value": 180 },
+			"upper_attacks_taken": { "op": ">=", "value": 2 },
+			"rand_chance": { "op": ">=", "value": 0.4 }
+		},
+		"enemy_action": ["slide_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 18, "prioritization": 33,
+		"conditions": { 
+			"distance": { "op": ">=", "value": 350 },
+			"lower_attacks_landed": { "op": ">=", "value": 1 },
+			"rand_chance": { "op": ">=", "value": 0.5 }
+		},
+		"enemy_action": ["slide_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	}
 ]
 
 # ===== INITIALIZATION =====
@@ -194,6 +220,9 @@ func _ready():
 	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
 		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
 			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
+##	FOR MOST ANIMATIONS
+	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
+		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
 
 func initialize_ai_state_manager():
 	ai_state_manager = get_node("/root/AI_StateManager")
@@ -221,9 +250,7 @@ func initialize_character_state():
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
 		DSscript.append(rules[i])
-##	FOR MOST ANIMATIONS
-	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+
 		
 	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
 
@@ -570,7 +597,7 @@ func _on_animation_finished(anim_name: String):
 			is_attacking = false
 		"standing_block":
 			is_defending = false
-		"hurt", "crouch_hurt", "light_hurt", "heavy_hurt"	:
+		"light_hurt", "heavy_hurt"	:
 			is_hurt = false
 			is_attacking = false
 			is_defending = false
@@ -825,6 +852,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
 			upper_attacks_taken += 1
+			animation.play("idle")
 			applyDamage(10)
 			print("Player 2 Upper body hit taken")
 		# Reset hit immunity after short real-time delay
@@ -848,6 +876,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			animation.play("idle")
 			lower_attacks_taken += 1
 			applyDamage(10)
 			print("Player 2 Lower body hit taken")
