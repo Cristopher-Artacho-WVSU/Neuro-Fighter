@@ -10,6 +10,7 @@ extends Node2D
 @onready var player1 = $PlayerCharacter1
 @onready var pause_menu = $PauseMenu
 @onready var chart_panel = $RealTimeChartPanel
+@onready var chart_panel_p2 = $RealTimeChartPanel2
 
 #OTHER VARIABLES
 var totalTimerAmount = 99
@@ -32,6 +33,7 @@ func _ready():
 	setup_controllers()
 	
 	setup_chart_panel()
+	setup_player2_chart_panel()
 	
 	# Connect pause menu signals
 	if pause_menu:
@@ -71,6 +73,10 @@ func hide_pause_menu():
 func toggle_chart_panel():
 	if chart_panel and chart_panel.has_method("toggle_visibility"):
 		chart_panel.toggle_visibility()
+	
+	# Toggle player 2 chart if it exists and is visible
+	if chart_panel_p2 and chart_panel_p2.visible and chart_panel_p2.has_method("toggle_visibility"):
+		chart_panel_p2.toggle_visibility()
 
 func _on_resume_game():
 	hide_pause_menu()
@@ -131,11 +137,27 @@ func setup_controllers():
 			
 func setup_chart_panel():
 	if chart_panel:
-		chart_panel.set_player_reference(player1)
+		var show_chart = Global.player1_controller == "DynamicScripting" or Global.player1_controller == "NDS"
+		chart_panel.visible = show_chart
+		
+		if show_chart:
+			chart_panel.set_player_reference(player1)
 		
 		# Set chart panel reference in player 1 if it's DS
 		if player1.has_method("set_chart_panel"):
 			player1.set_chart_panel(chart_panel)
+
+func setup_player2_chart_panel():
+	if chart_panel_p2:
+		var show_p2_chart = Global.player2_controller == "DynamicScripting" or Global.player2_controller == "NDS"
+		chart_panel_p2.visible = show_p2_chart
+		
+		if show_p2_chart:
+			chart_panel_p2.set_player_reference(player2)
+			
+			# Set chart panel reference in player 2 if it's DS/NDS
+			if player2.has_method("set_chart_panel"):
+				player2.set_chart_panel(chart_panel_p2)
 
 func _physics_process(delta):
 	if Global.game_paused:
