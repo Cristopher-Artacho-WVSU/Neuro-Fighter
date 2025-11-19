@@ -48,6 +48,8 @@ var ruleScript = 5
 var current_rule_dict: Dictionary = {}
 var weightRemainder = 0
 var DSscript = []
+var NDSsuggestions: Array = []
+
 
 #PLAYER DETAILS
 var upper_attacks_taken: int = 0
@@ -250,8 +252,14 @@ func _physics_process(delta):
 	if connected:
 		while websocket.get_available_packet_count() > 0:
 			var msg = websocket.get_packet().get_string_from_utf8()
-			print("📩 Message from server:", msg)
+			var parse_result = JSON.parse_string(msg)
 			
+			if typeof(parse_result) == TYPE_ARRAY:
+				NDSsuggestions = parse_result  # Save suggestions array for generate_script()
+				print("📨 LSTM suggestion received:", NDSsuggestions)
+			else:
+				print("⚠️ Unexpected message format from server:", msg)
+						
 	updateDetails()
 	update_facing_direction()
 	applyGravity(delta)
@@ -596,6 +604,18 @@ func generate_script():
 	inactive = ruleScript - active
 	fitness = calculateFitness()
 	
+	# Apply LSTM suggested weights first
+	if NDSsuggestions and NDSsuggestions.size() > 0:
+		for suggestion in NDSsuggestions:
+			var target_rule_id = suggestion.get("rule_id", -1)
+			var weight_adj = suggestion.get("weight_adjustment", 0.0)
+			# Find the rule in rules by ruleID
+			for rule in rules:
+				if rule.get("ruleID", -1) == target_rule_id:
+					rule["weight"] += weight_adj
+					print("NDS rule adjusted: %d: %.3f" % [rule["ruleID"], rule["weight"]])
+					break  # Stop once matched
+			
 	# Calculate weight adjustment
 	var weightAdjustment = calculateAdjustment(fitness)
 	var compensation = -active * (weightAdjustment / inactive)
@@ -617,18 +637,18 @@ func generate_script():
 	
 	DistributeRemainder()
 	_create_new_script()
-	_reset_rule_usage()
+	send_script_to_lstm()
 	print("New script generated with weights")
 	printSumWeights()
+	_reset_rule_usage()
 	
 	# ✅ Send the new script to LSTM server
-	var script_data = {
-		"timestamp": Time.get_datetime_string_from_system(),
-		"cycle_id": log_cycles,
-		"script": DSscript,
-		"fitness": fitness
-	}
-	send_script_to_lstm(script_data)
+	#var script_data = {
+		#"timestamp": Time.get_datetime_string_from_system(),
+		#"cycle_id": log_cycles,
+		#"script": DSscript,
+		#"fitness": fitness
+	#}
 	#print("Sent script:" script_data)
 
 func calculateFitness():
@@ -675,24 +695,97 @@ func _create_new_script():
 		var rule = candidates[i].rule
 		rule["inScript"] = true
 		DSscript.append(rule)
-		print("Rules Generated:")
+	print("Rules Generated:")
 	print(DSscript)
 
 func DistributeRemainder():
-	if weightRemainder == 0:
-		return
-		
-	var non_script_rules = []
+	var num_rules = rules.size()
+	var target_total = num_rules / 2.0  # Total weight must be exactly this
+
+	# 1️⃣ Clamp each rule's weight to [0.0, 1.0] and collect leftover/excess
+	var leftover = 0.0
 	for rule in rules:
-		if not rule.get("inScript", false):
-			non_script_rules.append(rule)
-	
-	if non_script_rules.size() > 0:
-		var per_rule_adjust = weightRemainder / non_script_rules.size()
-		for rule in non_script_rules:
-			rule["weight"] += per_rule_adjust
-	
-	weightRemainder = 0
+		if rule.get("weight", 0.0) < 0.0:
+			leftover += rule["weight"]  # negative, will add back
+			rule["weight"] = 0.0
+		elif rule.get("weight", 0.0) > 1.0:
+			leftover += rule["weight"] - 1.0  # positive, will remove
+			rule["weight"] = 1.0
+
+	# 2️⃣ Redistribute leftover/excess evenly
+	if leftover != 0.0:
+		var adjust_per_rule = leftover / num_rules
+		for rule in rules:
+			rule["weight"] += adjust_per_rule
+			rule["weight"] = clamp(rule["weight"], 0.0, 1.0)
+
+	# 3️⃣ Ensure total weight == target_total
+	var current_total = 0.0
+	for rule in rules:
+		current_total += rule.get("weight", 0.0)
+
+	var diff = current_total - target_total
+	if abs(diff) > 0.0001:  # only adjust if needed
+		var adjust = diff / num_rules
+		for rule in rules:
+			rule["weight"] -= adjust
+			rule["weight"] = clamp(rule["weight"], 0.0, 1.0)
+
+	# Optional: print total weight for debugging
+	var totalWeight = 0.0
+	for rule in rules:
+		totalWeight += rule.get("weight", 0.0)
+	print("Total Rule Weight after adjustment:", totalWeight)
+
+
+
+	#var max_total_weight = rules.size() / 2.0  # Maximum allowed total weight
+#
+	## 1️⃣ Clamp each rule's weight to [0.0, 1.0] and collect leftover weight
+	#var leftover = 0.0
+	#for rule in rules:
+		#if rule["weight"] < 0.0:
+			#leftover += rule["weight"]  # negative value, will be redistributed
+			#rule["weight"] = 0.0
+		#elif rule["weight"] > 1.0:
+			#leftover += rule["weight"] - 1.0  # positive excess
+			#rule["weight"] = 1.0
+#
+	## 2️⃣ Distribute leftover weight evenly across rules (if any)
+	#if leftover != 0:
+		#print("leftover: ", leftover)
+		#var per_rule_adjust = leftover / rules.size() 
+		#for rule in rules:
+			#rule["weight"] += per_rule_adjust
+			## Ensure clamping after redistribution
+			#rule["weight"] = clamp(rule["weight"], 0.0, 1.0)
+#
+	## 3️⃣ Ensure total weight does not exceed max_total_weight
+	#var current_total = 0.0
+	#for rule in rules:
+		#current_total += rule["weight"]
+#
+	#if current_total > max_total_weight:
+		#var excess_weight = current_total - max_total_weight
+		#var per_rule_reduction = excess_weight / rules.size() 
+		#for rule in rules:
+			#rule["weight"] -= per_rule_reduction
+			#rule["weight"] = max(rule["weight"], 0.0)  # prevent negative weight
+	#
+	#if weightRemainder == 0:
+		#return
+		#
+	#var non_script_rules = []
+	#for rule in rules:
+		#if not rule.get("inScript", false):
+			#non_script_rules.append(rule)
+	#
+	#if non_script_rules.size() > 0:
+		#var per_rule_adjust = weightRemainder / non_script_rules.size()
+		#for rule in non_script_rules:
+			#rule["weight"] += per_rule_adjust
+	#
+	#weightRemainder = 0
 
 func _reset_rule_usage():
 	for rule in rules:
@@ -970,23 +1063,66 @@ func _on_disconnected(was_clean_close = true):
 func _on_data_received():
 	var msg = websocket.get_peer(1).get_packet().get_string_from_utf8()
 	var data = JSON.parse_string(msg)
-	if data:
-		print("📨 LSTM suggestion received:", data)
-		_apply_lstm_recommendations(data)
+	if data.error == OK:
+		NDSsuggestions = data.result  # Save suggestions array
+		print("📨 LSTM suggestion received:", NDSsuggestions)
+		#_apply_lstm_recommendations(data)
 
-func send_script_to_lstm(script_data: Dictionary):
-	if connected:
-		var json_data = JSON.stringify(script_data)
-		websocket.send_text(json_data)
-		print("📤 Script sent to LSTM server:", script_data)
-	else:
-		print("⚠️ Not connected to LSTM server")
+func send_script_to_lstm():
+	if not connected:
+			print("⚠️ Not connected to LSTM server — skipping send.")
+			return
+	
+	if not FileAccess.file_exists(log_file_path):
+		print("⚠️ Log file not found:", log_file_path)
+		return
+	
+	var file = FileAccess.open(log_file_path, FileAccess.READ)
+	if not file:
+		print("⚠️ Failed to open log file.")
+		return
+	
+	# Read the entire file content
+	var content = file.get_as_text()
+	file.close()
+	
+	# Split the content by lines
+	var lines = content.split("\n", false)
+	var latest_cycle_data = []
+	var found_latest = false
+	
+	# We look for the last occurrence of "cycle_id:"
+	for i in range(lines.size() - 1, -1, -1):
+		if lines[i].begins_with("cycle_id:"):
+			# Found the start of the latest cycle
+			found_latest = true
+			# Collect lines from here to the next Timestamp (or end)
+			for j in range(i, lines.size()):
+				if lines[j].begins_with("Timestamp:") and j != i:
+					break
+				latest_cycle_data.append(lines[j])
+			break
+	
+	if not found_latest:
+		print("⚠️ No cycle_id found in log file.")
+		return
+	
+	# ✅ Join manually (Godot 4 fix)
+	var latest_block = ""
+	for line in latest_cycle_data:
+		latest_block += line + "\n"
+	
+	print("📄 Latest log cycle content:\n" + latest_block)
+	
+	# ✅ Send this entire formatted text to LSTM
+	websocket.send_text(latest_block)
+	print("📤 Sent latest log cycle to LSTM server.")
 
-
-func _apply_lstm_recommendations(recommendations):
-	# Example: adjust DS rule weights based on LSTM output
-	print("recommendations: ", recommendations)
-	for i in range(min(recommendations.size(), DSscript.size())):
-		DSscript[i]["weight"] = recommendations[i]
-		
-	print("✅ Updated DSscript weights from LSTM suggestions")
+#
+#func _apply_lstm_recommendations(recommendations):
+	## Example: adjust DS rule weights based on LSTM output
+	#print("recommendations: ", recommendations)
+	#for i in range(min(recommendations.size(), DSscript.size())):
+		#DSscript[i]["weight"] = recommendations[i]
+		#
+	#print("✅ Updated DSscript weights from LSTM suggestions")
