@@ -9530,6 +9530,7 @@ monitoring = false
 monitorable = false
 
 [node name="Collision_RightHand" type="CollisionShape2D" parent="Hitbox_RightHand"]
+visible = false
 position = Vector2(6, -95)
 shape = SubResource("RectangleShape2D_kboy1")
 

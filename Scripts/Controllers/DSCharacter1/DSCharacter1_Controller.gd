@@ -247,7 +247,10 @@ func _ready():
 	if $Hurtbox_UpperBody and $Hurtbox_UpperBody.has_signal("area_entered"):
 		if not $Hurtbox_UpperBody.is_connected("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered")):
 			$Hurtbox_UpperBody.connect("area_entered", Callable(self, "_on_hurtbox_upper_body_area_entered"))
-
+			
+	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
+		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+		
 func initialize_ai_state_manager():
 	ai_state_manager = get_node("/root/AI_StateManager")
 	if not ai_state_manager:
@@ -274,9 +277,7 @@ func initialize_character_state():
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
 		DSscript.append(rules[i])
-##	FOR MOST ANIMATIONS
-	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
-		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+
 		
 	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
 	
@@ -724,12 +725,14 @@ func debug_states():
 
 #FOR ANIMATIONS IN ORDER TO NOT GET CUT OFF
 func _on_animation_finished(anim_name: String):
+	print("FINISHED:", anim_name)
+	print("PLAYING HURT at time:", animation.current_animation_position)
 	match anim_name:
 		"light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch", "heavy_punch", "heavy_kick":
 			is_attacking = false
 		"standing_block":
 			is_defending = false
-		"hurt", "crouch_hurt", "light_hurt", "heavy_hurt"	:
+		"light_hurt", "heavy_hurt":
 			is_hurt = false
 			is_attacking = false
 			is_defending = false
@@ -877,9 +880,9 @@ func DamagedSystem(delta):
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
-		return  # Ignore duplicate hits during hitstop/hitstun
+		return
 	if area.is_in_group("Player1_Hitboxes"):
-		is_recently_hit = true  # Mark as hit immediately
+		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
@@ -891,6 +894,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			animation.play("idle")
 			upper_attacks_taken += 1
 			applyDamage(10)
 			print("Player 2 Upper body hit taken")
@@ -908,6 +912,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block")
+			animation.play("idle")
 			lower_attacks_blocked += 1
 			applyDamage(7)
 			print("Lower Damaged From Blocking")
@@ -915,6 +920,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("light_hurt")
+			animation.play("idle")
 			lower_attacks_taken += 1
 			applyDamage(10)
 			print("Player 2 Lower body hit taken")
