@@ -7,7 +7,7 @@ extends CharacterBody2D
 @onready var hurtboxGroup = [$Hurtbox_LowerBody, $Hurtbox_UpperBody]
 @onready var hitboxGroup = [$Hitbox_LeftFoot, $Hitbox_LeftHand, $Hitbox_RightFoot, $Hitbox_RightHand]
 @onready var prev_distance_to_enemy: float = 0.0
-
+var enemyAnimation: AnimationPlayer = null
 #ADDONS
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -16,6 +16,16 @@ var jump_speed = 3000
 var fall_multiplier = 5.0
 var jump_multiplier = 1.6
 var jump_force = -1200.0
+var jump_frame_ascend_time = 0.5   # frame 6
+var jump_frame_fall_time = 0.687   # frame 9
+var jump_end_time = 0.75           # frame 11
+# Add these at the top of the script
+var jump_frozen_up_done = false
+var jump_fall_started = false
+var jump_frozen_down_done = false
+var jump_landing_done = false
+
+var jump_state = ""     # "ascend", "frozen_up", "fall", "frozen_down"
 #MOVEMENT
 var dash_speed = 300
 var dash_time = 0.5
@@ -70,6 +80,9 @@ func find_enemy_automatically():
 		push_error("No enemy found for controller: " + name)
 	
 	if enemy:
+		enemyAnimation = enemy.get_node("AnimationPlayer") if enemy.has_node("AnimationPlayer") else null
+		if enemyAnimation:
+			print("Enemy animation found")
 		prev_distance_to_enemy = abs(enemy.position.x - position.x)
 		
 func _ready():
@@ -146,7 +159,11 @@ func _physics_process(delta):
 		MovementSystem(delta)
 		AttackSystem()
 		DefenseSystem(delta)
+		
+	if is_jumping:
+		handle_jump_animation(delta)
 	
+	debug_states()
 	move_and_slide()
 
 func handle_slide_movement(delta):
@@ -177,9 +194,10 @@ func MovementSystem(delta):
 	# Handle Jump
 	if jump and not is_jumping:
 		animation.play("jump")
-		print("Jumped")
 		velocity.y = -1700.0
 		is_jumping = true
+		jump_state = "ascend"
+
 	
 	# Handle Crouch
 	if crouch and not is_jumping:
@@ -202,15 +220,17 @@ func handle_dash_movement(forward: bool, backward: bool, delta: float):
 	if not is_dashing and not is_jumping:
 		if forward:
 			start_dash(1)
+				
 		elif backward:
 			start_dash(-1)
-	
 	if is_dashing and not is_jumping:
 		velocity.x = dash_direction * dash_speed
 		dash_timer -= delta
 		if dash_timer <= 0:
 			is_dashing = false
 			velocity.x = 0
+	#if is_dashing and is_jumping:
+		
 
 func handle_movement_animations(curr_distance_to_enemy: float):
 	if is_sliding:
@@ -221,9 +241,23 @@ func handle_movement_animations(curr_distance_to_enemy: float):
 		velocity.x = 0
 	
 	if velocity.x != 0 and is_jumping:
-		if curr_distance_to_enemy < prev_distance_to_enemy:
+		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "ascend":
+			velocity.x += 30
+			velocity.y -= 10
 			animation.play("jump_forward")
-		elif curr_distance_to_enemy > prev_distance_to_enemy:
+##		FORWARD
+		#if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "frozen_up":
+			#velocity.x -= 30
+		#
+##		BACKWARD
+		#elif curr_distance_to_enemy > prev_distance_to_enemy and jump_state == "frozen_up":
+			#velocity.x += 30
+		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "fall":
+			velocity.y += 50
+			
+		elif curr_distance_to_enemy > prev_distance_to_enemy and jump_state == "ascend":
+			velocity.x -= 30
+			velocity.y -= 10
 			animation.play("jump_backward")
 	elif velocity.x != 0 and not is_jumping:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
@@ -317,48 +351,52 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group("Player2_Hitboxes"):
-		is_recently_hit = true  # Mark as hit immediately
-		#print("Upper attack received")
+		is_recently_hit = true 
 		if is_defending:
-			print("Player 1 blocked the attack (upper body)")
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			animation.play("standing_block")  # play block only on hit
+			animation.play("standing_block") 
 			applyDamage(7)
-			
+			print(" Upper Damaged From Blocking")
 		else:
-			print("Player 1 Upper body hit taken")
+			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
+				applyDamage(15)
+				animation.play("heavy_hurt")
+			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch"]:
+				applyDamage(10)
+				animation.play("light_hurt")
 			is_hurt = true
-			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			animation.play("light_hurt")
-			applyDamage(10)
-			#enemy.upper_attacks_landed +=1
-		
+			print("Player 1 Upper body hit taken")
+		# Reset hit immunity after short real-time delay
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
-
+		
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
-	#print("Upper attack received")
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group("Player2_Hitboxes"):
-		is_recently_hit = true  # Mark as hit immediately
+		is_recently_hit = true 
 		if is_defending:
-			print("Player 1 blocked the attack (lower body)")
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			animation.play("standing_block")  # play block only on hit
+			animation.play("standing_block") 
 			applyDamage(7)
+			print(" Lower Damaged From Blocking")
 		else:
-			print("Player 1 Lower body hit taken")
+			if enemy.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
+				applyDamage(15)
+				animation.play("heavy_hurt")
+			elif enemy.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch"]:
+				applyDamage(10)
+				animation.play("light_hurt")
 			is_hurt = true
-			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			animation.play("light_hurt")
-			applyDamage(10)
-			#enemy.lower_attacks_landed +=1c
+			print("Player 1 Lower body hit taken")
+		# Reset hit immunity after short real-time delay
+		await get_tree().create_timer(0.2, true).timeout
+		is_recently_hit = false
 		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
@@ -472,3 +510,46 @@ func debug_states():
 	print("is_hurt state: ", is_hurt)
 	
 	
+func handle_jump_animation(delta):
+	var vy = velocity.y
+
+	# -------------------------------
+	# 1. ASCENDING — freeze at frame 6
+	# -------------------------------
+	if jump_state == "ascend":
+		if vy < 0:
+			if animation.current_animation_position >= jump_frame_ascend_time:
+				jump_state = "frozen_up"
+	# Keep frame frozen every physics frame
+	if jump_state == "frozen_up":
+		animation.seek(jump_frame_ascend_time, true)
+
+	# -------------------------------------
+	# 2. FALLING — play until frame 9
+	# -------------------------------------
+	if jump_state == "frozen_up" and vy > 0:
+		jump_state = "fall"
+		animation.play("jump")
+		animation.seek(jump_frame_ascend_time, true)
+
+	# 3. Freeze on fall-frame (frame 9)
+	if jump_state == "fall":
+		if animation.current_animation_position >= jump_frame_fall_time:
+			jump_state = "frozen_down"
+	if jump_state == "frozen_down":
+		animation.seek(jump_frame_fall_time, true)
+
+	# ----------------------------------------------------------
+	# 4. If landed, play ending frames (frame 10 → frame 11)
+	# ----------------------------------------------------------
+	if jump_state == "frozen_down" and is_on_floor():
+		jump_state = "landing"
+		animation.play("jump")
+		animation.seek(jump_frame_fall_time, true)
+
+	# 5. End everything when jump animation finishes
+	if jump_state == "landing":
+		if animation.current_animation_position >= jump_end_time:
+			is_jumping = false
+			jump_state = ""
+			animation.play("idle")
