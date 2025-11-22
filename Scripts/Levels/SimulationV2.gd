@@ -12,6 +12,9 @@ extends Node2D
 @onready var chart_panel = $RealTimeChartPanel
 @onready var chart_panel_p2 = $RealTimeChartPanel2
 
+@onready var match_count_display = $MainUI/MatchCountDisplay
+@onready var player1_round_wins_label = $MainUI/Player1RoundWins
+@onready var player2_round_wins_label = $MainUI/Player2RoundWins
 #OTHER VARIABLES
 var totalTimerAmount = 99
 var timer_running := true
@@ -23,9 +26,20 @@ var P1_CurrentHP = 100
 var game_ended = false
 #var end_times = 0
 
+var match_winner: String = ""
+var showing_match_result: bool = false
+var player1_initial_position: Vector2
+var player2_initial_position: Vector2
+var player1_health_after_win: int = max_hp
+var player2_health_after_win: int = max_hp
+var round_result_label: Label
+
 func _ready():
 	# ABLE TO LISTEN TO THE INPUT EVENTS EVEN WHEN THE GAME IS PAUSED
 	#process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	player1_initial_position = player1.position
+	player2_initial_position = player2.position
 	
 	timerLabel.text = str(int(totalTimerAmount))
 	timer.start()
@@ -40,6 +54,8 @@ func _ready():
 		pause_menu.connect("resume_game", _on_resume_game)
 		pause_menu.connect("save_state", _on_save_state)
 		pause_menu.connect("quit_to_menu", _on_quit_to_menu)
+	
+	initialize_match_count_display()
 
 func _input(event):
 	if event.is_action_pressed("close"):  # ESC key
@@ -176,21 +192,6 @@ func _physics_process(delta):
 func init_HPBar():
 	player1HP.max_value = max_hp
 	player2HP.max_value = max_hp
-	
-func monitorHP(delta):
-	player1HP.max_value = max_hp
-	player2HP.max_value = max_hp
-	player1HP.value = P1_CurrentHP
-	player2HP.value = P2_CurrentHP
-	
-	if player2HP.value <= 0 and not game_ended:
-		print("Player 1 Wins")
-		player2.KO()
-		game_over()
-	if player1HP.value <= 0 and not game_ended:
-		print("Player 2 Wins")
-		player1.KO()
-		game_over()
 
 func apply_damage_to_player2(amount):
 	P2_CurrentHP = max(0, P2_CurrentHP - amount)
@@ -201,6 +202,31 @@ func apply_damage_to_player1(amount):
 	P1_CurrentHP = max(0, P1_CurrentHP - amount)
 	player1HP.value = P1_CurrentHP
 	print("Player 1 HP:", P1_CurrentHP)
+
+func initialize_match_count_display():
+	# Show current match info
+	if match_count_display:
+		match_count_display.text = "Match %d/%d" % [Global.current_match, Global.match_count]
+	
+	# Initialize round wins display
+	if player1_round_wins_label:
+		player1_round_wins_label.text = "Rounds: 0"
+	if player2_round_wins_label:
+		player2_round_wins_label.text = "Rounds: 0"
+
+func update_match_count_display():
+	if match_count_display:
+		match_count_display.text = "Match %d/%d" % [Global.current_match, Global.match_count]
+
+func update_round_wins_display():
+	if player1_round_wins_label:
+		player1_round_wins_label.text = "Rounds: %d" % Global.player1_round_wins
+	if player2_round_wins_label:
+		player2_round_wins_label.text = "Rounds: %d" % Global.player2_round_wins
+
+func update_all_displays():
+	update_match_count_display()
+	update_round_wins_display()
 
 func auto_save_ds_states():
 	# Auto-save DS AI states when game ends
@@ -233,20 +259,195 @@ func save_current_ds_state(label_suffix: String):
 			performance = player2.calculateFitness()
 		player2.save_current_rules(state_name + "_P2", {"performance": performance})
 
-func game_over():
-	#player1.set_physics_process(false)
-	#player2.set_physics_process(false)
-	#player2.set_process(false)
+func handle_match_result(winner: String):
+	if showing_match_result:
+		return
+		
+	showing_match_result = true
+	match_winner = winner
+	
+	# Record the win
+	Global.record_win(winner)
+	
+	# Auto-save DS states
+	auto_save_ds_states()
+	
+	# Check if the series is complete
+	if Global.is_match_series_complete():
+		show_series_result()
+	else:
+		show_match_result()
 
-	# ADD THESE CHECKS AT THE START OF THE FUNCTION
+func show_match_result():
+	var winner_text = "Player 1" if match_winner == "player1" else "Player 2"
+	print(winner_text + " wins match " + str(Global.current_match) + " of " + str(Global.match_count))
+	
+	# Update UI or show match result (you can add a proper UI element for this)
+	if timerLabel:
+		timerLabel.text = winner_text + " wins!"
+	
+	# Wait and then proceed to next match or end series
+	var tree = get_tree()
+	await tree.create_timer(3.0).timeout
+	
+	if not Global.is_match_series_complete():
+		# Start next match
+		Global.increment_match()
+		reset_for_next_match()
+	else:
+		show_series_result()
+		
+func show_series_result():
+	var series_winner = Global.get_series_winner()
+	var winner_text = "Player 1" if series_winner == "player1" else "Player 2"
+	
+	print("=== SERIES COMPLETE ===")
+	print(winner_text + " wins the series!")
+	print("Final Score - P1: " + str(Global.player1_wins) + " | P2: " + str(Global.player2_wins))
+	
+	# Update UI
+	if timerLabel:
+		timerLabel.text = winner_text + " wins series!"
+	
+	# Wait and return to main menu
+	var tree = get_tree()
+	await tree.create_timer(3.0).timeout
+	tree.change_scene_to_file("res://Levels/main_menu.tscn")
+
+func reset_players():
+	# Reset player 1 to their initial position
+	player1.position = player1_initial_position
+	player1.velocity = Vector2.ZERO
+	
+	# Reset player 2 to their initial position  
+	player2.position = player2_initial_position
+	player2.velocity = Vector2.ZERO
+	
+	# Reset character states
+	if player1.has_method("reset_state"):
+		player1.reset_state()
+	else:
+		# Fallback reset for players without reset_state method
+		reset_player_fallback(player1)
+	
+	if player2.has_method("reset_state"):
+		player2.reset_state()
+	else:
+		# Fallback reset for players without reset_state method
+		reset_player_fallback(player2)
+
+func reset_player_fallback(player: CharacterBody2D):
+	if player.has_method("KO"):
+		# Force stop KO animation and reset to idle
+		var animation = player.get_node("AnimationPlayer")
+		if animation:
+			animation.play("idle")
+	
+	# Reset common state variables if they exist
+	if "is_attacking" in player:
+		player.is_attacking = false
+	if "is_defending" in player:
+		player.is_defending = false
+	if "is_hurt" in player:
+		player.is_hurt = false
+	if "is_dashing" in player:
+		player.is_dashing = false
+	if "is_jumping" in player:
+		player.is_jumping = false
+	if "is_crouching" in player:
+		player.is_crouching = false
+
+# Update the reset_for_next_match function to also reset facing direction
+func reset_for_next_match():
+	print("Starting match " + str(Global.current_match) + " of " + str(Global.match_count))
+	
+	# Reset game state
+	game_ended = false
+	showing_match_result = false
+	
+	# Reset HP
+	P1_CurrentHP = max_hp
+	P2_CurrentHP = max_hp
+	
+	# Reset timer
+	totalTimerAmount = 99
+	timer_running = true
+	timer.start()
+	
+	# Reset player positions and states
+	reset_players()
+	
+	# Update UI
+	timerLabel.text = str(int(totalTimerAmount))
+	player1HP.value = P1_CurrentHP
+	player2HP.value = P2_CurrentHP
+	
+	# Ensure players face each other initially
+	if player1 and player2:
+		update_player_facing_directions()
+
+func update_player_facing_directions():
+	# Player 1 should face right (towards player 2)
+	if player1.position.x < player2.position.x:
+		set_player_facing_direction(player1, false)  # Face right
+		set_player_facing_direction(player2, true)   # Face left
+	else:
+		set_player_facing_direction(player1, true)   # Face left
+		set_player_facing_direction(player2, false)  # Face right
+func set_player_facing_direction(player: CharacterBody2D, flip_h: bool):
+	var characterSprite = player.get_node("AnimatedSprite2D")
+	if characterSprite:
+		characterSprite.flip_h = flip_h
+	
+	# Update hitboxes and hurtboxes if they exist
+	var hitboxGroup = [
+		player.get_node_or_null("Hitbox_LeftFoot"),
+		player.get_node_or_null("Hitbox_LeftHand"), 
+		player.get_node_or_null("Hitbox_RightFoot"),
+		player.get_node_or_null("Hitbox_RightHand")
+	]
+	
+	var hurtboxGroup = [
+		player.get_node_or_null("Hurtbox_LowerBody"),
+		player.get_node_or_null("Hurtbox_UpperBody")
+	]
+	
+	var scale_x = -1 if flip_h else 1
+	
+	for hitbox in hitboxGroup:
+		if hitbox:
+			hitbox.scale.x = scale_x
+			
+	for hurtbox in hurtboxGroup:
+		if hurtbox:
+			hurtbox.scale.x = scale_x
+
+func game_over():
 	if game_ended:
 		return
 		
 	game_ended = true
-	#end_times += 1
-	#print("DEBUG: End: ", end_times, " times")
-	auto_save_ds_states()
 	
-	var tree = get_tree()
-	await tree.create_timer(2.1).timeout
-	tree.change_scene_to_file("res://Levels/main_menu.tscn")
+	# Determine winner
+	var winner = ""
+	if P1_CurrentHP <= 0 and P2_CurrentHP > 0:
+		winner = "player2"
+	elif P2_CurrentHP <= 0 and P1_CurrentHP > 0:
+		winner = "player1"
+	elif P1_CurrentHP > P2_CurrentHP:  # Time out - higher HP wins
+		winner = "player1"
+	elif P2_CurrentHP > P1_CurrentHP:
+		winner = "player2"
+	else:  # Draw - random winner or handle as needed
+		winner = "player1" if randf() > 0.5 else "player2"
+	
+	handle_match_result(winner)
+
+func monitorHP(delta):
+	player1HP.max_value = max_hp
+	player2HP.max_value = max_hp
+	player1HP.value = P1_CurrentHP
+	player2HP.value = P2_CurrentHP
+	
+	if (player2HP.value <= 0 or player1HP.value <= 0) and not game_ended and not showing_match_result:
+		game_over()
