@@ -178,7 +178,14 @@ func refresh_bar_chart():
 		var rule = sorted_rules[i]
 		var usage_percentage = (float(rule.count) / total_rules_used) * 100
 		
-		labels.append("R" + str(rule.id))
+		# Get action name instead of rule ID
+		var action_name = "R" + str(rule.id)  # Fallback
+		if current_player and current_player.has_method("get_rule_display_name"):
+			action_name += " " + current_player.get_rule_display_name(rule.id)
+		elif current_player and current_player.has_method("get_rule_action_name"):
+			action_name += " " + current_player.get_rule_action_name(rule.id)
+		
+		labels.append(action_name)
 		values.append(usage_percentage)
 	
 	bar_chart.set_data(labels, values)

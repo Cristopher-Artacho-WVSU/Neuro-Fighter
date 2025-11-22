@@ -293,6 +293,22 @@ func get_rule_ids() -> Array:
 	for rule in rules:
 		ids.append(rule["ruleID"])
 	return ids
+
+func get_rule_action_name(rule_id: int) -> String:
+	for rule in rules:
+		if rule["ruleID"] == rule_id:
+			var actions = rule.get("enemy_actions", [])
+			if actions.size() == 0:
+				var raw_action = rule.get("enemy_action", "idle")
+				actions = [raw_action] if typeof(raw_action) == TYPE_STRING else raw_action
+			
+			if actions.size() > 0:
+				# Return the first action name, or a combination if multiple
+				var action_name = str(actions[0])
+				# Make it more readable
+				action_name = action_name.replace("_", " ").capitalize()
+				return action_name
+	return "Rule " + str(rule_id)
 	
 func get_recent_used_rules() -> Array:
 	var recent = recent_used_rules_this_cycle.duplicate()
