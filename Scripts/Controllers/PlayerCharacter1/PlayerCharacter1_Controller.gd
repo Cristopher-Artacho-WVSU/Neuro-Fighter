@@ -471,4 +471,27 @@ func debug_states():
 	print("is_defending: ", is_defending)
 	print("is_hurt state: ", is_hurt)
 	
+
+func reset_state():
+	velocity = Vector2.ZERO
 	
+	# Reset all states
+	is_dashing = false
+	is_jumping = false
+	is_crouching = false
+	is_attacking = false
+	is_defending = false
+	is_hurt = false
+	is_recently_hit = false
+	is_sliding = false
+	
+	# Reset slide cooldown
+	can_slide = true
+	slide_cooldown_timer = 0.0
+	input_buffer.clear()
+	
+	if animation:
+		animation.stop()
+		animation.play("idle")
+	
+	print("Player Character reset to initial state")

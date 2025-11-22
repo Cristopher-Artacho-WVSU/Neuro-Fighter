@@ -43,9 +43,36 @@ var debug_log_entries = []
 # Pause state
 var game_paused = false
 
+var match_count: int = 1  # Default to single round
+var current_match: int = 1
+var player1_wins: int = 0
+var player2_wins: int = 0
+var player1_round_wins: int = 0
+var player2_round_wins: int = 0
+
 func _ready():
 	if debug_mode:
 		add_log_entry("Global.gd initialized - Debug Mode: ON", 1)
+
+func reset_round_wins():
+	player1_round_wins = 0
+	player2_round_wins = 0
+	add_log_entry("Round wins reset", 1)
+
+func record_round_win(winner: String):
+	if winner == "player1":
+		player1_round_wins += 1
+		add_log_entry("Player 1 wins round. Total: " + str(player1_round_wins), 1)
+	elif winner == "player2":
+		player2_round_wins += 1
+		add_log_entry("Player 2 wins round. Total: " + str(player2_round_wins), 1)
+
+func get_round_wins(player: String) -> int:
+	if player == "player1":
+		return player1_round_wins
+	elif player == "player2":
+		return player2_round_wins
+	return 0
 
 func set_controllers(p1_type: String, p2_type: String, p1_state = null, p2_state = null):
 	player1_controller = p1_type
@@ -190,3 +217,35 @@ func set_pause(paused: bool):
 	game_paused = paused
 	get_tree().paused = game_paused
 	add_log_entry("Game " + ("paused" if game_paused else "unpaused"), 1)
+
+func increment_match():
+	current_match += 1
+	add_log_entry("Match incremented to: " + str(current_match), 2)
+
+func record_win(winner: String):
+	if winner == "player1":
+		player1_wins += 1
+		add_log_entry("Player 1 wins match " + str(current_match), 1)
+	elif winner == "player2":
+		player2_wins += 1
+		add_log_entry("Player 2 wins match " + str(current_match), 1)
+
+func is_match_series_complete() -> bool:
+	# Check if either player has won majority of matches
+	var wins_needed = ceil(float(match_count) / 2.0)
+	return player1_wins >= wins_needed or player2_wins >= wins_needed
+
+func get_series_winner() -> String:
+	var wins_needed = ceil(float(match_count) / 2.0)
+	if player1_wins >= wins_needed:
+		return "player1"
+	elif player2_wins >= wins_needed:
+		return "player2"
+	return ""
+
+func reset_match_data():
+	current_match = 1
+	player1_wins = 0
+	player2_wins = 0
+	reset_round_wins() 
+	add_log_entry("Match data reset", 1)

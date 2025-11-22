@@ -1112,3 +1112,28 @@ func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> vo
 	# Restore immediately
 	Engine.time_scale = 1.0
 	is_in_global_hitstop = false
+
+func reset_state():
+	# Reset position will be handled by SimulationV2
+	velocity = Vector2.ZERO
+	
+	# Reset all states
+	is_dashing = false
+	is_jumping = false
+	is_crouching = false
+	is_attacking = false
+	is_defending = false
+	is_hurt = false
+	is_sliding = false
+	is_recently_hit = false
+	
+	# Reset slide cooldown
+	can_slide = true
+	slide_cooldown_timer = 0.0
+	
+	# Stop any current animation and play idle
+	if animation:
+		animation.stop()
+		animation.play("idle")
+	
+	print("DS Character reset to initial state")

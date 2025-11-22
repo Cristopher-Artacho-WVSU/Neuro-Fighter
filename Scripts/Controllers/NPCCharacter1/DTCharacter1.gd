@@ -356,7 +356,23 @@ func KO():
 	## If farther than ATTACK_RANGE_KICK, don't attack
 #
 
-
+func reset_state():
+	velocity = Vector2.ZERO
+	
+	# Reset all states
+	is_dashing = false
+	is_jumping = false
+	is_crouching = false
+	is_attacking = false
+	is_defending = false
+	is_hurt = false
+	is_recently_hit = false
+	
+	if animation:
+		animation.stop()
+		animation.play("idle")
+	
+	print("DT Character reset to initial state")
 
 #extends CharacterBody2D
 #

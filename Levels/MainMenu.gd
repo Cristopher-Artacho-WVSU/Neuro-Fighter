@@ -22,6 +22,12 @@ extends Control
 @onready var clear_log_button = $MarginContainer/VBoxContainer/DebugPanel/HBoxContainer/ClearLogButton
 @onready var export_log_button = $MarginContainer/VBoxContainer/DebugPanel/HBoxContainer/ExportLogButton
 
+#SETTING MATCH COUNT
+@onready var match_count_panel = $MarginContainer/VBoxContainer/MatchCountPanel
+@onready var match_count_label = $MarginContainer/VBoxContainer/MatchCountPanel/MatchCountLabel
+@onready var match_count_value = $MarginContainer/VBoxContainer/MatchCountPanel/MatchCountValue
+@onready var match_count_slider = $MarginContainer/VBoxContainer/MatchCountPanel/MatchCountSlider
+
 # State variables
 var current_left_type = "Human"
 var current_right_type = "DecisionTree"
@@ -52,10 +58,12 @@ func _ready():
 	setup_main_buttons()
 	# Setup NDS input signals
 	setup_nds_input_signals()
+	# MATCH COUNT
+	setup_match_count_section()
 	
 	update_display()
 	setup_nds_ai_section()
-	setup_debug_panel() 
+	setup_debug_panel()
 
 func setup_load_sections():
 	# Clear existing buttons safely
@@ -228,6 +236,27 @@ func setup_algorithm_buttons():
 	if right_nds: right_nds.connect("pressed", _on_right_algorithm_selected.bind("NDS"))
 	if right_fsm: right_fsm.connect("pressed", _on_right_algorithm_selected.bind("FSM"))
 
+func setup_match_count_section():
+	if match_count_slider:
+		match_count_slider.min_value = 1
+		match_count_slider.max_value = 99
+		match_count_slider.value = Global.match_count
+		match_count_slider.connect("value_changed", _on_match_count_changed)
+		update_match_count_display()
+	else:
+		print("WARNING: Match count slider not found!")
+	
+func update_match_count_display():
+	if match_count_value:
+		match_count_value.text = str(Global.match_count) + " match" + ("es" if Global.match_count > 1 else "")
+	if match_count_label:
+		match_count_label.text = "Match Count:"
+
+func _on_match_count_changed(value: float):
+	Global.match_count = int(value)
+	update_match_count_display()
+	Global.add_log_entry("Match count set to: " + str(Global.match_count), 2)
+
 func setup_nds_ai_section():
 	if nds_ai_input:
 		nds_ai_input.placeholder_text = "Enter NDS AI parameters..."
@@ -350,7 +379,7 @@ func update_display():
 	
 	# Update performance chart preview
 	update_performance_preview()
-
+		
 func calculate_ai_percentage(algorithm_type: String, ai_state) -> float:
 	if algorithm_type == "Human":
 		return 0.0
@@ -426,15 +455,19 @@ func update_algorithm_button_style(panel: Node, selected_algorithm: String):
 func _on_play_button_pressed():
 	# Log the action
 	Global.add_log_entry("Play button pressed - Starting game", 1)
+	Global.add_log_entry("Match Count: " + str(Global.match_count), 2)
 	Global.add_log_entry("Left Player: " + current_left_type, 2)
 	Global.add_log_entry("Right Player: " + current_right_type, 2)
+	
+	# Reset match data
+	Global.reset_match_data()
 	
 	# Apply NDS AI parameters if NDS is selected
 	if current_left_type == "NDS" or current_right_type == "NDS":
 		apply_nds_ai_parameters()
 	
 	Global.set_controllers(current_left_type, current_right_type, current_left_state, current_right_state)
-	print("Starting game with controllers: P1=%s, P2=%s" % [current_left_type, current_right_type])
+	print("Starting game with controllers: P1=%s, P2=%s, Matches=%d" % [current_left_type, current_right_type, Global.match_count])
 	
 	# Transition to game scene
 	get_tree().change_scene_to_file("res://Levels/Simulationv2.0.tscn")

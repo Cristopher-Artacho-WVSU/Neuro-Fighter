@@ -1155,3 +1155,25 @@ func send_script_to_lstm():
 		#DSscript[i]["weight"] = recommendations[i]
 		#
 	#print("✅ Updated DSscript weights from LSTM suggestions")
+
+func reset_state():
+	velocity = Vector2.ZERO
+	
+	# Reset all states
+	is_dashing = false
+	is_jumping = false
+	is_crouching = false
+	is_attacking = false
+	is_defending = false
+	is_hurt = false
+	is_recently_hit = false
+	
+	# Reset slide cooldown
+	#can_slide = true
+	#slide_cooldown_timer = 0.0
+	
+	if animation:
+		animation.stop()
+		animation.play("idle")
+	
+	print("NDS Character reset to initial state")

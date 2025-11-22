@@ -396,7 +396,31 @@ func KO():
 		## Medium range - use kick
 		#start_attack("light_kick", current_distance)
 	## If farther than ATTACK_RANGE_KICK, don't attack
+	
 #
+
+func reset_state():
+	velocity = Vector2.ZERO
+	
+	# Reset all states
+	is_dashing = false
+	is_jumping = false
+	is_crouching = false
+	is_attacking = false
+	is_defending = false
+	is_hurt = false
+	is_recently_hit = false
+	
+	# Reset FSM state
+	current_state = State.IDLE
+	has_executed_attack = false
+	state_timer = 0.0
+	
+	if animation:
+		animation.stop()
+		animation.play("idle")
+	
+	print("FSM Character reset to initial state")
 
 
 

@@ -75,6 +75,33 @@ Crouching Defense: "
 
 [node name="MainUI" type="Node2D" parent="."]
 
+[node name="MatchCountDisplay" type="Label" parent="MainUI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 934.5
+offset_top = -335.0
+offset_right = 1160.5
+offset_bottom = -295.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = "Match Info Label"
+horizontal_alignment = 1
+autowrap_trim_flags = 128
+
+[node name="Player1RoundWins" type="Label" parent="MainUI"]
+offset_left = 197.0
+offset_top = -374.0
+offset_right = 494.0
+offset_bottom = -327.0
+
+[node name="Player2RoundWins" type="Label" parent="MainUI"]
+offset_left = 1491.0
+offset_top = -377.0
+offset_right = 1719.0
+offset_bottom = -329.0
+
 [node name="Player1_HPBar" type="ProgressBar" parent="MainUI"]
 offset_left = 3.0
 offset_top = -456.0
