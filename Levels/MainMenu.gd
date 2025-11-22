@@ -80,67 +80,93 @@ func update_load_panel_visibility():
 	if right_load_panel and right_load_panel.get_parent():
 		right_load_panel.get_parent().visible = (current_right_type == "DynamicScripting" or current_right_type == "NDS")
 
-# Scan saved states from file and append as button
 func update_load_buttons():
-	# Get ALL saved states first
-	var all_states = Global.get_saved_state_names()
-	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	# FIXED: Clear buttons with proper waiting
+	clear_load_buttons()
 	
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
 	if not ai_state_manager:
 		print("WARNING: AI_StateManager not found for loading states")
 		return
 	
-	# Left side load buttons
-	if left_load_panel and (current_left_type == "DynamicScripting" or current_left_type == "NDS"):
-		for state_name in all_states:
-			var metadata = ai_state_manager.get_state_metadata(state_name)
-			var state_type = metadata.get("type", "")
-			
-			# Show state if it matches current algorithm OR if type is not specified (manual saves)
-			if state_type == current_left_type or state_type == "":
-				var left_button = Button.new()
-				var performance = metadata.get("performance", 0.5) * 100
-				var description = metadata.get("description", "No description")
-				var is_autosave = metadata.get("is_autosave", false)
-				
-				# Format display text
-				var display_text = state_name
-				if is_autosave:
-					display_text = "[AUTO] " + state_name.replace("autosave_", "")
-				display_text += " - %d%%" % performance
-				
-				left_button.text = display_text
-				if not left_button.is_connected("pressed", _on_left_load_pressed.bind(state_name)):
-					left_button.connect("pressed", _on_left_load_pressed.bind(state_name))
-				left_button.tooltip_text = description
-				left_load_panel.add_child(left_button)
+	# Get all saved states
+	var all_states = Global.get_saved_state_names()
 	
-	# Right side load buttons
-	if right_load_panel and (current_right_type == "DynamicScripting" or current_right_type == "NDS"):
-		for state_name in all_states:
-			var metadata = ai_state_manager.get_state_metadata(state_name)
-			var state_type = metadata.get("type", "")
+	# FIXED: Wait one frame to ensure buttons are cleared
+	await get_tree().process_frame
+	
+	# Create load buttons with proper filtering
+	create_filtered_load_buttons(left_load_panel, current_left_type, all_states, ai_state_manager, "_on_left_load_pressed")
+	create_filtered_load_buttons(right_load_panel, current_right_type, all_states, ai_state_manager, "_on_right_load_pressed")
+	
+	print("Load buttons updated. Left: %d (%s), Right: %d (%s)" % [
+		left_load_panel.get_child_count() if left_load_panel else 0, 
+		current_left_type,
+		right_load_panel.get_child_count() if right_load_panel else 0,
+		current_right_type
+	])
+
+func clear_load_buttons():
+	if left_load_panel and is_instance_valid(left_load_panel):
+		var left_children = left_load_panel.get_children()
+		for i in range(left_children.size() - 1, -1, -1):
+			var child = left_children[i]
+			if is_instance_valid(child):
+				child.queue_free()
+		# Force immediate cleanup
+		await get_tree().process_frame
+	
+	if right_load_panel and is_instance_valid(right_load_panel):
+		var right_children = right_load_panel.get_children()
+		for i in range(right_children.size() - 1, -1, -1):
+			var child = right_children[i]
+			if is_instance_valid(child):
+				child.queue_free()
+		# Force immediate cleanup
+		await get_tree().process_frame
+
+func create_filtered_load_buttons(load_panel: Control, algorithm_type: String, all_states: Array, ai_state_manager: Node, signal_method: String):
+	if not load_panel or not (algorithm_type == "DynamicScripting" or algorithm_type == "NDS"):
+		return
+	
+	for state_name in all_states:
+		var metadata = ai_state_manager.get_state_metadata(state_name)
+		var state_type = metadata.get("type", "")
+		
+		var should_show = false
+		
+		if state_type == algorithm_type:
+			should_show = true
+		elif state_type == "" and (algorithm_type == "DynamicScripting" or algorithm_type == "NDS"):
+			should_show = true
+		# Optional: Show DS states for NDS and vice versa if you want cross-compatibility
+		# elif algorithm_type == "NDS" and state_type == "DynamicScripting":
+		# 	should_show = true
+		# elif algorithm_type == "DynamicScripting" and state_type == "NDS":
+		# 	should_show = true
+		
+		if should_show:
+			var button = Button.new()
+			var performance = metadata.get("performance", 0.5) * 100
+			var description = metadata.get("description", "No description")
+			var is_autosave = metadata.get("is_autosave", false)
+		
+			var display_text = state_name
+			if is_autosave:
+				display_text = "[AUTO] " + state_name.replace("autosave_", "")
+			display_text += " - %d%%" % performance
 			
-			# Show state if it matches current algorithm OR if type is not specified (manual saves)
-			if state_type == current_right_type or state_type == "":
-				var right_button = Button.new()
-				var performance = metadata.get("performance", 0.5) * 100
-				var description = metadata.get("description", "No description")
-				var is_autosave = metadata.get("is_autosave", false)
-				
-				# Format display text
-				var display_text = state_name
-				if is_autosave:
-					display_text = "[AUTO] " + state_name.replace("autosave_", "")
-				display_text += " - %d%%" % performance
-				
-				right_button.text = display_text
-				if not right_button.is_connected("pressed", _on_right_load_pressed.bind(state_name)):
-					right_button.connect("pressed", _on_right_load_pressed.bind(state_name))
-				right_button.tooltip_text = description
-				right_load_panel.add_child(right_button)
-				
-	print("Load buttons updated. Left: %d, Right: %d" % [left_load_panel.get_child_count(), right_load_panel.get_child_count()])
+			button.text = display_text
+			
+			if signal_method == "_on_left_load_pressed":
+				if not button.is_connected("pressed", _on_left_load_pressed.bind(state_name)):
+					button.connect("pressed", _on_left_load_pressed.bind(state_name))
+			elif signal_method == "_on_right_load_pressed":
+				if not button.is_connected("pressed", _on_right_load_pressed.bind(state_name)):
+					button.connect("pressed", _on_right_load_pressed.bind(state_name))
+			
+			button.tooltip_text = description
+			load_panel.add_child(button)
 	
 func setup_main_buttons():
 	if play_button:
