@@ -159,7 +159,7 @@ func setup_chart_panel():
 		if show_chart:
 			chart_panel.set_player_reference(player1)
 		
-		# Set chart panel reference in player 1 if it's DS
+		# Set chart panel reference in player 1 if it's DS or NDS
 		if player1.has_method("set_chart_panel"):
 			player1.set_chart_panel(chart_panel)
 
@@ -171,9 +171,9 @@ func setup_player2_chart_panel():
 		if show_p2_chart:
 			chart_panel_p2.set_player_reference(player2)
 			
-			# Set chart panel reference in player 2 if it's DS/NDS
-			if player2.has_method("set_chart_panel"):
-				player2.set_chart_panel(chart_panel_p2)
+		# Set chart panel reference in player 2 if it's DS/NDS
+		if player2.has_method("set_chart_panel"):
+			player2.set_chart_panel(chart_panel_p2)
 
 func _physics_process(delta):
 	if Global.game_paused:
@@ -229,35 +229,43 @@ func update_all_displays():
 	update_round_wins_display()
 
 func auto_save_ds_states():
-	# Auto-save DS AI states when game ends
-	if player1.has_method("save_current_rules") and Global.player1_controller == "DynamicScripting":
+	# Auto-save DS/NDS AI states when game ends
+	if player1.has_method("save_current_rules") and (Global.player1_controller == "DynamicScripting" or Global.player1_controller == "NDS"):
 		var performance = 0.5
 		if player1.has_method("calculateFitness"):
 			performance = player1.calculateFitness()
-		Global.auto_save_ds_state(player1.rules, performance)
+		Global.auto_save_ds_state(player1.rules, performance, Global.player1_controller)
 	
-	if player2.has_method("save_current_rules") and Global.player2_controller == "DynamicScripting":
+	if player2.has_method("save_current_rules") and (Global.player2_controller == "DynamicScripting" or Global.player2_controller == "NDS"):
 		var performance = 0.5
 		if player2.has_method("calculateFitness"):
 			performance = player2.calculateFitness()
-		Global.auto_save_ds_state(player2.rules, performance)
+		Global.auto_save_ds_state(player2.rules, performance, Global.player2_controller)
 
 func save_current_ds_state(label_suffix: String):
-	# Manual save of DS AI states
+	# Manual save of DS/NDS AI states
 	var timestamp = Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
 	var state_name = "manual_" + label_suffix + "_" + timestamp
 	
-	if player1.has_method("save_current_rules") and Global.player1_controller == "DynamicScripting":
+	# Player 1 save
+	if player1.has_method("save_current_rules") and (Global.player1_controller == "DynamicScripting" or Global.player1_controller == "NDS"):
 		var performance = 0.5
 		if player1.has_method("calculateFitness"):
 			performance = player1.calculateFitness()
-		player1.save_current_rules(state_name + "_P1", {"performance": performance})
+		player1.save_current_rules(state_name + "_P1", {
+			"performance": performance,
+			"type": Global.player1_controller  # Save the actual controller type
+		})
 	
-	if player2.has_method("save_current_rules") and Global.player2_controller == "DynamicScripting":
+	# Player 2 save
+	if player2.has_method("save_current_rules") and (Global.player2_controller == "DynamicScripting" or Global.player2_controller == "NDS"):
 		var performance = 0.5
 		if player2.has_method("calculateFitness"):
 			performance = player2.calculateFitness()
-		player2.save_current_rules(state_name + "_P2", {"performance": performance})
+		player2.save_current_rules(state_name + "_P2", {
+			"performance": performance,
+			"type": Global.player2_controller  # Save the actual controller type
+		})
 
 func handle_match_result(winner: String):
 	if showing_match_result:
@@ -305,7 +313,7 @@ func show_series_result():
 	
 	print("=== SERIES COMPLETE ===")
 	print(winner_text + " wins the series!")
-	print("Final Score - P1: " + str(Global.player1_wins) + " | P2: " + str(Global.player2_wins))
+	print("Final Score - P1: " + str(Global.player1_round_wins) + " | P2: " + str(Global.player2_round_wins))
 	
 	# Update UI
 	if timerLabel:

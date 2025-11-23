@@ -146,6 +146,10 @@ func update_advanced_metrics():
 		stats_text += "Efficiency: %.1f%%\n" % (metrics.get("efficiency_score", 0.0) * 100)
 		stats_text += "Adaptability: %.1f%%" % (metrics.get("adaptability_score", 0.0) * 100)
 		
+		# Add LSTM-specific metrics for NDS
+		if metrics.has("lstm_influence"):
+			stats_text += "\nLSTM Influence: %.1f%%" % (metrics.get("lstm_influence", 0.0) * 100)
+		
 		stats_label.text = stats_text
 
 func refresh_line_chart():

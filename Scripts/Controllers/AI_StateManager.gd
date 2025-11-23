@@ -58,7 +58,9 @@ func get_saved_states_for_algorithm(algorithm_type: String) -> Array:
 	var filtered_states = []
 	for state in saved_states:
 		var metadata = state.get("metadata", {})
-		if metadata.get("type", "") == algorithm_type:
+		var state_type = metadata.get("type", "")
+		# Include both exact matches and cross-compatible types
+		if state_type == algorithm_type or (algorithm_type == "NDS" and state_type == "DynamicScripting"):
 			filtered_states.append(state)
 	return filtered_states
 
@@ -95,7 +97,8 @@ func auto_save_state(rules: Array, algorithm_type: String, performance: float = 
 		"type": algorithm_type,
 		"performance": performance,
 		"description": "Auto-saved after match",
-		"is_autosave": true
+		"is_autosave": true,
+		"timestamp": Time.get_datetime_string_from_system()
 	}
 	save_state(label, rules, metadata)
 	return label

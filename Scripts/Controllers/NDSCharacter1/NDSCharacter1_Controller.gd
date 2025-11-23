@@ -113,6 +113,11 @@ var last_action: String
 @onready var enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody")
 @onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
 
+var chart_panel: Node = null
+var recent_used_rules_this_cycle: Array = []
+var total_rules_used: int = 0
+var total_actions_taken: int = 0
+
 var rules = [
 	{
 		"ruleID": 1, "prioritization": 1,
@@ -230,6 +235,8 @@ func _ready():
 	initialize_character_state()
 	start_script_generation_timer()
 	init_log_file()
+	
+	initialize_chart_support()
 	
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
@@ -447,6 +454,14 @@ func evaluate_and_execute(rules: Array):
 	if matched_rules.size() > 0:
 		var rule_index = matched_rules[0]
 		var rule = rules[rule_index]
+		
+		recent_used_rules_this_cycle.append(rule["ruleID"])
+		total_rules_used += 1
+		total_actions_taken += 1
+		
+		if chart_panel and chart_panel.has_method("record_rule_usage"):
+			chart_panel.record_rule_usage(rule["ruleID"])
+		
 		var actions = rule.get("enemy_actions", [])
 
 		if actions.size() == 0:
@@ -630,6 +645,10 @@ func _execute_single_action(action):
 	#print(last_action)
 	#is_dashing = false
 	#_connect_animation_finished()
+	if chart_panel and chart_panel.has_method("record_rule_usage"):
+		# We need to track which rule led to this action
+		# This would require modifying evaluate_and_execute to pass the rule ID
+		pass
 
 func debug_states():
 	#print("is_dashing: ", is_dashing)
@@ -1227,15 +1246,15 @@ func reset_state():
 	is_hurt = false
 	is_recently_hit = false
 	
-	# Reset slide cooldown
-	#can_slide = true
-	#slide_cooldown_timer = 0.0
+	# Reset chart tracking
+	initialize_chart_support()
 	
 	if animation:
 		animation.stop()
 		animation.play("idle")
 	
 	print("NDS Character reset to initial state")
+
 func can_perform_slide() -> bool:
 	return can_slide and not is_sliding and is_on_floor() and not is_jumping
 	
@@ -1317,3 +1336,104 @@ func handle_jump_animation(delta):
 			is_jumping = false
 			jump_state = ""
 			animation.play("idle")
+			
+
+func get_rule_display_name(rule_id: int) -> String:
+	for rule in rules:
+		if rule["ruleID"] == rule_id:
+			var actions = rule.get("enemy_actions", [])
+			if actions.size() == 0:
+				var raw_action = rule.get("enemy_action", "idle")
+				actions = [raw_action] if typeof(raw_action) == TYPE_STRING else raw_action
+			
+			if actions.size() > 0:
+				var action_name = str(actions[0])
+				# Make it more readable
+				action_name = action_name.replace("_", " ").capitalize()
+				return action_name
+	return "Rule " + str(rule_id)
+
+func get_advanced_metrics() -> Dictionary:
+	var metrics = {
+		"aggression_score": calculate_aggression_score(),
+		"defense_score": calculate_defense_score(),
+		"efficiency_score": calculate_efficiency_score(),
+		"adaptability_score": calculate_adaptability_score(),
+		"lstm_influence": calculate_lstm_influence()
+	}
+	return metrics
+	
+func calculate_aggression_score() -> float:
+	var total_attacks = upper_attacks_landed + lower_attacks_landed
+	var total_actions = total_actions_taken if total_actions_taken > 0 else 1
+	return float(total_attacks) / total_actions
+
+func calculate_defense_score() -> float:
+	var total_defenses = upper_attacks_blocked + lower_attacks_blocked
+	var total_hits_taken = upper_attacks_taken + lower_attacks_taken
+	if total_hits_taken == 0:
+		return 1.0
+	return float(total_defenses) / total_hits_taken
+
+func calculate_efficiency_score() -> float:
+	var successful_attacks = upper_attacks_landed + lower_attacks_landed
+	var total_attacks_attempted = successful_attacks + (upper_attacks_blocked + lower_attacks_blocked)
+	if total_attacks_attempted == 0:
+		return 0.0
+	return float(successful_attacks) / total_attacks_attempted
+
+func calculate_adaptability_score() -> float:
+	# Measure how many different rules are being used
+	var unique_rules_used = 0
+	for rule in rules:
+		if rule.get("wasUsed", false):
+			unique_rules_used += 1
+	
+	if rules.size() == 0:
+		return 0.0
+	return float(unique_rules_used) / rules.size()
+
+func calculate_lstm_influence() -> float:
+	# Measure how much LSTM is influencing decisions
+	if not NDSsuggestions or NDSsuggestions.size() == 0:
+		return 0.0
+	
+	var total_influence = 0.0
+	for suggestion in NDSsuggestions:
+		total_influence += abs(suggestion.get("weight_adjustment", 0.0))
+	
+	return total_influence / NDSsuggestions.size()
+
+func initialize_chart_support():
+	# Reset rule usage tracking for charts
+	recent_used_rules_this_cycle.clear()
+	total_rules_used = 0
+	total_actions_taken = 0
+
+func set_chart_panel(panel_node):
+	chart_panel = panel_node
+
+func get_recent_used_rules() -> Array:
+	var recent = recent_used_rules_this_cycle.duplicate()
+	recent_used_rules_this_cycle.clear()
+	return recent
+
+func get_rule_ids() -> Array:
+	var ids = []
+	for rule in rules:
+		ids.append(rule["ruleID"])
+	return ids
+
+func get_rule_action_name(rule_id: int) -> String:
+	for rule in rules:
+		if rule["ruleID"] == rule_id:
+			var actions = rule.get("enemy_actions", [])
+			if actions.size() == 0:
+				var raw_action = rule.get("enemy_action", "idle")
+				actions = [raw_action] if typeof(raw_action) == TYPE_STRING else raw_action
+			
+			if actions.size() > 0:
+				var action_name = str(actions[0])
+				action_name = action_name.replace("_", " ").capitalize()
+				return action_name
+	return "Rule " + str(rule_id)
