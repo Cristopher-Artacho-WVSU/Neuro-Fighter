@@ -13,13 +13,6 @@ extends Control
 @onready var back_button = $MarginContainer/VBoxContainer/ButtonContainer/BackButton
 @onready var performance_chart = $MarginContainer/VBoxContainer/PreviewPanel/PerformanceChart
 
-# Debug panel elements - with safe access
-@onready var debug_panel = $MarginContainer/VBoxContainer/DebugPanel
-@onready var debug_toggle = $MarginContainer/VBoxContainer/DebugPanel/DebugToggleButton
-@onready var debug_log_display = $MarginContainer/VBoxContainer/DebugPanel/DebugLog
-@onready var clear_log_button = $MarginContainer/VBoxContainer/DebugPanel/HBoxContainer/ClearLogButton
-@onready var export_log_button = $MarginContainer/VBoxContainer/DebugPanel/HBoxContainer/ExportLogButton
-
 #SETTING MATCH COUNT
 @onready var match_count_panel = $MarginContainer/VBoxContainer/MatchCountPanel
 @onready var match_count_label = $MarginContainer/VBoxContainer/MatchCountPanel/MatchCountLabel
@@ -58,7 +51,6 @@ func _ready():
 	setup_match_count_section()
 	
 	update_display()
-	setup_debug_panel()
 
 func setup_load_sections():
 	if left_load_panel:
@@ -176,13 +168,6 @@ func setup_main_buttons():
 	else:
 		print("WARNING: PlayButton not found!")
 	
-	if save_button:
-		if not save_button.is_connected("pressed", _on_save_button_pressed):
-			save_button.connect("pressed", _on_save_button_pressed)
-		print("SaveButton connected")
-	else:
-		print("WARNING: SaveButton not found!")
-	
 	if back_button:
 		if not back_button.is_connected("pressed", _on_back_button_pressed):
 			back_button.connect("pressed", _on_back_button_pressed)
@@ -238,63 +223,6 @@ func _on_match_count_changed(value: float):
 	Global.match_count = int(value)
 	update_match_count_display()
 	Global.add_log_entry("Match count set to: " + str(Global.match_count), 2)
-		
-func setup_debug_panel():
-	if debug_panel and debug_toggle and debug_log_display:
-		debug_panel.visible = false  # Hidden by default
-		
-		if not debug_toggle.is_connected("pressed", _on_debug_toggle_pressed):
-			debug_toggle.connect("pressed", _on_debug_toggle_pressed)
-		
-		if clear_log_button and not clear_log_button.is_connected("pressed", _on_clear_log_pressed):
-			clear_log_button.connect("pressed", _on_clear_log_pressed)
-			
-		if export_log_button and not export_log_button.is_connected("pressed", _on_export_log_pressed):
-			export_log_button.connect("pressed", _on_export_log_pressed)
-		
-		update_debug_log()
-		print("Debug panel setup complete")
-	else:
-		print("WARNING: Debug panel nodes not found - debug features disabled")
-
-func _on_debug_toggle_pressed():
-	if debug_panel:
-		debug_panel_visible = not debug_panel_visible
-		debug_panel.visible = debug_panel_visible
-		if debug_panel_visible:
-			update_debug_log()
-			Global.add_log_entry("Debug panel opened", 2)
-		else:
-			Global.add_log_entry("Debug panel closed", 2)
-			
-func _on_clear_log_pressed():
-	Global.clear_debug_log()
-	update_debug_log()
-	Global.add_log_entry("Debug log cleared", 1)
-	
-func _on_export_log_pressed():
-	export_debug_log()
-	
-func export_debug_log():
-	var log_entries = Global.get_debug_log()
-	var file = FileAccess.open("res://debug_log.txt", FileAccess.WRITE)
-	if file:
-		for entry in log_entries:
-			file.store_string(entry + "\n")
-		file.close()
-		Global.add_log_entry("Debug log exported to res://debug_log.txt", 1)
-		print("Debug log exported")
-	else:
-		Global.add_log_entry("Failed to export debug log", 0)
-
-func update_debug_log():
-	if debug_log_display:
-		var log_entries = Global.get_debug_log()
-		var log_text = "=== DEBUG LOG ===\n"
-		for entry in log_entries:
-			log_text += entry + "\n"
-		debug_log_display.text = log_text
-
 
 func _on_left_algorithm_selected(algorithm):
 	current_left_type = algorithm
