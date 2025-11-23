@@ -30,8 +30,6 @@ var match_winner: String = ""
 var showing_match_result: bool = false
 var player1_initial_position: Vector2
 var player2_initial_position: Vector2
-var player1_health_after_win: int = max_hp
-var player2_health_after_win: int = max_hp
 var round_result_label: Label
 
 func _ready():
@@ -305,7 +303,7 @@ func show_series_result():
 	
 	print("=== SERIES COMPLETE ===")
 	print(winner_text + " wins the series!")
-	print("Final Score - P1: " + str(Global.player1_wins) + " | P2: " + str(Global.player2_wins))
+	print("Final Score - P1: " + str(Global.player1_round_wins) + " | P2: " + str(Global.player2_round_wins))
 	
 	# Update UI
 	if timerLabel:

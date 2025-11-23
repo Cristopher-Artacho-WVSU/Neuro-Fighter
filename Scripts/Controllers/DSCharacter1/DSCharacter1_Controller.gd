@@ -112,6 +112,13 @@ var enemy_UpperHurtbox: Area2D = null
 var enemy_LowerHurtbox: Area2D = null
 var prev_distance_to_enemy: float = 0.0
 
+#AREA2D GROUP
+var player_index: int = 0
+var player_hitboxGroup: String
+var enemy_hitboxGroup: String
+
+
+
 var rules = [
 	{
 		"ruleID": 1, "prioritization": 1,
@@ -240,6 +247,15 @@ func cache_enemy_components():
 
 # ===== INITIALIZATION =====
 func _ready():
+	
+	#	GROUP HITBOXES
+	Global.register_character(self)
+	player_hitboxGroup = Global.get_hitbox_group(player_index)
+	print("DS Hitbox Group: ", player_hitboxGroup)
+	for hb in hitboxGroup:
+		hb.add_to_group(player_hitboxGroup)
+	get_enemy_hurtbox()
+	
 	find_enemy_automatically()
 	updateDetails()
 	
@@ -249,6 +265,7 @@ func _ready():
 	init_log_file()
 	
 	initialize_chart_support()
+	
 	
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
@@ -260,7 +277,14 @@ func _ready():
 			
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
-		
+
+func get_enemy_hurtbox():
+	if player_hitboxGroup == "Player1_Hitboxes":
+		enemy_hitboxGroup = "Player2_Hitboxes"
+	else:
+		enemy_hitboxGroup = "Player1_Hitboxes"
+	print("Enemy Hitboxes: ", enemy_hitboxGroup)
+
 func initialize_ai_state_manager():
 	ai_state_manager = get_node("/root/AI_StateManager")
 	if not ai_state_manager:
@@ -882,7 +906,7 @@ func _create_new_script():
 		var rule = candidates[i].rule
 		rule["inScript"] = true
 		DSscript.append(rule)
-		print("Rules Generated:")
+	print("Rules Generated:")
 	print(DSscript)
 
 func DistributeRemainder():
@@ -925,7 +949,7 @@ func DamagedSystem(delta):
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return
-	if area.is_in_group("Player1_Hitboxes"):
+	if area.is_in_group(enemy_hitboxGroup):
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
@@ -953,7 +977,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
-	if area.is_in_group("Player1_Hitboxes"):
+	if area.is_in_group(enemy_hitboxGroup):
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0

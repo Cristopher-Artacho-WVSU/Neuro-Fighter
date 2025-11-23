@@ -71,6 +71,12 @@ const crouch_heavyPunch_Range = 315
 const crouch_lightPunch_Range = 315
 const crouch_lightKick_Range = 325
 
+
+#AREA2D GROUP
+var player_index: int = 0
+var player_hitboxGroup: String
+var enemy_hitboxGroup: String
+
 func find_enemy_automatically():
 	# Look for other CharacterBody2D in parent scene
 	var parent = get_parent()
@@ -94,6 +100,15 @@ func cache_enemy_components():
 		prev_distance_to_enemy = abs(enemy.position.x - position.x)
 
 func _ready() -> void:
+	
+#	GROUP HITBOXES
+	Global.register_character(self)
+	player_hitboxGroup = Global.get_hitbox_group(player_index)
+	print("DT HitboxGroup: ", player_hitboxGroup)
+	for hb in hitboxGroup:
+		hb.add_to_group(player_hitboxGroup)
+	get_enemy_hurtbox()
+
 	find_enemy_automatically()
 	var is_defending = false
 	var is_hurt = false
@@ -113,6 +128,14 @@ func _ready() -> void:
 		$Hurtbox_LowerBody.connect("area_entered", _on_hurtbox_lower_body_area_entered)
 
 
+func get_enemy_hurtbox():
+	if player_hitboxGroup == "Player1_Hitboxes":
+		enemy_hitboxGroup = "Player2_Hitboxes"
+	else:
+		enemy_hitboxGroup = "Player1_Hitboxes"
+	print("Enemy Hitboxes: ", enemy_hitboxGroup)
+
+	
 func _physics_process(delta):
 	var direction = 1 if enemy.global_position.x > global_position.x else -1
 	
@@ -216,7 +239,7 @@ func DamagedSystem(delta):
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
-	if area.is_in_group("Player1_Hitboxes"):
+	if area.is_in_group(enemy_hitboxGroup):
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
@@ -242,7 +265,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
-	if area.is_in_group("Player1_Hitboxes"):
+	if area.is_in_group(enemy_hitboxGroup):
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0

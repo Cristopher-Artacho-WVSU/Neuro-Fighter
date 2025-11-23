@@ -4,6 +4,9 @@ extends Node
 # Player controller types
 var player1_controller = "Human"
 var player2_controller = "DecisionTree"
+#FOR AREA2D GROUPS
+var p1_char = null
+var p2_char = null
 
 # AI State references
 var player1_saved_state = ""
@@ -247,3 +250,18 @@ func reset_match_data():
 	player2_round_wins = 0
 	reset_round_wins() 
 	add_log_entry("Match data reset", 1)
+
+func register_character(character):
+	if p1_char == null:
+		p1_char = character
+		character.player_index = 1
+		return 1
+	elif p2_char == null:
+		p2_char = character
+		character.player_index = 2
+		return 2
+	return 0   # More than 2 characters (should not happen)
+
+
+func get_hitbox_group(player_index: int) -> String:
+	return "Player1_Hitboxes" if player_index == 1 else "Player2_Hitboxes"

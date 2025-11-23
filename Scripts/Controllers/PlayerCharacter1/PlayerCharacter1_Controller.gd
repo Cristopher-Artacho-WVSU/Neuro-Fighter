@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+
+
 #ONREADY VARIABLES
 @onready var animation = $AnimationPlayer
 @onready var characterSprite = $AnimatedSprite2D
@@ -66,7 +68,10 @@ var right_key_just_pressed: bool = false
 var input_buffer: Array = []
 var max_buffer_size: int = 4
 
-
+#AREA2D GROUP
+var player_index: int = 0
+var player_hitboxGroup: String
+var enemy_hitboxGroup: String
 
 func find_enemy_automatically():
 	# Look for other CharacterBody2D in parent scene
@@ -89,6 +94,16 @@ func find_enemy_automatically():
 func _ready():
 	set_process_input(true)
 	find_enemy_automatically()
+	
+#	GROUP HITBOXES
+	Global.register_character(self)
+	player_hitboxGroup = Global.get_hitbox_group(player_index)
+	print("Human Group Name: ", player_hitboxGroup)
+	for hb in hitboxGroup:
+		hb.add_to_group(player_hitboxGroup)
+	get_enemy_hurtbox()
+	
+	
 	#	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
@@ -98,6 +113,13 @@ func _ready():
 		
 	if $Hurtbox_LowerBody and not $Hurtbox_LowerBody.is_connected("area_entered", _on_hurtbox_lower_body_area_entered):
 		$Hurtbox_LowerBody.connect("area_entered", _on_hurtbox_lower_body_area_entered)
+
+func get_enemy_hurtbox():
+	if player_hitboxGroup == "Player1_Hitboxes":
+		enemy_hitboxGroup = "Player2_Hitboxes"
+	else:
+		enemy_hitboxGroup = "Player1_Hitboxes"
+	print("Enemy Hitboxes: ", enemy_hitboxGroup)
 
 func _input(event):
 	if not event is InputEventKey or not event.pressed or event.echo:
@@ -351,7 +373,7 @@ func DefenseSystem(delta):
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
-	if area.is_in_group("Player2_Hitboxes"):
+	if area.is_in_group(enemy_hitboxGroup):
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
@@ -377,7 +399,7 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
-	if area.is_in_group("Player2_Hitboxes"):
+	if area.is_in_group(enemy_hitboxGroup):
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
