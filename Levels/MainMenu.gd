@@ -8,8 +8,6 @@ extends Control
 @onready var right_load_panel = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/ScrollContainer/LoadPanel/SavedStatesContainer
 @onready var left_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/PercentageDisplay/PercentageValue
 @onready var right_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/PercentageDisplay/PercentageValue
-@onready var nds_ai_input = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel/NDSInput
-@onready var nds_ai_description = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel/NDSDescription
 @onready var play_button = $MarginContainer/VBoxContainer/ButtonContainer/PlayButton
 @onready var save_button = $MarginContainer/VBoxContainer/ButtonContainer/SaveButton
 @onready var back_button = $MarginContainer/VBoxContainer/ButtonContainer/BackButton
@@ -56,17 +54,13 @@ func _ready():
 		
 	# Setup main buttons
 	setup_main_buttons()
-	# Setup NDS input signals
-	setup_nds_input_signals()
 	# MATCH COUNT
 	setup_match_count_section()
 	
 	update_display()
-	setup_nds_ai_section()
 	setup_debug_panel()
 
 func setup_load_sections():
-	# Clear existing buttons safely
 	if left_load_panel:
 		for child in left_load_panel.get_children():
 			child.queue_free()
@@ -89,7 +83,6 @@ func update_load_panel_visibility():
 		right_load_panel.get_parent().visible = (current_right_type == "DynamicScripting" or current_right_type == "NDS")
 
 func update_load_buttons():
-	# FIXED: Clear buttons with proper waiting
 	clear_load_buttons()
 	
 	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
@@ -99,8 +92,7 @@ func update_load_buttons():
 	
 	# Get all saved states
 	var all_states = Global.get_saved_state_names()
-	
-	# FIXED: Wait one frame to ensure buttons are cleared
+
 	await get_tree().process_frame
 	
 	# Create load buttons with proper filtering
@@ -197,16 +189,6 @@ func setup_main_buttons():
 		print("BackButton connected")
 	else:
 		print("WARNING: BackButton not found!")
-		
-func setup_nds_input_signals():
-	if nds_ai_input:
-		if not nds_ai_input.is_connected("text_changed", _on_nds_input_text_changed):
-			nds_ai_input.connect("text_changed", _on_nds_input_text_changed)
-		if not nds_ai_input.is_connected("text_submitted", _on_nds_input_text_submitted):
-			nds_ai_input.connect("text_submitted", _on_nds_input_text_submitted)
-		print("NDSInput signals connected")
-	else:
-		print("WARNING: NDSInput not found!")
 
 
 func setup_algorithm_buttons():
@@ -224,13 +206,13 @@ func setup_algorithm_buttons():
 	if left_fsm: left_fsm.connect("pressed", _on_left_algorithm_selected.bind("FSM"))
 	
 	# Right side buttons
-	var right_human = right_algorithm_panel.get_node_or_null("HumanButton")
+	#var right_human = right_algorithm_panel.get_node_or_null("HumanButton")
 	var right_dt = right_algorithm_panel.get_node_or_null("DecisionTreeButton")
 	var right_ds = right_algorithm_panel.get_node_or_null("DynamicScriptingButton")
 	var right_nds = right_algorithm_panel.get_node_or_null("NDSButton")
 	var right_fsm = right_algorithm_panel.get_node_or_null("FSMButton")
 	
-	if right_human: right_human.connect("pressed", _on_right_algorithm_selected.bind("Human"))
+	#if right_human: right_human.connect("pressed", _on_right_algorithm_selected.bind("Human"))
 	if right_dt: right_dt.connect("pressed", _on_right_algorithm_selected.bind("DecisionTree"))
 	if right_ds: right_ds.connect("pressed", _on_right_algorithm_selected.bind("DynamicScripting"))
 	if right_nds: right_nds.connect("pressed", _on_right_algorithm_selected.bind("NDS"))
@@ -256,14 +238,6 @@ func _on_match_count_changed(value: float):
 	Global.match_count = int(value)
 	update_match_count_display()
 	Global.add_log_entry("Match count set to: " + str(Global.match_count), 2)
-
-func setup_nds_ai_section():
-	if nds_ai_input:
-		nds_ai_input.placeholder_text = "Enter NDS AI parameters..."
-		nds_ai_input.text = "Learning Rate: 0.1, Exploration: 0.3"
-	
-	if nds_ai_description:
-		nds_ai_description.text = "Configure Neuro-Dynamic System parameters"
 		
 func setup_debug_panel():
 	if debug_panel and debug_toggle and debug_log_display:
@@ -370,9 +344,6 @@ func update_display():
 	if right_percentage_value:
 		right_percentage_value.text = "%d%%" % (right_percent * 100)
 	
-	# Update NDS AI section visibility and content
-	update_nds_ai_section()
-	
 	# Update play button state
 	if play_button:
 		play_button.disabled = (current_left_type == "Human" and current_right_type == "Human")
@@ -396,21 +367,6 @@ func calculate_ai_percentage(algorithm_type: String, ai_state) -> float:
 				return 0.8
 			_:
 				return 0.5
-
-func update_nds_ai_section():
-	# Show NDS AI section only when NDS is selected
-	var nds_panel = $MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel
-	if nds_panel:
-		nds_panel.visible = (current_left_type == "NDS" or current_right_type == "NDS")
-	
-	if current_left_type == "NDS" or current_right_type == "NDS":
-		var params = Global.get_nds_ai_parameters()
-		if nds_ai_input:
-			nds_ai_input.text = "LR: %.2f, Explore: %.2f, Layers: %s" % [
-				params.get("learning_rate", 0.1),
-				params.get("exploration_rate", 0.3),
-				str(params.get("network_layers", []))
-			]
 
 func update_performance_preview():
 	# Create a simple performance chart visualization
@@ -461,10 +417,6 @@ func _on_play_button_pressed():
 	
 	# Reset match data
 	Global.reset_match_data()
-	
-	# Apply NDS AI parameters if NDS is selected
-	if current_left_type == "NDS" or current_right_type == "NDS":
-		apply_nds_ai_parameters()
 	
 	Global.set_controllers(current_left_type, current_right_type, current_left_state, current_right_state)
 	print("Starting game with controllers: P1=%s, P2=%s, Matches=%d" % [current_left_type, current_right_type, Global.match_count])
@@ -564,21 +516,3 @@ func _on_save_dialog_action(action: String, name_input: LineEdit, desc_input: Li
 			Global.add_log_entry("Failed to save AI state: " + state_name, 0)
 	
 	dialog.queue_free()
-
-func apply_nds_ai_parameters():
-	# Parse and apply NDS AI parameters from input
-	var input_text = nds_ai_input.text if nds_ai_input else ""
-	# This would parse the input and set parameters in Global
-	# For now, we'll use defaults
-	Global.add_log_entry("Applying NDS AI parameters: " + input_text, 2)
-	print("Applying NDS AI parameters: ", input_text)
-
-# Handle NDS AI input changes
-func _on_nds_input_text_changed(new_text):
-	# You can add real-time validation here
-	Global.add_log_entry("NDS parameters changed: " + new_text, 3)
-	pass
-
-func _on_nds_input_text_submitted(new_text):
-	Global.add_log_entry("NDS parameters submitted: " + new_text, 2)
-	apply_nds_ai_parameters()

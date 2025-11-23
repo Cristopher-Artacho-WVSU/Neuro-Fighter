@@ -107,6 +107,7 @@ text = "Choose Algorithm"
 
 [node name="HumanButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
+disabled = true
 text = "Human"
 
 [node name="DecisionTreeButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
@@ -150,21 +151,6 @@ text = "Load Saved"
 
 [node name="SavedStatesContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/ScrollContainer/LoadPanel"]
 layout_mode = 2
-
-[node name="NDSAIPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="NDSLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel"]
-layout_mode = 2
-text = "NDS AI Parameters"
-
-[node name="NDSInput" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel"]
-layout_mode = 2
-placeholder_text = "Custom Inputs"
-
-[node name="NDSDescription" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/NDSAIPanel"]
-layout_mode = 2
-text = "Neuro-Dynamic System Settings"
 
 [node name="MatchCountPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
