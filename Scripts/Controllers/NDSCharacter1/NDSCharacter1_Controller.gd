@@ -15,6 +15,15 @@ var jump_speed = 3000
 var fall_multiplier = 5.0
 var jump_multiplier = 1.6
 var jump_force = -1200.0
+var jump_frame_ascend_time = 0.5   # frame 6
+var jump_frame_fall_time = 0.687   # frame 9
+var jump_end_time = 0.75           # frame 11
+# Add these at the top of the script
+var jump_frozen_up_done = false
+var jump_fall_started = false
+var jump_frozen_down_done = false
+var jump_landing_done = false
+var jump_state = ""     # "ascend", "frozen_up", "fall", "frozen_down"
 
 #HITSTOPS
 var hitstop_id: int = 0
@@ -27,6 +36,13 @@ var dash_speed = 300
 var dash_time = 0.5
 var dash_timer = 0.0
 var dash_direction = 0
+var is_sliding: bool = false
+var slide_cooldown_timer: float = 0.0
+var slide_direction: int = 0
+var slide_speed: float = 800
+var slide_duration: float = 0.4
+var slide_cooldown: float = 0.5
+
 
 #DEFENSE 
 var last_input_time = 0.0
@@ -37,6 +53,8 @@ var defense_delay = 0.5
 var is_dashing = false
 var is_jumping = false
 var is_crouching = false
+var can_slide: bool = true
+var slide_timer: float = 0.0
 #ATTACKS
 var is_attacking = false
 #DEFENSE
@@ -68,7 +86,7 @@ var minWeight = 0.1
 var maxWeight = 1.0
 
 #LOGGING PURPOSES
-var log_file_path = "res://training.txt"
+var log_file_path = "res://nds_training.txt"
 var cycle_used_rules = []
 var log_cycles = 0
 
@@ -295,7 +313,7 @@ func _physics_process(delta):
 		evaluate_and_execute(rules)
 	
 	DamagedSystem(delta)
-	#debug_states()
+	debug_states()
 	move_and_slide()
 
 func update_facing_direction():
@@ -340,6 +358,24 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 			velocity.x = 0
 			
 	# Movement animations
+	if velocity.x != 0 and is_jumping:
+		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "ascend":
+			velocity.x += 30
+			velocity.y -= 10
+			animation.play("jump_forward")
+##		FORWARD
+		#if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "frozen_up":
+			#velocity.x -= 30
+		#
+##		BACKWARD
+		#elif curr_distance_to_enemy > prev_distance_to_enemy and jump_state == "frozen_up":
+			#velocity.x += 30
+		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "fall":
+			velocity.y += 50
+			
+		elif curr_distance_to_enemy > prev_distance_to_enemy and jump_state == "ascend":
+			velocity.x -= 30
+			velocity.y -= 10
 	if velocity.x != 0:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
 			animation.play("move_forward")
@@ -358,7 +394,23 @@ func evaluate_and_execute(rules: Array):
 		var rule = DSscript[i]
 		var conditions = rule["conditions"]
 		var match_all = true
+
+		# Check if this is a slide rule and if sliding is available
+		var is_slide_rule = false
+		var actions = rule.get("enemy_actions", [])
+		if actions.size() == 0:
+			var raw_action = rule.get("enemy_action", "idle")
+			actions = [raw_action] if typeof(raw_action) == TYPE_STRING else raw_action
 		
+		for action in actions:
+			if action == "slide_forward" or action == "slide_backward":
+				is_slide_rule = true
+				break
+		
+		# Skip slide rules if sliding is not available
+		if is_slide_rule and not can_perform_slide():
+			continue
+			
 		if match_all and "distance" in conditions:
 			var cond = conditions["distance"]
 			if not _compare_numeric(cond["op"], distance, cond["value"]):
@@ -580,14 +632,15 @@ func _execute_single_action(action):
 	#_connect_animation_finished()
 
 func debug_states():
-	print("is_dashing: ", is_dashing)
-	print("is_jumping state: ", is_jumping)
-	print("is_crouching: ", is_crouching)
-	print("is_attacking state:", is_attacking)
-	print("is_defending: ", is_defending)
-	print("is_hurt state:", is_hurt)
-	print("is_is_dashing: ", is_dashing)
-	print("is_on_floor(): ", is_on_floor())
+	#print("is_dashing: ", is_dashing)
+	#print("is_jumping state: ", is_jumping)
+	#print("is_crouching: ", is_crouching)
+	#print("is_attacking state:", is_attacking)
+	#print("is_defending: ", is_defending)
+	#print("is_hurt state:", is_hurt)
+	#print("is_is_dashing: ", is_dashing)
+	#print("is_on_floor(): ", is_on_floor())
+	print("Current animation:", animation.current_animation)
 	pass
 
 #FOR ANIMATIONS IN ORDER TO NOT GET CUT OFF
@@ -597,7 +650,7 @@ func _on_animation_finished(anim_name: String):
 			is_attacking = false
 		"standing_block":
 			is_defending = false
-		"light_hurt", "heavy_hurt"	:
+		"light_hurt", "heavy_hurt":
 			is_hurt = false
 			is_attacking = false
 			is_defending = false
@@ -839,7 +892,7 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group("Player1_Hitboxes"):
-		is_recently_hit = true  # Mark as hit immediately
+		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
@@ -848,12 +901,15 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			applyDamage(7)
 			print(" Upper Damaged From Blocking")
 		else:
+			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
+				applyDamage(15)
+				animation.play("heavy_hurt")
+			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch"]:
+				applyDamage(10)
+				animation.play("light_hurt")
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			animation.play("light_hurt")
 			upper_attacks_taken += 1
-			animation.play("idle")
-			applyDamage(10)
 			print("Player 2 Upper body hit taken")
 		# Reset hit immunity after short real-time delay
 		await get_tree().create_timer(0.2, true).timeout
@@ -864,23 +920,26 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group("Player1_Hitboxes"):
-		is_recently_hit = true  # Mark as hit immediately
+		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			animation.play("standing_block")
-			lower_attacks_blocked += 1
+			animation.play("standing_block") 
+			upper_attacks_blocked += 1
 			applyDamage(7)
-			print("Lower Damaged From Blocking")
+			print(" Lower Damaged From Blocking")
 		else:
+			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
+				applyDamage(15)
+				animation.play("heavy_hurt")
+			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch"]:
+				applyDamage(10)
+				animation.play("light_hurt")
 			is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			animation.play("light_hurt")
-			animation.play("idle")
-			lower_attacks_taken += 1
-			applyDamage(10)
+			upper_attacks_taken += 1
 			print("Player 2 Lower body hit taken")
-		
+		# Reset hit immunity after short real-time delay
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
 		
@@ -1080,7 +1139,7 @@ func connect_to_server():
 	set_process(true)
 	print("🔌 Connecting to LSTM server...")
 	
-	
+
 func _on_connected(proto = ""):
 	connected = true
 	print("✅ Connected to LSTM server")
@@ -1177,3 +1236,84 @@ func reset_state():
 		animation.play("idle")
 	
 	print("NDS Character reset to initial state")
+func can_perform_slide() -> bool:
+	return can_slide and not is_sliding and is_on_floor() and not is_jumping
+	
+func handle_slide_movement(delta):
+	# Update slide cooldown
+	if slide_cooldown_timer > 0:
+		slide_cooldown_timer -= delta
+		if slide_cooldown_timer <= 0:
+			can_slide = true
+	
+	if is_sliding:
+		slide_timer -= delta
+		velocity.x = slide_direction * slide_speed
+		
+		if slide_timer <= 0:
+			is_sliding = false
+			velocity.x = 0
+			# Start cooldown
+			slide_cooldown_timer = slide_cooldown
+			can_slide = false
+			
+func start_slide(direction: int):
+	if is_attacking || is_jumping || is_defending || is_hurt || is_sliding || !can_slide:
+		return
+	
+	is_sliding = true
+	slide_direction = direction
+	slide_timer = slide_duration
+	
+	# Play slide animation
+	if animation.has_animation("slide"):
+		animation.play("slide")
+	else:
+		animation.play("move_forward" if direction > 0 else "move_backward")
+	
+	print("AI Slide movement activated!")
+
+
+func handle_jump_animation(delta):
+	var vy = velocity.y
+
+	# -------------------------------
+	# 1. ASCENDING — freeze at frame 6
+	# -------------------------------
+	if jump_state == "ascend":
+		if vy < 0:
+			if animation.current_animation_position >= jump_frame_ascend_time:
+				jump_state = "frozen_up"
+	# Keep frame frozen every physics frame
+	if jump_state == "frozen_up":
+		animation.seek(jump_frame_ascend_time, true)
+
+	# -------------------------------------
+	# 2. FALLING — play until frame 9
+	# -------------------------------------
+	if jump_state == "frozen_up" and vy > 0:
+		jump_state = "fall"
+		animation.play("jump")
+		animation.seek(jump_frame_ascend_time, true)
+
+	# 3. Freeze on fall-frame (frame 9)
+	if jump_state == "fall":
+		if animation.current_animation_position >= jump_frame_fall_time:
+			jump_state = "frozen_down"
+	if jump_state == "frozen_down":
+		animation.seek(jump_frame_fall_time, true)
+
+	# ----------------------------------------------------------
+	# 4. If landed, play ending frames (frame 10 → frame 11)
+	# ----------------------------------------------------------
+	if jump_state == "frozen_down" and is_on_floor():
+		jump_state = "landing"
+		animation.play("jump")
+		animation.seek(jump_frame_fall_time, true)
+
+	# 5. End everything when jump animation finishes
+	if jump_state == "landing":
+		if animation.current_animation_position >= jump_end_time:
+			is_jumping = false
+			jump_state = ""
+			animation.play("idle")
