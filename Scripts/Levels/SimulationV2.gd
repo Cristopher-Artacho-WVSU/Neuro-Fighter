@@ -268,9 +268,11 @@ func handle_match_result(winner: String):
 	
 	# Record the win
 	Global.record_win(winner)
+	Global.increment_match()
 	
 	# Auto-save DS states
 	auto_save_ds_states()
+	update_all_displays()
 	
 	# Check if the series is complete
 	if Global.is_match_series_complete():

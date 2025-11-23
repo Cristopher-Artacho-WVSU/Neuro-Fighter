@@ -186,15 +186,13 @@ layout_mode = 2
 layout_mode = 2
 alignment = 1
 
-[node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
-layout_mode = 2
-text = "Save AI"
-
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Back"
 
 [node name="PlayButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "PLAY
 "

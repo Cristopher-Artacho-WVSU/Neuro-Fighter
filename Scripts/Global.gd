@@ -45,8 +45,6 @@ var game_paused = false
 
 var match_count: int = 1  # Default to single round
 var current_match: int = 1
-var player1_wins: int = 0
-var player2_wins: int = 0
 var player1_round_wins: int = 0
 var player2_round_wins: int = 0
 
@@ -224,28 +222,28 @@ func increment_match():
 
 func record_win(winner: String):
 	if winner == "player1":
-		player1_wins += 1
+		player1_round_wins += 1
 		add_log_entry("Player 1 wins match " + str(current_match), 1)
 	elif winner == "player2":
-		player2_wins += 1
+		player2_round_wins += 1
 		add_log_entry("Player 2 wins match " + str(current_match), 1)
 
 func is_match_series_complete() -> bool:
 	# Check if either player has won majority of matches
 	var wins_needed = ceil(float(match_count) / 2.0)
-	return player1_wins >= wins_needed or player2_wins >= wins_needed
+	return player1_round_wins >= wins_needed or player2_round_wins >= wins_needed
 
 func get_series_winner() -> String:
 	var wins_needed = ceil(float(match_count) / 2.0)
-	if player1_wins >= wins_needed:
+	if player1_round_wins >= wins_needed:
 		return "player1"
-	elif player2_wins >= wins_needed:
+	elif player2_round_wins >= wins_needed:
 		return "player2"
 	return ""
 
 func reset_match_data():
 	current_match = 1
-	player1_wins = 0
-	player2_wins = 0
+	player1_round_wins = 0
+	player2_round_wins = 0
 	reset_round_wins() 
 	add_log_entry("Match data reset", 1)
