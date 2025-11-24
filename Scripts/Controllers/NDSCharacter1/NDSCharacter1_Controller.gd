@@ -268,6 +268,8 @@ func _ready():
 ##	FOR MOST ANIMATIONS
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
+		
+	setup_player_marker()
 
 
 func get_enemy_hurtbox():
@@ -1495,6 +1497,7 @@ func get_rule_action_name(rule_id: int) -> String:
 				return action_name
 	return "Rule " + str(rule_id)
 
+
 func _on_hurt_finished():
 #	IF is_defending, REDUCE THE DAMAGE BY 30%
 		animation.play("idle")
@@ -1531,3 +1534,29 @@ func get_direction_to_enemy() -> int:
 		return 1  # fallback
 	
 	return 1 if enemy.global_position.x > global_position.x else -1
+
+func setup_player_marker():
+	var player_type = identify_player_type()
+	var color = Color.RED if player_type == "player1" else Color.BLUE
+	var text = "PLAYER 1" if player_type == "player1" else "PLAYER 2"
+	
+	create_player_marker(text, color)
+	
+func create_player_marker(text: String, color: Color):
+	if has_node("PlayerMarker"):
+		return
+		
+	var marker = Label.new()
+	marker.name = "PlayerMarker"
+	marker.text = text
+	marker.add_theme_font_size_override("font_size", 33)
+	marker.add_theme_color_override("font_color", color)
+	marker.position = Vector2(-50, -280)  # Adjust position as needed
+	add_child(marker)
+
+func identify_player_type() -> String:
+	if "PlayerCharacter1" in name or "player1" in name.to_lower():
+		return "player1"
+	elif "NPCCharacter1" in name or "player2" in name.to_lower():
+		return "player2"
+	return "undefined"
