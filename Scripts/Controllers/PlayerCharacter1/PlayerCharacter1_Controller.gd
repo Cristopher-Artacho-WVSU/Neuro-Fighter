@@ -114,6 +114,8 @@ func _ready():
 		
 	if $Hurtbox_LowerBody and not $Hurtbox_LowerBody.is_connected("area_entered", _on_hurtbox_lower_body_area_entered):
 		$Hurtbox_LowerBody.connect("area_entered", _on_hurtbox_lower_body_area_entered)
+	
+	setup_player_marker()
 
 func get_enemy_hurtbox():
 	if player_hitboxGroup == "Player1_Hitboxes":
@@ -610,3 +612,29 @@ func handle_jump_animation(delta):
 			jump_forward_played = false
 			jump_backward_played = false
 			animation.play("idle")
+	
+func setup_player_marker():
+	var player_type = identify_player_type()
+	var color = Color.RED if player_type == "player1" else Color.BLUE
+	var text = "PLAYER 1" if player_type == "player1" else "PLAYER 2"
+	
+	create_player_marker(text, color)
+	
+func create_player_marker(text: String, color: Color):
+	if has_node("PlayerMarker"):
+		return
+		
+	var marker = Label.new()
+	marker.name = "PlayerMarker"
+	marker.text = text
+	marker.add_theme_font_size_override("font_size", 33)
+	marker.add_theme_color_override("font_color", color)
+	marker.position = Vector2(-50, -280)  # Adjust position as needed
+	add_child(marker)
+
+func identify_player_type() -> String:
+	if "PlayerCharacter1" in name or "player1" in name.to_lower():
+		return "player1"
+	elif "NPCCharacter1" in name or "player2" in name.to_lower():
+		return "player2"
+	return "undefined"
