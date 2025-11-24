@@ -131,11 +131,11 @@ func create_filtered_load_buttons(load_panel: Control, algorithm_type: String, a
 			should_show = true
 		elif state_type == "" and (algorithm_type == "DynamicScripting" or algorithm_type == "NDS"):
 			should_show = true
-		# Optional: Show DS states for NDS and vice versa if you want cross-compatibility
-		# elif algorithm_type == "NDS" and state_type == "DynamicScripting":
-		# 	should_show = true
-		# elif algorithm_type == "DynamicScripting" and state_type == "NDS":
-		# 	should_show = true
+		# Allow cross-compatibility between DS and NDS if desired
+		elif algorithm_type == "NDS" and state_type == "DynamicScripting":
+			should_show = true
+		elif algorithm_type == "DynamicScripting" and state_type == "NDS":
+			should_show = true
 		
 		if should_show:
 			var button = Button.new()

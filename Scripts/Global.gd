@@ -87,7 +87,6 @@ func set_controllers(p1_type: String, p2_type: String, p1_state = null, p2_state
 	if p2_state:
 		add_log_entry("P2 AI State: %s" % p2_state.get("description", "Custom"), 2)
 
-# AI State Management through AI_StateManager
 func save_ai_state(state_name: String, controller_type: String, rules: Array, performance: float, description: String = ""):
 	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
 	if not ai_state_manager:
@@ -103,9 +102,9 @@ func save_ai_state(state_name: String, controller_type: String, rules: Array, pe
 	
 	var success = ai_state_manager.save_state(state_name, rules, metadata)
 	if success:
-		add_log_entry("AI State Saved: " + state_name, 1)
+		add_log_entry(controller_type + " State Saved: " + state_name, 1)
 	else:
-		add_log_entry("Failed to save AI State: " + state_name, 0)
+		add_log_entry("Failed to save " + controller_type + " State: " + state_name, 0)
 	return success
 
 func load_ai_state(state_name: String) -> Dictionary:
@@ -151,11 +150,11 @@ func get_saved_states_for_algorithm(algorithm_type: String) -> Array:
 		return ai_state_manager.get_saved_states_for_algorithm(algorithm_type)
 	return []
 
-func auto_save_ds_state(rules: Array, performance: float = 0.5) -> String:
+func auto_save_ds_state(rules: Array, performance: float = 0.5, controller_type: String = "DynamicScripting") -> String:
 	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
 	if ai_state_manager:
-		var label = ai_state_manager.auto_save_state(rules, "DynamicScripting", performance)
-		add_log_entry("Auto-saved DS AI state: " + label, 1)
+		var label = ai_state_manager.auto_save_state(rules, controller_type, performance)
+		add_log_entry("Auto-saved " + controller_type + " AI state: " + label, 1)
 		return label
 	return ""
 
