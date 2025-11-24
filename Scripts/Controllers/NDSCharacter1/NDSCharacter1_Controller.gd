@@ -13,11 +13,15 @@ var connected := false
 #JUMP
 var jump_speed = 3000 
 var fall_multiplier = 5.0
-var jump_multiplier = 1.6
-var jump_force = -1200.0
+var jump_multiplier = 1.6       # LESS gravity while rising → faster upward travel
+var jump_force = -1700.0        # STRONGER initial jump → higher/faster jump start
 var jump_frame_ascend_time = 0.5   # frame 6
 var jump_frame_fall_time = 0.687   # frame 9
 var jump_end_time = 0.75           # frame 11
+var jump_forward_played = false
+var jump_backward_played = false
+
+
 # Add these at the top of the script
 var jump_frozen_up_done = false
 var jump_fall_started = false
@@ -89,7 +93,8 @@ var maxWeight = 1.0
 var log_file_path = "res://nds_training.txt"
 var cycle_used_rules = []
 var log_cycles = 0
-
+var NDS_10cycleLog_file_path = "res://NDS_10Cycles.txt"  # Using JSON format for simplicity
+var log_cycles10 = 0
 
 var ai_state_manager: Node
 #SAVED AI FITNESS
@@ -336,7 +341,7 @@ func _physics_process(delta):
 		evaluate_and_execute(rules)
 	
 	DamagedSystem(delta)
-	debug_states()
+	#debug_states()
 	move_and_slide()
 
 func update_facing_direction():
@@ -380,25 +385,20 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 			is_dashing = false
 			velocity.x = 0
 			
-	# Movement animations
-	if velocity.x != 0 and is_jumping:
-		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "ascend":
-			velocity.x += 30
-			velocity.y -= 10
+	if jump_state == "ascend":
+		if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
+			velocity.x += 30   # instead of 30
+			velocity.y -= 5
 			animation.play("jump_forward")
-##		FORWARD
-		#if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "frozen_up":
-			#velocity.x -= 30
-		#
-##		BACKWARD
-		#elif curr_distance_to_enemy > prev_distance_to_enemy and jump_state == "frozen_up":
-			#velocity.x += 30
+			jump_forward_played = true
 		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "fall":
-			velocity.y += 50
+			velocity.y += 25
 			
-		elif curr_distance_to_enemy > prev_distance_to_enemy and jump_state == "ascend":
-			velocity.x -= 30
-			velocity.y -= 10
+		elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
+			velocity.x += 30   # instead of 30
+			velocity.y -= 5
+			animation.play("jump_backward")
+			jump_backward_played = true
 	if velocity.x != 0:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
 			animation.play("move_forward")
@@ -574,6 +574,7 @@ func _execute_single_action(action):
 					print("Jumped")
 					velocity.y = jump_force
 					is_jumping = true
+					jump_state = "ascend"
 					#_connect_animation_finished()
 				
 		"jump_forward":
@@ -585,6 +586,7 @@ func _execute_single_action(action):
 					MovementSystem(direction)
 					velocity.y = jump_force
 					is_jumping = true
+					jump_state = "ascend"
 					#_connect_animation_finished()
 				
 		"jump_backward":
@@ -596,6 +598,7 @@ func _execute_single_action(action):
 					MovementSystem(direction)
 					velocity.y = jump_force
 					is_jumping = true
+					jump_state = "ascend"
 					#_connect_animation_finished()
 					
 		"crouch":
@@ -674,10 +677,17 @@ func _on_animation_finished(anim_name: String):
 		"standing_block":
 			is_defending = false
 		"light_hurt", "heavy_hurt":
-			is_hurt = false
-			is_attacking = false
-			is_defending = false
-			is_dashing = false
+				is_dashing = false
+				is_jumping = false
+				is_crouching = false
+				is_attacking = false
+				is_defending = false
+				is_hurt = false
+				is_recently_hit = false
+				is_sliding = false
+				jump_backward_played = false
+				jump_forward_played = false
+				can_slide = true
 		"jump", "jump_forward", "jump_backward":
 			is_jumping = false
 		"crouch":
@@ -691,7 +701,7 @@ func _on_animation_finished(anim_name: String):
 func generate_script():
 	var active = 0
 	var inactive = 0
-	
+	log_every_10_cycles()
 	log_script_generation()
 	cycle_used_rules.clear()
 	
@@ -967,8 +977,12 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 		is_recently_hit = false
 		
 func applyDamage(amount: int):
-	if get_parent().has_method("apply_damage_to_player2"):
-		get_parent().apply_damage_to_player2(amount)
+	if player_hitboxGroup == "Player1_Hitboxes":
+		if get_parent().has_method("apply_damage_to_player1"):
+			get_parent().apply_damage_to_player1(amount)
+	else:
+		if get_parent().has_method("apply_damage_to_player2"):
+			get_parent().apply_damage_to_player2(amount)
 
 func updateDetails():
 	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d \nUpper Attacks Blocked: %d \nLower Attacks Blocked: %d" % [
@@ -1240,7 +1254,6 @@ func send_script_to_lstm():
 
 func reset_state():
 	velocity = Vector2.ZERO
-	
 	# Reset all states
 	is_dashing = false
 	is_jumping = false
@@ -1249,10 +1262,12 @@ func reset_state():
 	is_defending = false
 	is_hurt = false
 	is_recently_hit = false
-	
+	is_sliding = false
+	jump_backward_played = false
+	jump_forward_played = false
 	# Reset slide cooldown
-	#can_slide = true
-	#slide_cooldown_timer = 0.0
+	can_slide = true
+	slide_cooldown_timer = 0.0
 	
 	if animation:
 		animation.stop()
@@ -1334,9 +1349,33 @@ func handle_jump_animation(delta):
 		animation.play("jump")
 		animation.seek(jump_frame_fall_time, true)
 
-	# 5. End everything when jump animation finishes
+# 5. End everything when jump animation finishes
 	if jump_state == "landing":
 		if animation.current_animation_position >= jump_end_time:
 			is_jumping = false
 			jump_state = ""
+			jump_forward_played = false
+			jump_backward_played = false
 			animation.play("idle")
+			
+func log_every_10_cycles():
+	log_cycles10 += 1
+	
+	# Only log every 10 cycles
+	if log_cycles10 % 10 != 0:
+		return
+	
+	print("Logging NDS_10Cycles at cycle:", log_cycles10)
+	
+	var file = FileAccess.open(NDS_10cycleLog_file_path, FileAccess.READ_WRITE)
+	if file:
+		file.seek_end()
+		var entry = {
+			"cycle_id": log_cycles,
+			"rules": rules
+		}
+		file.store_string(JSON.stringify(entry) + "\n\n")
+		file.close()
+		# Write the rules array as JSON
+		#file.store_string(JSON.stringify(rules))
+		#file.close()

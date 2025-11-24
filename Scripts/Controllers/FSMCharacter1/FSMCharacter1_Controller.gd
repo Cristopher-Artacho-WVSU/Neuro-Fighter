@@ -28,8 +28,8 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 #JUMP
 var jump_speed = 3000 
 var fall_multiplier = 5.0
-var jump_multiplier = 1.6
-var jump_force = -1200.0
+var jump_multiplier = 1.6       # LESS gravity while rising → faster upward travel
+var jump_force = -1700.0        # STRONGER initial jump → higher/faster jump start
 var jump_frame_ascend_time = 0.5   # frame 6
 var jump_frame_fall_time = 0.687   # frame 9
 var jump_end_time = 0.75           # frame 11
@@ -39,6 +39,8 @@ var jump_fall_started = false
 var jump_frozen_down_done = false
 var jump_landing_done = false
 var jump_state = ""     # "ascend", "frozen_up", "fall", "frozen_down"
+var jump_forward_played = false
+var jump_backward_played = false
 
 #HITSTOPS
 var hitstop_id: int = 0
@@ -237,25 +239,22 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 			is_dashing = false
 			velocity.x = 0
 			
-	# Movement animations
-	if velocity.x != 0 and is_jumping:
-		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "ascend":
-			velocity.x += 30
-			velocity.y -= 10
+	if jump_state == "ascend":
+		if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
+			velocity.x += 30   # instead of 30
+			velocity.y -= 5
 			animation.play("jump_forward")
-##		FORWARD
-		#if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "frozen_up":
-			#velocity.x -= 30
-		#
-##		BACKWARD
-		#elif curr_distance_to_enemy > prev_distance_to_enemy and jump_state == "frozen_up":
-			#velocity.x += 30
+			jump_forward_played = true
 		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "fall":
-			velocity.y += 50
+			velocity.y += 25
 			
-		elif curr_distance_to_enemy > prev_distance_to_enemy and jump_state == "ascend":
-			velocity.x -= 30
-			velocity.y -= 10
+		elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
+			velocity.x += 30   # instead of 30
+			velocity.y -= 5
+			animation.play("jump_backward")
+			jump_backward_played = true
+			
+			
 	if velocity.x != 0:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
 			animation.play("move_forward")
@@ -326,8 +325,12 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 		is_recently_hit = false
 		
 func applyDamage(amount: int):
-	if get_parent().has_method("apply_damage_to_player2"):
-		get_parent().apply_damage_to_player2(amount)
+	if player_hitboxGroup == "Player1_Hitboxes":
+		if get_parent().has_method("apply_damage_to_player1"):
+			get_parent().apply_damage_to_player1(amount)
+	else:
+		if get_parent().has_method("apply_damage_to_player2"):
+			get_parent().apply_damage_to_player2(amount)
 
 func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> void:
 	hitstop_id += 1
@@ -421,10 +424,15 @@ func _on_animation_finished(anim_name):
 		"standing_block":
 			is_defending = false
 		"light_hurt", "heavy_hurt":
-			is_hurt = false
-			is_attacking = false
-			is_defending = false
-			is_dashing = false
+				is_dashing = false
+				is_jumping = false
+				is_crouching = false
+				is_attacking = false
+				is_defending = false
+				is_hurt = false
+				is_recently_hit = false
+				jump_backward_played = false
+				jump_forward_played = false
 		"move_forward", "move_backward":
 			is_dashing = false
 	velocity.x = 0
@@ -455,7 +463,6 @@ func KO():
 
 func reset_state():
 	velocity = Vector2.ZERO
-	
 	# Reset all states
 	is_dashing = false
 	is_jumping = false
@@ -464,6 +471,9 @@ func reset_state():
 	is_defending = false
 	is_hurt = false
 	is_recently_hit = false
+	jump_backward_played = false
+	jump_forward_played = false
+	# Reset slide cooldown
 	
 	# Reset FSM state
 	current_state = State.IDLE
@@ -514,9 +524,12 @@ func handle_jump_animation(delta):
 		animation.play("jump")
 		animation.seek(jump_frame_fall_time, true)
 
-	# 5. End everything when jump animation finishes
+# 5. End everything when jump animation finishes
 	if jump_state == "landing":
 		if animation.current_animation_position >= jump_end_time:
 			is_jumping = false
 			jump_state = ""
+			jump_forward_played = false
+			jump_backward_played = false
+			animation.play("idle")
 			animation.play("idle")
