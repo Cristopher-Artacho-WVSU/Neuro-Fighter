@@ -72,6 +72,9 @@ const crouch_heavyPunch_Range = 315
 const crouch_lightPunch_Range = 315
 const crouch_lightKick_Range = 325
 
+var upper_attacks_landed: int = 0
+var lower_attacks_landed: int = 0
+
 
 #AREA2D GROUP
 var player_index: int = 0
@@ -236,6 +239,8 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group(enemy_hitboxGroup):
+		#if "upper_attacks_landed" in enemy:
+			#enemy.upper_attacks_landed += 1
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
@@ -262,6 +267,8 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group(enemy_hitboxGroup):
+		#if "lower_attacks_landed" in enemy:
+			#enemy.lower_attacks_landed += 1
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
@@ -472,3 +479,15 @@ func handle_jump_animation(delta):
 			jump_forward_played = false
 			jump_backward_played = false
 			animation.play("idle")
+
+func displacement_small():
+	velocity.x = 100*get_direction_to_enemy()
+	
+func displacement_verySmall():
+	velocity.x = 50 *get_direction_to_enemy()
+
+func get_direction_to_enemy() -> int:
+	if enemy == null:
+		return 1  # fallback
+	
+	return 1 if enemy.global_position.x > global_position.x else -1

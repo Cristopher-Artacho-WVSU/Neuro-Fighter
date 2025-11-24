@@ -255,6 +255,9 @@ func _ready():
 	
 	initialize_chart_support()
 	
+	for hitbox in hitboxGroup:
+		if not hitbox.is_connected("area_entered", Callable(self, "_on_hitbox_area_entered")):
+			hitbox.connect("area_entered", Callable(self, "_on_hitbox_area_entered"))
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):
 			$Hurtbox_LowerBody.connect("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered"))
@@ -274,8 +277,6 @@ func get_enemy_hurtbox():
 		enemy_hitboxGroup = "Player1_Hitboxes"
 	print("Enemy Hitboxes: ", enemy_hitboxGroup)
 
-
-
 func initialize_ai_state_manager():
 	ai_state_manager = get_node("/root/AI_StateManager")
 	if not ai_state_manager:
@@ -283,13 +284,11 @@ func initialize_ai_state_manager():
 		if not ai_state_manager:
 			print("WARNING: AI_StateManager not found - state saving disabled")
 			ai_state_manager = Node.new()
-
 	load_saved_states()
 
 func initialize_character_state():
 	prev_distance_to_enemy = abs(enemy.position.x - position.x)
 	
-	# Reset all states
 	is_dashing = false
 	is_jumping = false
 	is_crouching = false
@@ -695,17 +694,7 @@ func _on_animation_finished(anim_name: String):
 		"standing_block":
 			is_defending = false
 		"light_hurt", "heavy_hurt":
-				is_dashing = false
-				is_jumping = false
-				is_crouching = false
-				is_attacking = false
-				is_defending = false
-				is_hurt = false
-				is_recently_hit = false
-				is_sliding = false
-				jump_backward_played = false
-				jump_forward_played = false
-				can_slide = true
+			_on_hurt_finished()
 		"jump", "jump_forward", "jump_backward":
 			is_jumping = false
 		"crouch":
@@ -943,7 +932,9 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group(enemy_hitboxGroup):
-		is_recently_hit = true 
+		#if "upper_attacks_landed" in enemy:
+			#enemy.upper_attacks_landed += 1
+		is_recently_hit = true
 		if is_defending:
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
@@ -971,6 +962,8 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group(enemy_hitboxGroup):
+		#if "lower_attacks_landed" in enemy:
+			#enemy.lower_attacks_landed += 1
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
@@ -1156,10 +1149,10 @@ func _on_generateScript_timer_timeout():
 	generate_script()
 	
 func displacement_small():
-	velocity.x = 100
+	velocity.x = 100*get_direction_to_enemy()
 	
 func displacement_verySmall():
-	velocity.x = 50
+	velocity.x = 50*get_direction_to_enemy()
 
 func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> void:
 	hitstop_id += 1
@@ -1501,3 +1494,40 @@ func get_rule_action_name(rule_id: int) -> String:
 				action_name = action_name.replace("_", " ").capitalize()
 				return action_name
 	return "Rule " + str(rule_id)
+
+func _on_hurt_finished():
+#	IF is_defending, REDUCE THE DAMAGE BY 30%
+		animation.play("idle")
+		is_dashing = false
+		is_jumping = false
+		is_crouching = false
+		is_attacking = false
+		is_defending = false
+		is_hurt = false
+		is_recently_hit = false
+		is_sliding = false
+		jump_backward_played = false
+		jump_forward_played = false
+		can_slide = true
+
+
+func _on_hitbox_area_entered(area: Area2D):
+	# Make sure this area belongs to the enemy
+	if area.get_parent() != enemy:
+		return
+
+	var area_name := area.name
+
+	if area_name == "Hurtbox_UpperBody":
+		upper_attacks_landed += 1
+		print("Player landed upper attack!")
+	elif area_name == "Hurtbox_LowerBody":
+		lower_attacks_landed += 1
+		print("Player landed lower attack!")
+
+
+func get_direction_to_enemy() -> int:
+	if enemy == null:
+		return 1  # fallback
+	
+	return 1 if enemy.global_position.x > global_position.x else -1
