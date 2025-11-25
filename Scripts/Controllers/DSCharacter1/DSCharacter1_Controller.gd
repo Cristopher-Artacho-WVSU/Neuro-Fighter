@@ -1052,20 +1052,35 @@ func KO():
 func save_current_rules(label: String, metadata: Dictionary = {}):
 	if not ai_state_manager or ai_state_manager.get_script() == null:
 		print("WARNING: AI_StateManager not available - cannot save rules")
-		return
-		
+		return false
+	
+	# Determine algorithm type
+	var algorithm_type = "DynamicScripting"
+	if has_method("connect_to_server"):  # This is NDS
+		algorithm_type = "NDS"
+	
+	# Add default metadata
 	var save_metadata = {
 		"fitness": current_fitness,
 		"upper_attacks_landed": upper_attacks_landed,
 		"lower_attacks_landed": lower_attacks_landed,
 		"upper_attacks_taken": upper_attacks_taken,
 		"lower_attacks_taken": lower_attacks_taken,
-		"timestamp": Time.get_datetime_string_from_system()
+		"timestamp": Time.get_datetime_string_from_system(),
+		"type": algorithm_type
 	}
-	save_metadata.merge(metadata, true)
 	
-	ai_state_manager.save_state(label, rules, save_metadata)
-	print("Rules saved with label: ", label)
+	# Merge with provided metadata
+	if metadata:
+		save_metadata.merge(metadata, true)
+	
+	var success = ai_state_manager.save_state(label, rules, save_metadata)
+	if success:
+		print("%s rules saved with label: %s" % [algorithm_type, label])
+	else:
+		print("Failed to save %s rules: %s" % [algorithm_type, label])
+	
+	return success
 
 func load_rules(label: String):
 	if not ai_state_manager or ai_state_manager.get_script() == null:

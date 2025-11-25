@@ -117,48 +117,79 @@ func clear_load_buttons():
 		# Force immediate cleanup
 		await get_tree().process_frame
 
+#func create_filtered_load_buttons(load_panel: Control, algorithm_type: String, all_states: Array, ai_state_manager: Node, signal_method: String):
+	#if not load_panel or not (algorithm_type == "DynamicScripting" or algorithm_type == "NDS"):
+		#return
+	#
+	#for state_name in all_states:
+		#var metadata = ai_state_manager.get_state_metadata(state_name)
+		#var state_type = metadata.get("type", "")
+		#
+		#var should_show = false
+		#
+		#if state_type == algorithm_type:
+			#should_show = true
+		#elif state_type == "" and (algorithm_type == "DynamicScripting" or algorithm_type == "NDS"):
+			#should_show = true
+		## Allow cross-compatibility between DS and NDS if desired
+		#elif algorithm_type == "NDS" and state_type == "DynamicScripting":
+			#should_show = true
+		#elif algorithm_type == "DynamicScripting" and state_type == "NDS":
+			#should_show = true
+		#
+		#if should_show:
+			#var button = Button.new()
+			#var performance = metadata.get("performance", 0.5) * 100
+			#var description = metadata.get("description", "No description")
+			#var is_autosave = metadata.get("is_autosave", false)
+		#
+			#var display_text = state_name
+			#if is_autosave:
+				#display_text = "[AUTO] " + state_name.replace("autosave_", "")
+			#display_text += " - %d%%" % performance
+			#
+			#button.text = display_text
+			#
+			#if signal_method == "_on_left_load_pressed":
+				#if not button.is_connected("pressed", _on_left_load_pressed.bind(state_name)):
+					#button.connect("pressed", _on_left_load_pressed.bind(state_name))
+			#elif signal_method == "_on_right_load_pressed":
+				#if not button.is_connected("pressed", _on_right_load_pressed.bind(state_name)):
+					#button.connect("pressed", _on_right_load_pressed.bind(state_name))
+			#
+			#button.tooltip_text = description
+			#load_panel.add_child(button)
+
 func create_filtered_load_buttons(load_panel: Control, algorithm_type: String, all_states: Array, ai_state_manager: Node, signal_method: String):
-	if not load_panel or not (algorithm_type == "DynamicScripting" or algorithm_type == "NDS"):
+	if not load_panel or not (algorithm_type == "DynamicScripting" or algorithm_type == "NDS" or algorithm_type == "FSM" or algorithm_type == "DecisionTree"):
 		return
 	
-	for state_name in all_states:
-		var metadata = ai_state_manager.get_state_metadata(state_name)
-		var state_type = metadata.get("type", "")
+	# Get states specific to this algorithm type
+	var algorithm_states = ai_state_manager.get_saved_state_labels(algorithm_type)
+	
+	for state_name in algorithm_states:
+		var metadata = ai_state_manager.get_state_metadata(state_name, algorithm_type)
+		var performance = metadata.get("performance", 0.5) * 100
+		var description = metadata.get("description", "No description")
+		var is_autosave = metadata.get("is_autosave", false)
+	
+		var display_text = state_name
+		if is_autosave:
+			display_text = "[AUTO] " + state_name.replace("autosave_", "")
+		display_text += " - %d%%" % performance
 		
-		var should_show = false
+		var button = Button.new()
+		button.text = display_text
 		
-		if state_type == algorithm_type:
-			should_show = true
-		elif state_type == "" and (algorithm_type == "DynamicScripting" or algorithm_type == "NDS"):
-			should_show = true
-		# Allow cross-compatibility between DS and NDS if desired
-		elif algorithm_type == "NDS" and state_type == "DynamicScripting":
-			should_show = true
-		elif algorithm_type == "DynamicScripting" and state_type == "NDS":
-			should_show = true
+		if signal_method == "_on_left_load_pressed":
+			if not button.is_connected("pressed", _on_left_load_pressed.bind(state_name)):
+				button.connect("pressed", _on_left_load_pressed.bind(state_name))
+		elif signal_method == "_on_right_load_pressed":
+			if not button.is_connected("pressed", _on_right_load_pressed.bind(state_name)):
+				button.connect("pressed", _on_right_load_pressed.bind(state_name))
 		
-		if should_show:
-			var button = Button.new()
-			var performance = metadata.get("performance", 0.5) * 100
-			var description = metadata.get("description", "No description")
-			var is_autosave = metadata.get("is_autosave", false)
-		
-			var display_text = state_name
-			if is_autosave:
-				display_text = "[AUTO] " + state_name.replace("autosave_", "")
-			display_text += " - %d%%" % performance
-			
-			button.text = display_text
-			
-			if signal_method == "_on_left_load_pressed":
-				if not button.is_connected("pressed", _on_left_load_pressed.bind(state_name)):
-					button.connect("pressed", _on_left_load_pressed.bind(state_name))
-			elif signal_method == "_on_right_load_pressed":
-				if not button.is_connected("pressed", _on_right_load_pressed.bind(state_name)):
-					button.connect("pressed", _on_right_load_pressed.bind(state_name))
-			
-			button.tooltip_text = description
-			load_panel.add_child(button)
+		button.tooltip_text = description
+		load_panel.add_child(button)
 	
 func setup_main_buttons():
 	if play_button:
@@ -241,23 +272,47 @@ func _on_right_algorithm_selected(algorithm):
 	setup_load_sections()
 
 func _on_left_load_pressed(state_name):
-	current_left_state = Global.load_ai_state(state_name)
+	# Determine the algorithm type for this state
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	if ai_state_manager:
+		var metadata = ai_state_manager.get_state_metadata(state_name, current_left_type)
+		if metadata.is_empty():
+			# Try to find the state in any algorithm type
+			for algo_type in ["DynamicScripting", "NDS"]:
+				metadata = ai_state_manager.get_state_metadata(state_name, algo_type)
+				if not metadata.is_empty():
+					current_left_type = algo_type
+					break
+	
+	current_left_state = Global.load_ai_state(state_name, current_left_type)
 	if current_left_state and not current_left_state.is_empty():
 		current_left_type = current_left_state.get("type", current_left_type)
-		Global.add_log_entry("Left player loaded AI state: " + state_name, 1)
+		Global.add_log_entry("Left player loaded %s state: %s" % [current_left_type, state_name], 1)
 	else:
-		Global.add_log_entry("Failed to load AI state: " + state_name, 0)
+		Global.add_log_entry("Failed to load AI state: %s" % state_name, 0)
 		current_left_state = null
 	update_display()
 	update_button_styles()
 
 func _on_right_load_pressed(state_name):
-	current_right_state = Global.load_ai_state(state_name)
+	# Determine the algorithm type for this state
+	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
+	if ai_state_manager:
+		var metadata = ai_state_manager.get_state_metadata(state_name, current_right_type)
+		if metadata.is_empty():
+			# Try to find the state in any algorithm type
+			for algo_type in ["DynamicScripting", "NDS"]:
+				metadata = ai_state_manager.get_state_metadata(state_name, algo_type)
+				if not metadata.is_empty():
+					current_right_type = algo_type
+					break
+	
+	current_right_state = Global.load_ai_state(state_name, current_right_type)
 	if current_right_state and not current_right_state.is_empty():
 		current_right_type = current_right_state.get("type", current_right_type)
-		Global.add_log_entry("Right player loaded AI state: " + state_name, 1)
+		Global.add_log_entry("Right player loaded %s state: %s" % [current_right_type, state_name], 1)
 	else:
-		Global.add_log_entry("Failed to load AI state: " + state_name, 0)
+		Global.add_log_entry("Failed to load AI state: %s" % state_name, 0)
 		current_right_state = null
 	update_display()
 	update_button_styles()

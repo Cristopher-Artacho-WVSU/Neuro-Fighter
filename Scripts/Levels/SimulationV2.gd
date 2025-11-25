@@ -31,6 +31,7 @@ var showing_match_result: bool = false
 var player1_initial_position: Vector2
 var player2_initial_position: Vector2
 var round_result_label: Label
+var is_saving: bool = false
 
 func _ready():
 	# ABLE TO LISTEN TO THE INPUT EVENTS EVEN WHEN THE GAME IS PAUSED
@@ -241,18 +242,29 @@ func auto_save_ds_states():
 		Global.auto_save_ds_state(player2.rules, performance, Global.player2_controller)
 
 func save_current_ds_state(label_suffix: String):
-	# Manual save of DS/NDS AI states
-	var timestamp = Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
-	var state_name = "manual_" + label_suffix + "_" + timestamp
+	if is_saving:
+		print("Save already in progress, skipping duplicate save")
+		return
+	
+	is_saving = true
+	
+	var timestamp = Time.get_unix_time_from_system()
+	var state_name = "manual_%s_%d" % [label_suffix, timestamp]
+	
+	print("Starting manual save: ", state_name)
 	
 	# Player 1 save
 	if player1.has_method("save_current_rules") and (Global.player1_controller == "DynamicScripting" or Global.player1_controller == "NDS"):
 		var performance = 0.5
 		if player1.has_method("calculateFitness"):
 			performance = player1.calculateFitness()
+		
+		print("Saving Player 1 %s state..." % Global.player1_controller)
 		player1.save_current_rules(state_name + "_P1", {
 			"performance": performance,
-			"type": Global.player1_controller  # Save the actual controller type
+			"type": Global.player1_controller,
+			"description": "Manual save - " + label_suffix,
+			"is_autosave": false
 		})
 	
 	# Player 2 save
@@ -260,10 +272,17 @@ func save_current_ds_state(label_suffix: String):
 		var performance = 0.5
 		if player2.has_method("calculateFitness"):
 			performance = player2.calculateFitness()
+		
+		print("Saving Player 2 %s state..." % Global.player2_controller)
 		player2.save_current_rules(state_name + "_P2", {
 			"performance": performance,
-			"type": Global.player2_controller  # Save the actual controller type
+			"type": Global.player2_controller,
+			"description": "Manual save - " + label_suffix,
+			"is_autosave": false
 		})
+	
+	print("Manual save completed: ", state_name)
+	is_saving = false
 
 func handle_match_result(winner: String):
 	if showing_match_result:

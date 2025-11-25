@@ -107,28 +107,28 @@ func save_ai_state(state_name: String, controller_type: String, rules: Array, pe
 		add_log_entry("Failed to save " + controller_type + " State: " + state_name, 0)
 	return success
 
-func load_ai_state(state_name: String) -> Dictionary:
+func load_ai_state(state_name: String, controller_type: String = "DynamicScripting") -> Dictionary:
 	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
 	if not ai_state_manager:
 		add_log_entry("ERROR: AI_StateManager not found", 0)
 		return {}
 	
-	var rules = ai_state_manager.load_state(state_name)
-	var metadata = ai_state_manager.get_state_metadata(state_name)
+	var rules = ai_state_manager.load_state(state_name, controller_type)
+	var metadata = ai_state_manager.get_state_metadata(state_name, controller_type)
 	
 	if rules.size() > 0:
 		var state_data = {
-			"type": metadata.get("type", ""),
+			"type": metadata.get("type", controller_type),
 			"weights": extract_weights_from_rules(rules),
 			"performance": metadata.get("performance", 0.5),
 			"description": metadata.get("description", ""),
 			"timestamp": metadata.get("timestamp", ""),
 			"rules": rules
 		}
-		add_log_entry("AI State loaded: " + state_name, 1)
+		add_log_entry("%s State loaded: %s" % [controller_type, state_name], 1)
 		return state_data
 	else:
-		add_log_entry("AI State not found: " + state_name, 2)
+		add_log_entry("%s State not found: %s" % [controller_type, state_name], 2)
 		return {}
 
 func extract_weights_from_rules(rules: Array) -> Dictionary:
@@ -138,10 +138,10 @@ func extract_weights_from_rules(rules: Array) -> Dictionary:
 			weights[str(rule["ruleID"])] = rule["weight"]
 	return weights
 
-func get_saved_state_names() -> Array:
+func get_saved_state_names(controller_type: String = "DynamicScripting") -> Array:
 	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
 	if ai_state_manager:
-		return ai_state_manager.get_saved_state_labels()
+		return ai_state_manager.get_saved_state_labels(controller_type)
 	return []
 
 func get_saved_states_for_algorithm(algorithm_type: String) -> Array:
@@ -154,7 +154,7 @@ func auto_save_ds_state(rules: Array, performance: float = 0.5, controller_type:
 	var ai_state_manager = get_node_or_null("/root/AI_StateManager")
 	if ai_state_manager:
 		var label = ai_state_manager.auto_save_state(rules, controller_type, performance)
-		add_log_entry("Auto-saved " + controller_type + " AI state: " + label, 1)
+		add_log_entry("Auto-saved %s AI state: %s" % [controller_type, label], 1)
 		return label
 	return ""
 
