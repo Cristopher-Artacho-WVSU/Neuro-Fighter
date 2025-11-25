@@ -232,6 +232,28 @@ var rules = [
 	}
 ]
 
+func find_enemy_automatically():
+	# Look for other CharacterBody2D in parent scene
+	var parent = get_parent()
+	if parent:
+		for child in parent.get_children():
+			if child is CharacterBody2D and child != self:
+				enemy = child
+				break
+	
+	if not enemy:
+		push_error("No enemy found for controller: " + name)
+	
+	if enemy:
+		cache_enemy_components()
+
+func cache_enemy_components():
+	if enemy:
+		enemyAnimation = enemy.get_node("AnimationPlayer") if enemy.has_node("AnimationPlayer") else null
+		enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody") if enemy.has_node("Hurtbox_UpperBody") else null
+		enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody") if enemy.has_node("Hurtbox_LowerBody") else null
+		prev_distance_to_enemy = abs(enemy.position.x - position.x)
+
 # ===== INITIALIZATION =====
 func _ready():
 	#	GROUP HITBOXES
@@ -254,6 +276,8 @@ func _ready():
 	init_log_file()
 	
 	initialize_chart_support()
+	
+	find_enemy_automatically()
 	
 	if $Hurtbox_LowerBody and $Hurtbox_LowerBody.has_signal("area_entered"):
 		if not $Hurtbox_LowerBody.is_connected("area_entered", Callable(self, "_on_hurtbox_lower_body_area_entered")):

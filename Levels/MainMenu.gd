@@ -9,9 +9,9 @@ extends Control
 @onready var left_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/PercentageDisplay/PercentageValue
 @onready var right_percentage_value = $MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/PercentageDisplay/PercentageValue
 @onready var play_button = $MarginContainer/VBoxContainer/ButtonContainer/PlayButton
-@onready var save_button = $MarginContainer/VBoxContainer/ButtonContainer/SaveButton
+#@onready var save_button = $MarginContainer/VBoxContainer/ButtonContainer/SaveButton
 @onready var back_button = $MarginContainer/VBoxContainer/ButtonContainer/BackButton
-@onready var performance_chart = $MarginContainer/VBoxContainer/PreviewPanel/PerformanceChart
+#@onready var performance_chart = $MarginContainer/VBoxContainer/PreviewPanel/PerformanceChart
 
 #SETTING MATCH COUNT
 @onready var match_count_panel = $MarginContainer/VBoxContainer/MatchCountPanel
@@ -332,7 +332,7 @@ func update_display():
 		play_button.disabled = (current_left_type == "Human" and current_right_type == "Human")
 	
 	# Update performance chart preview
-	update_performance_preview()
+	#update_performance_preview()
 		
 func calculate_ai_percentage(algorithm_type: String, ai_state) -> float:
 	if algorithm_type == "Human":
@@ -351,12 +351,12 @@ func calculate_ai_percentage(algorithm_type: String, ai_state) -> float:
 			_:
 				return 0.5
 
-func update_performance_preview():
-	# Create a simple performance chart visualization
-	# This is a placeholder - you can replace with actual chart rendering
-	if performance_chart:
-		var chart_texture = generate_simple_chart_texture()
-		performance_chart.texture = chart_texture
+#func update_performance_preview():
+	## Create a simple performance chart visualization
+	## This is a placeholder - you can replace with actual chart rendering
+	#if performance_chart:
+		#var chart_texture = generate_simple_chart_texture()
+		#performance_chart.texture = chart_texture
 
 func generate_simple_chart_texture() -> ImageTexture:
 	var image = Image.create(300, 150, false, Image.FORMAT_RGBA8)
@@ -407,9 +407,9 @@ func _on_play_button_pressed():
 	# Transition to game scene
 	get_tree().change_scene_to_file("res://Levels/Simulationv2.0.tscn")
 
-func _on_save_button_pressed():
-	Global.add_log_entry("Save button pressed", 2)
-	show_save_dialog()
+#func _on_save_button_pressed():
+	#Global.add_log_entry("Save button pressed", 2)
+	#show_save_dialog()
 
 func _on_back_button_pressed():
 	Global.add_log_entry("Back button pressed - Exiting game", 1)
