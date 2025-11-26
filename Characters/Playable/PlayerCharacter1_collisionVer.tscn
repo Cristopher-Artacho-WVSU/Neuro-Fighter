@@ -2467,10 +2467,10 @@ tracks/23/path = NodePath("Hitbox_RightHand/Collision_RightHand:shape:size")
 tracks/23/interp = 1
 tracks/23/loop_wrap = true
 tracks/23/keys = {
-"times": PackedFloat32Array(0, 0.562506, 0.812506),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 0.5, 0.562506, 0.812506),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(40, 40), Vector2(156, 40), Vector2(40, 40)]
+"values": [Vector2(40, 40), Vector2(275.02386, 40), Vector2(156, 40), Vector2(40, 40)]
 }
 tracks/24/type = "value"
 tracks/24/imported = false
@@ -2894,10 +2894,10 @@ tracks/23/path = NodePath("Hitbox_RightFoot/Collision_RightFoot:shape:size")
 tracks/23/interp = 1
 tracks/23/loop_wrap = true
 tracks/23/keys = {
-"times": PackedFloat32Array(0, 0.187506, 0.375006, 0.437506, 0.6875),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.187506, 0.375006, 0.437506, 0.5, 0.6875),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(73, 34), Vector2(43, 64), Vector2(119, 64), Vector2(241.5, 64), Vector2(73, 34)]
+"values": [Vector2(73, 34), Vector2(43, 64), Vector2(119, 64), Vector2(241.5, 64), Vector2(342.44617, 56.715023), Vector2(73, 34)]
 }
 tracks/24/type = "value"
 tracks/24/imported = false
@@ -3175,7 +3175,7 @@ tracks/13/path = NodePath("Hitbox_RightHand:monitoring")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 0.3125, 0.375),
+"times": PackedFloat32Array(0, 0.25, 0.3125),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -3187,7 +3187,7 @@ tracks/14/path = NodePath("Hitbox_RightHand:monitorable")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(0, 0.3125, 0.375),
+"times": PackedFloat32Array(0, 0.25, 0.3125),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -3331,10 +3331,10 @@ tracks/26/path = NodePath("Hitbox_RightHand/Collision_RightHand:shape:size")
 tracks/26/interp = 1
 tracks/26/loop_wrap = true
 tracks/26/keys = {
-"times": PackedFloat32Array(0, 0.3125, 0.375006),
+"times": PackedFloat32Array(0, 0.3125, 0.4375),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(40, 40), Vector2(199.932, 40), Vector2(40, 40)]
+"values": [Vector2(40, 40), Vector2(230, 40), Vector2(40, 40)]
 }
 tracks/27/type = "value"
 tracks/27/imported = false
@@ -3367,7 +3367,7 @@ tracks/29/path = NodePath("Hitbox_RightHand/Collision_RightHand:debug_color")
 tracks/29/interp = 1
 tracks/29/loop_wrap = true
 tracks/29/keys = {
-"times": PackedFloat32Array(0, 0.3125, 0.375),
+"times": PackedFloat32Array(0, 0.3125, 0.4375),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(0, 0.6, 0.7, 0.42), Color(0.976471, 0.0509804, 0.0156863, 0.419608), Color(0, 0.6, 0.7, 0.42)]
@@ -4145,10 +4145,10 @@ tracks/29/path = NodePath("Hitbox_LeftFoot/Collision_LeftFoot:shape:size")
 tracks/29/interp = 1
 tracks/29/loop_wrap = true
 tracks/29/keys = {
-"times": PackedFloat32Array(0, 0.625006, 0.812506),
+"times": PackedFloat32Array(0, 0.6272761, 0.812506),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(42, 54), Vector2(42, 220.784), Vector2(42, 54)]
+"values": [Vector2(42, 54), Vector2(83.5719, 284.03033), Vector2(42, 54)]
 }
 tracks/30/type = "value"
 tracks/30/imported = false
@@ -4215,14 +4215,14 @@ tracks/34/keys = {
 tracks/35/type = "value"
 tracks/35/imported = false
 tracks/35/enabled = true
-tracks/35/path = NodePath("Hitbox_RightFoot/Collision_RightFoot:debug_color")
+tracks/35/path = NodePath("Hitbox_LeftFoot/Collision_LeftFoot:debug_color")
 tracks/35/interp = 1
 tracks/35/loop_wrap = true
 tracks/35/keys = {
-"times": PackedFloat32Array(0, 0.625, 0.6875),
+"times": PackedFloat32Array(0, 0.6875, 0.75),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Color(0, 0.6, 0.7, 0.42), Color(0.976471, 0.0509804, 0.0156863, 0.419608), Color(0, 0.6, 0.7, 0.42)]
+"values": [Color(0, 0.6, 0.7, 0.42), Color(0.9764706, 0.050980393, 0.015686275, 0.41960785), Color(0, 0.6, 0.7, 0.42)]
 }
 
 [sub_resource type="Animation" id="Animation_uaf8t"]
@@ -4392,7 +4392,7 @@ tracks/13/path = NodePath("Hitbox_RightHand:monitoring")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 0.625, 0.6875),
+"times": PackedFloat32Array(0, 0.625, 0.75),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -4404,7 +4404,7 @@ tracks/14/path = NodePath("Hitbox_RightHand:monitorable")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(0, 0.625, 0.6875),
+"times": PackedFloat32Array(0, 0.625, 0.75),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -4416,10 +4416,10 @@ tracks/15/path = NodePath("Hitbox_RightHand/Collision_RightHand:shape:size")
 tracks/15/interp = 1
 tracks/15/loop_wrap = true
 tracks/15/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.625, 0.6841751, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(40, 40)]
+"values": [Vector2(40, 40), Vector2(225.41663, 40), Vector2(225.417, 40), Vector2(40, 40)]
 }
 tracks/16/type = "value"
 tracks/16/imported = false
@@ -4428,10 +4428,10 @@ tracks/16/path = NodePath("Hitbox_RightHand/Collision_RightHand:position")
 tracks/16/interp = 1
 tracks/16/loop_wrap = true
 tracks/16/keys = {
-"times": PackedFloat32Array(0, 0.125006, 0.312506, 0.375006, 0.562506, 0.625006, 0.812506, 0.875006, 0.937506, 1.06251),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.125006, 0.312506, 0.375006, 0.562506, 0.625006, 0.6875, 0.812506, 0.875006, 0.937506, 1.06251),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(26, -72), Vector2(9, -137), Vector2(-70, -78), Vector2(-128, -47), Vector2(-66, -84), Vector2(362, -108), Vector2(266, -90), Vector2(266, -90), Vector2(184, -93), Vector2(87, -112)]
+"values": [Vector2(26, -72), Vector2(9, -137), Vector2(-70, -78), Vector2(-128, -47), Vector2(-66, -84), Vector2(362, -108), Vector2(301, -116), Vector2(266, -90), Vector2(266, -90), Vector2(184, -93), Vector2(87, -112)]
 }
 tracks/17/type = "value"
 tracks/17/imported = false
@@ -4584,7 +4584,7 @@ tracks/29/path = NodePath("Hitbox_RightHand/Collision_RightHand:debug_color")
 tracks/29/interp = 1
 tracks/29/loop_wrap = true
 tracks/29/keys = {
-"times": PackedFloat32Array(0, 0.625, 0.6875),
+"times": PackedFloat32Array(0, 0.625, 0.75),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(0, 0.6, 0.7, 0.42), Color(1, 0.0392157, 0, 0.419608), Color(0, 0.6, 0.7, 0.42)]
@@ -6974,7 +6974,7 @@ tracks/25/path = NodePath("Hitbox_LeftFoot:monitoring")
 tracks/25/interp = 1
 tracks/25/loop_wrap = true
 tracks/25/keys = {
-"times": PackedFloat32Array(0, 0.375, 0.4375),
+"times": PackedFloat32Array(0, 0.4375, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -6986,7 +6986,7 @@ tracks/26/path = NodePath("Hitbox_LeftFoot:monitorable")
 tracks/26/interp = 1
 tracks/26/loop_wrap = true
 tracks/26/keys = {
-"times": PackedFloat32Array(0, 0.375, 0.4375),
+"times": PackedFloat32Array(0, 0.4375, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -6998,10 +6998,10 @@ tracks/27/path = NodePath("Hitbox_LeftFoot/Collision_LeftFoot:shape:size")
 tracks/27/interp = 1
 tracks/27/loop_wrap = true
 tracks/27/keys = {
-"times": PackedFloat32Array(0, 0.375, 0.436735, 0.497339),
+"times": PackedFloat32Array(0, 0.4375, 0.5, 0.5625),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(42, 54), Vector2(131, 54), Vector2(131, 54), Vector2(42, 54)]
+"values": [Vector2(42, 54), Vector2(282.4664, 142.57289), Vector2(131, 54), Vector2(42, 54)]
 }
 tracks/28/type = "value"
 tracks/28/imported = false
@@ -7010,10 +7010,10 @@ tracks/28/path = NodePath("Hitbox_LeftFoot/Collision_LeftFoot:position")
 tracks/28/interp = 1
 tracks/28/loop_wrap = true
 tracks/28/keys = {
-"times": PackedFloat32Array(0, 0.250006, 0.312506, 0.375006, 0.436735, 0.437506, 0.437697, 0.500006, 0.562506, 0.687506, 0.750006, 0.812506),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.250006, 0.312506, 0.375006, 0.4375, 0.500006, 0.562506, 0.687506, 0.750006, 0.812506),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-124, 284), Vector2(-82, 41), Vector2(-11, -45), Vector2(238, -137), Vector2(319, -112), Vector2(376, -129), Vector2(312, -123), Vector2(265, 25), Vector2(221, 86), Vector2(161, 137), Vector2(-17, 179), Vector2(-113, 267)]
+"values": [Vector2(-124, 284), Vector2(-82, 41), Vector2(-11, -45), Vector2(238, -137), Vector2(251, -82), Vector2(265, 25), Vector2(221, 86), Vector2(161, 137), Vector2(-17, 179), Vector2(-113, 267)]
 }
 tracks/29/type = "value"
 tracks/29/imported = false
@@ -7022,7 +7022,7 @@ tracks/29/path = NodePath("Hitbox_LeftFoot/Collision_LeftFoot:debug_color")
 tracks/29/interp = 1
 tracks/29/loop_wrap = true
 tracks/29/keys = {
-"times": PackedFloat32Array(0, 0.375, 0.4375),
+"times": PackedFloat32Array(0, 0.4375, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(0, 0.6, 0.7, 0.42), Color(0.814927, 0.143002, 0.129551, 0.419681), Color(0, 0.6, 0.7, 0.42)]
@@ -7303,7 +7303,7 @@ tracks/20/path = NodePath("Hitbox_LeftHand/Collision_LeftHand:debug_color")
 tracks/20/interp = 1
 tracks/20/loop_wrap = true
 tracks/20/keys = {
-"times": PackedFloat32Array(0, 0.250006, 0.3125),
+"times": PackedFloat32Array(0, 0.3125, 0.375),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(0, 0.6, 0.7, 0.42), Color(1, 0.0392157, 0, 0.419608), Color(0, 0.6, 0.7, 0.42)]
@@ -7315,10 +7315,10 @@ tracks/21/path = NodePath("Hitbox_LeftHand/Collision_LeftHand:shape:size")
 tracks/21/interp = 1
 tracks/21/loop_wrap = true
 tracks/21/keys = {
-"times": PackedFloat32Array(0, 0.311674, 0.376213),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(40, 40), Vector2(112.616, 40), Vector2(40, 40)]
+"values": [Vector2(40, 40), Vector2(191, 56.958885), Vector2(186.70876, 48.520096), Vector2(40, 40)]
 }
 tracks/22/type = "value"
 tracks/22/imported = false
@@ -9497,7 +9497,7 @@ size = Vector2(73, 34)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_44tk2"]
 size = Vector2(42, 54)
 
-[node name="NPCCharacter1" type="CharacterBody2D"]
+[node name="PlayerCharacter1" type="CharacterBody2D"]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-13, 0)

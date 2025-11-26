@@ -74,6 +74,9 @@ var player_index: int = 0
 var player_hitboxGroup: String
 var enemy_hitboxGroup: String
 
+var upper_attacks_landed: int = 0
+var lower_attacks_landed: int = 0
+
 func find_enemy_automatically():
 	# Look for other CharacterBody2D in parent scene
 	var parent = get_parent()
@@ -109,6 +112,7 @@ func _ready():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
 	
+		
 	if $Hurtbox_UpperBody and not $Hurtbox_UpperBody.is_connected("area_entered", _on_hurtbox_upper_body_area_entered):
 		$Hurtbox_UpperBody.connect("area_entered", _on_hurtbox_upper_body_area_entered)
 		
@@ -189,7 +193,7 @@ func _physics_process(delta):
 	if is_jumping:
 		handle_jump_animation(delta)
 	
-	debug_states()
+	#debug_states()
 	move_and_slide()
 
 func handle_slide_movement(delta):
@@ -374,6 +378,9 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group(enemy_hitboxGroup):
+		print("Attack Received")
+		#if "upper_attacks_landed" in enemy:
+			#enemy.upper_attacks_landed += 1
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
@@ -400,6 +407,9 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group(enemy_hitboxGroup):
+		print("Attack Received")
+		#if "lower_attacks_landed" in enemy:
+			#enemy.lower_attacks_landed += 1
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
@@ -432,18 +442,20 @@ func applyDamage(amount: int):
 		if get_parent().has_method("apply_damage_to_player2"):
 			get_parent().apply_damage_to_player2(amount)
 		
-func _on_hurt_finished(anim_name):
+func _on_hurt_finished():
 #	IF is_defending, REDUCE THE DAMAGE BY 30%
-	if is_defending or anim_name == "standing_block":
-		applyDamage(7)
 		animation.play("idle")
-	else:
-		applyDamage(10)
-		animation.play("idle")
-	is_hurt = false
-	is_attacking = false
-	is_defending = false
-	is_dashing = false
+		is_dashing = false
+		is_jumping = false
+		is_crouching = false
+		is_attacking = false
+		is_defending = false
+		is_hurt = false
+		is_recently_hit = false
+		is_sliding = false
+		jump_backward_played = false
+		jump_forward_played = false
+		can_slide = true
 
 func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> void:
 	hitstop_id += 1
@@ -480,17 +492,7 @@ func _on_animation_finished(anim_name):
 		"standing_block":
 			is_defending = false
 		"light_hurt", "heavy_hurt":
-				is_dashing = false
-				is_jumping = false
-				is_crouching = false
-				is_attacking = false
-				is_defending = false
-				is_hurt = false
-				is_recently_hit = false
-				is_sliding = false
-				jump_backward_played = false
-				jump_forward_played = false
-				can_slide = true
+			_on_hurt_finished()
 			
 	if not is_sliding and not is_attacking and not is_hurt:
 		velocity.x = 0
@@ -529,10 +531,10 @@ func applyGravity(delta):
 			is_jumping = false
 
 func displacement_small():
-	velocity.x = 100
+	velocity.x = 100* get_direction_to_enemy()
 
 func displacement_verySmall():
-	velocity.x = 50
+	velocity.x = 50* get_direction_to_enemy()
 
 # ===== DEBUG FUNCTIONS =====
 func debug_states():
@@ -612,6 +614,14 @@ func handle_jump_animation(delta):
 			jump_forward_played = false
 			jump_backward_played = false
 			animation.play("idle")
+
+
+func get_direction_to_enemy() -> int:
+	if enemy == null:
+		return 1  # fallback
+	
+	return 1 if enemy.global_position.x > global_position.x else -1
+
 	
 func setup_player_marker():
 	var player_type = identify_player_type()
