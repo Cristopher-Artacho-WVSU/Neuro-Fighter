@@ -396,76 +396,76 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 		if is_jumping:
 			jump_timer += delta
 
-		# -------------------------------
-		# ASCEND PHASE
-		# -------------------------------
-		if jump_state == "ascend":
-
-			# Jump forward / backward detection
-			if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
-				velocity.x = 200 * ai_move_direction   # Forward widen
-				animation.play("jump_forward")
-				jump_forward_played = true
-
-			elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
-				velocity.x = -200 * ai_move_direction  # Backward widen
-				animation.play("jump_backward")
-				jump_backward_played = true
-
-			# Gravity reduction on rising
-			velocity.y += gravity * delta * jump_multiplier
-
-			# Switch to FALL at exact animation time
-			if jump_timer >= jump_frame_fall_time:
-				jump_state = "fall"
-				jump_fall_started = true
-
-
-		# -------------------------------
-		# FALL PHASE
-		# -------------------------------
-		elif jump_state == "fall":
-			velocity.y += gravity * delta * fall_multiplier
-
-			# Prevent floaty jumps
-			if velocity.y > 0:
-				velocity.y += gravity * delta * 2
-
-			if is_on_floor() and not jump_landing_done:
-				animation.play("jump_end")
-				jump_landing_done = true
-				jump_state = "landing"
-				velocity.x = 0
-
-
-		# -------------------------------
-		# LANDING PHASE
-		# -------------------------------
-		elif jump_state == "landing":
-			if animation.current_animation == "jump_end":
-				# Let animation finish naturally
-				pass
-			else:
-				_reset_jump_state()
-	#if jump_state == "ascend":
-		#if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
-			#velocity.x += 30   # instead of 30
-			#velocity.y -= 5
-			#animation.play("jump_forward")
-			#jump_forward_played = true
-		#if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "fall":
-			#velocity.y += 25
-			#
-		#elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
-			#velocity.x += 30   # instead of 30
-			#velocity.y -= 5
-			#animation.play("jump_backward")
-			#jump_backward_played = true
-	#if velocity.x != 0:
-		#if curr_distance_to_enemy < prev_distance_to_enemy:
-			#animation.play("move_forward")
-		#elif curr_distance_to_enemy > prev_distance_to_enemy:
-			#animation.play("move_backward")
+		## -------------------------------
+		## ASCEND PHASE
+		## -------------------------------
+		#if jump_state == "ascend":
+#
+			## Jump forward / backward detection
+			#if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
+				#velocity.x = 200 * ai_move_direction   # Forward widen
+				#animation.play("jump_forward")
+				#jump_forward_played = true
+#
+			#elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
+				#velocity.x = -200 * ai_move_direction  # Backward widen
+				#animation.play("jump_backward")
+				#jump_backward_played = true
+#
+			## Gravity reduction on rising
+			#velocity.y += gravity * delta * jump_multiplier
+#
+			## Switch to FALL at exact animation time
+			#if jump_timer >= jump_frame_fall_time:
+				#jump_state = "fall"
+				#jump_fall_started = true
+#
+#
+		## -------------------------------
+		## FALL PHASE
+		## -------------------------------
+		#elif jump_state == "fall":
+			#velocity.y += gravity * delta * fall_multiplier
+#
+			## Prevent floaty jumps
+			#if velocity.y > 0:
+				#velocity.y += gravity * delta * 2
+#
+			#if is_on_floor() and not jump_landing_done:
+				#animation.play("jump_end")
+				#jump_landing_done = true
+				#jump_state = "landing"
+				#velocity.x = 0
+#
+#
+		## -------------------------------
+		## LANDING PHASE
+		## -------------------------------
+		#elif jump_state == "landing":
+			#if animation.current_animation == "jump_end":
+				## Let animation finish naturally
+				#pass
+			#else:
+				#_reset_jump_state()
+	if jump_state == "ascend":
+		if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
+			velocity.x += 30   # instead of 30
+			velocity.y -= 5
+			animation.play("jump_forward")
+			jump_forward_played = true
+		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "fall":
+			velocity.y += 25
+			
+		elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
+			velocity.x += 30   # instead of 30
+			velocity.y -= 5
+			animation.play("jump_backward")
+			jump_backward_played = true
+	if velocity.x != 0:
+		if curr_distance_to_enemy < prev_distance_to_enemy:
+			animation.play("move_forward")
+		elif curr_distance_to_enemy > prev_distance_to_enemy:
+			animation.play("move_backward")
 	
 	prev_distance_to_enemy = curr_distance_to_enemy
 
@@ -761,7 +761,13 @@ func _on_animation_finished(anim_name: String):
 		"light_hurt", "heavy_hurt":
 			_on_hurt_finished()
 		"jump", "jump_forward", "jump_backward":
-			_reset_jump_state()
+			is_jumping = false
+			jump_state = ""
+			jump_forward_played = false
+			jump_backward_played = false
+			jump_fall_started = false
+			jump_landing_done = false
+			velocity.x = 0
 		"crouch":
 			is_crouching = false
 		"move_forward", "move_backward":
@@ -1623,12 +1629,3 @@ func identify_player_type() -> String:
 	elif "NPCCharacter1" in name or "player2" in name.to_lower():
 		return "player2"
 	return "undefined"
-
-func _reset_jump_state():
-	is_jumping = false
-	jump_state = ""
-	jump_forward_played = false
-	jump_backward_played = false
-	jump_fall_started = false
-	jump_landing_done = false
-	velocity.x = 0
