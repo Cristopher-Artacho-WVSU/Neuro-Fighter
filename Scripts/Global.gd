@@ -264,3 +264,67 @@ func register_character(character):
 
 func get_hitbox_group(player_index: int) -> String:
 	return "Player1_Hitboxes" if player_index == 1 else "Player2_Hitboxes"
+
+static func is_valid_hit(attacker: Node, victim: Node, hitbox: Area2D, hurtbox: Area2D) -> bool:
+	# 1. Basic validation
+	if not is_instance_valid(attacker) or not is_instance_valid(victim):
+		return false
+	
+	if not is_instance_valid(hitbox) or not is_instance_valid(hurtbox):
+		return false
+	
+	# 2. Check if characters are in valid states
+	if victim.has_method("is_invulnerable") and victim.is_invulnerable():
+		return false
+	
+	if victim.has_method("is_hurt") and victim.is_hurt:
+		return false
+	
+	# 3. Check if attacker is actually attacking
+	if attacker.has_method("is_attacking") and not attacker.is_attacking:
+		return false
+	
+	# 4. Verify hitbox belongs to attacker and hurtbox to victim
+	if hitbox.get_parent() != attacker or hurtbox.get_parent() != victim:
+		return false
+	
+	# 5. Check facing direction (optional - for 2D fighters)
+	if should_ignore_hit_due_to_facing(attacker, victim):
+		return false
+	
+	return true
+
+static func should_ignore_hit_due_to_facing(attacker: Node, victim: Node) -> bool:
+	if not attacker.has_node("AnimatedSprite2D") or not victim.has_node("AnimatedSprite2D"):
+		return false
+	
+	var attacker_sprite = attacker.get_node("AnimatedSprite2D")
+	var victim_sprite = victim.get_node("AnimatedSprite2D")
+	
+	# If both are facing same direction, might be back-to-back
+	if attacker_sprite.flip_h == victim_sprite.flip_h:
+		var attacker_pos = attacker.global_position
+		var victim_pos = victim.global_position
+		
+		if attacker_sprite.flip_h:  # Both facing left
+			return attacker_pos.x > victim_pos.x  # Attacker is behind victim
+		else:  # Both facing right
+			return attacker_pos.x < victim_pos.x  # Attacker is behind victim
+	
+	return false
+
+static func calculate_damage(attacker_animation: String, is_defending: bool) -> int:
+	var base_damage = 10
+	
+	# Adjust damage based on attack type
+	match attacker_animation:
+		"heavy_kick", "heavy_punch", "crouch_heavyPunch":
+			base_damage = 15
+		"light_kick", "light_punch", "crouch_lightKick", "crouch_lightPunch":
+			base_damage = 10
+	
+	# Reduce damage if defending
+	if is_defending:
+		base_damage = max(7, base_damage - 3)  # Minimum 7 damage when blocking
+	
+	return base_damage
