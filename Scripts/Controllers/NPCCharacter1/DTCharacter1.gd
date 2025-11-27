@@ -75,7 +75,6 @@ const crouch_lightKick_Range = 325
 var upper_attacks_landed: int = 0
 var lower_attacks_landed: int = 0
 
-
 #AREA2D GROUP
 var player_index: int = 0
 var player_hitboxGroup: String
@@ -114,6 +113,12 @@ func _ready() -> void:
 	get_enemy_hurtbox()
 
 	find_enemy_automatically()
+	
+	setup_hitbox_detection()
+	setup_hurtbox_detection()
+	
+	debug_collision_shapes()
+	
 	var is_defending = false
 	var is_hurt = false
 	var is_attacking = false
@@ -351,40 +356,49 @@ func chooseAttack(attack):
 			velocity.x = 0
 			velocity.y = 0
 			animation.play("light_kick")
+			on_attack_start()
 			
 		"heavy_kick":
 			velocity.x = 0
 			velocity.y = 0
 			animation.play("heavy_kick")
+			on_attack_start()
 		"light_punch":
 			velocity.x = 0
 			velocity.y = 0
 			animation.play("light_punch")
+			on_attack_start()
 		"heavy_punch":
 			velocity.x = 0
 			velocity.y = 0
 			animation.play("heavy_punch")
+			on_attack_start()
 		"crouch_lightKick":
 			velocity.x = 0
 			velocity.y = 0
 			animation.play("crouch_lightKick")
+			on_attack_start()
 		"crouch_lightPunch":
 			velocity.x = 0
 			velocity.y = 0
 			animation.play("crouch_lightPunch")
+			on_attack_start()
 		"crouch_heavyPunch":
 			velocity.x = 0
 			velocity.y = 0
 			animation.play("crouch_heavyPunch")
+			on_attack_start()
 	
 	
 func _on_animation_finished(anim_name):
 	match anim_name:
 		"light_punch", "light_kick", "heavy_punch", "heavy_kick":
 			is_attacking = false
+			on_attack_end()
 		"crouch_lightKick", "crouch_lightPunch", "crouch_heavyPunch":
 			is_crouching = false
 			is_attacking = false
+			on_attack_end()
 		"crouch":
 			is_crouching = false
 		"jump", "jump_forward", "jump_backward":
@@ -401,6 +415,7 @@ func _on_animation_finished(anim_name):
 				is_recently_hit = false
 				jump_backward_played = false
 				jump_forward_played = false
+				on_attack_end()
 		"move_forward", "move_backward":
 			is_dashing = false
 	velocity.x = 0
@@ -520,3 +535,196 @@ func identify_player_type() -> String:
 	elif "NPCCharacter1" in name or "player2" in name.to_lower():
 		return "player2"
 	return "undefined"
+
+func setup_hitbox_detection():
+	for hitbox in hitboxGroup:
+		if not hitbox.is_connected("area_entered", Callable(self, "_on_hitbox_area_entered")):
+			hitbox.connect("area_entered", Callable(self, "_on_hitbox_area_entered"))
+	
+	for hitbox in hitboxGroup:
+		hitbox.monitoring = true
+		hitbox.monitorable = true
+
+func setup_hurtbox_detection():
+	for hurtbox in hurtboxGroup:
+		if not hurtbox.is_connected("area_entered", Callable(self, "_on_hurtbox_area_entered")):
+			hurtbox.connect("area_entered", Callable(self, "_on_hurtbox_area_entered"))
+		
+		hurtbox.monitoring = true
+		hurtbox.monitorable = true
+
+func _on_hitbox_area_entered(area: Area2D):
+	if area in hurtboxGroup:
+		return
+	
+	if not is_attacking:
+		return
+	
+	var hitbox = get_current_active_hitbox()
+	if hitbox and register_hit(hitbox, area):
+		print("DT Successful hit registered: ", name, " -> ", area.get_parent().name)
+
+func _on_hurtbox_area_entered(area: Area2D):
+	if area in hitboxGroup:
+		return
+	
+	if not area.is_in_group(enemy_hitboxGroup):
+		return
+	
+	pass
+
+func register_hit(hitbox: Area2D, hurtbox: Area2D) -> bool:
+	if not Global.is_valid_hit(hitbox.get_parent(), hurtbox.get_parent(), hitbox, hurtbox):
+		return false
+	
+	var attacker = hitbox.get_parent()
+	var victim = hurtbox.get_parent()
+	
+	var is_upper_body = hurtbox.name == "Hurtbox_UpperBody"
+	var is_lower_body = hurtbox.name == "Hurtbox_LowerBody"
+	
+	if victim == self:
+		handle_incoming_hit(attacker, is_upper_body, is_lower_body)
+	else:
+		handle_successful_hit(victim, is_upper_body, is_lower_body)
+	
+	return true
+
+func handle_incoming_hit(attacker: Node, is_upper_body: bool, is_lower_body: bool):
+	if is_recently_hit or is_invulnerable():
+		return
+	
+	is_recently_hit = true
+	
+	var attacker_animation = "light_punch"
+	if attacker.has_node("AnimationPlayer"):
+		attacker_animation = attacker.get_node("AnimationPlayer").current_animation
+	
+	var damage = Global.calculate_damage(attacker_animation, is_defending)
+	
+	apply_hit_reaction(attacker_animation, damage)
+	
+	#if is_upper_body:
+		#upper_attacks_taken += 1
+		#if is_defending:
+			#upper_attacks_blocked += 1
+	#elif is_lower_body:
+		#lower_attacks_taken += 1
+		#if is_defending:
+			#lower_attacks_blocked += 1
+	
+	applyDamage(damage)
+	
+	await get_tree().create_timer(0.2).timeout
+	is_recently_hit = false
+
+func handle_successful_hit(victim: Node, is_upper_body: bool, is_lower_body: bool):
+	if is_upper_body:
+		upper_attacks_landed += 1
+	elif is_lower_body:
+		lower_attacks_landed += 1
+	
+	print("DT " + name + " landed a hit on " + victim.name)
+
+func apply_hit_reaction(attacker_animation: String, damage: int):
+	velocity.x = 0
+	apply_hitstop(0.15)
+	
+	if is_defending:
+		animation.play("standing_block")
+	else:
+		if attacker_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
+			animation.play("heavy_hurt")
+		else:
+			animation.play("light_hurt")
+		
+		is_hurt = true
+	
+func is_invulnerable() -> bool:
+	return is_recently_hit or is_hurt
+
+func get_current_active_hitbox() -> Area2D:
+	var current_anim = animation.current_animation
+	
+	for hitbox in hitboxGroup:
+		if is_hitbox_active_for_animation(hitbox, current_anim):
+			return hitbox
+	
+	return null
+
+func is_hitbox_active_for_animation(hitbox: Area2D, animation_name: String) -> bool:
+	var active_hitboxes = {
+		"light_punch": ["Hitbox_LeftHand", "Hitbox_RightHand"],
+		"heavy_punch": ["Hitbox_LeftHand", "Hitbox_RightHand"],
+		"light_kick": ["Hitbox_LeftFoot", "Hitbox_RightFoot"],
+		"heavy_kick": ["Hitbox_LeftFoot", "Hitbox_RightFoot"],
+		"crouch_lightPunch": ["Hitbox_LeftHand", "Hitbox_RightHand"],
+		"crouch_heavyPunch": ["Hitbox_LeftHand", "Hitbox_RightHand"],
+		"crouch_lightKick": ["Hitbox_LeftFoot", "Hitbox_RightFoot"]
+	}
+	
+	if animation_name in active_hitboxes:
+		return hitbox.name in active_hitboxes[animation_name]
+	
+	return false
+
+func debug_collision_shapes():
+	print("=== DT Collision Debug for ", name, " ===")
+
+	# HITBOXES
+	for i in range(hitboxGroup.size()):
+		var hitbox: Area2D = hitboxGroup[i]
+		if not is_instance_valid(hitbox):
+			continue
+
+		for child in hitbox.get_children():
+			if child is CollisionShape2D:
+				print(
+					"Hitbox ", i, ": ", hitbox.name,
+					" | monitoring: ", hitbox.monitoring,
+					" | shape: ", child.name,
+					" | disabled: ", child.disabled
+				)
+
+	# HURTBOXES
+	for i in range(hurtboxGroup.size()):
+		var hurtbox: Area2D = hurtboxGroup[i]
+		if not is_instance_valid(hurtbox):
+			continue
+
+		for child in hurtbox.get_children():
+			if child is CollisionShape2D:
+				print(
+					"Hurtbox ", i, ": ", hurtbox.name,
+					" | monitoring: ", hurtbox.monitoring,
+					" | shape: ", child.name,
+					" | disabled: ", child.disabled
+				)
+
+func enable_hitboxes():
+	for hitbox: Area2D in hitboxGroup:
+		if not is_instance_valid(hitbox):
+			continue
+		
+		hitbox.monitoring = true
+		
+		for child in hitbox.get_children():
+			if child is CollisionShape2D:
+				child.disabled = false
+
+func disable_hitboxes():
+	for hitbox: Area2D in hitboxGroup:
+		if not is_instance_valid(hitbox):
+			continue
+		
+		hitbox.monitoring = false
+		
+		for child in hitbox.get_children():
+			if child is CollisionShape2D:
+				child.disabled = true
+				
+func on_attack_start():
+	enable_hitboxes()
+
+func on_attack_end():
+	disable_hitboxes()
