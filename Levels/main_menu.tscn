@@ -51,19 +51,19 @@ text = "Human"
 
 [node name="DecisionTreeButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
-text = "DT"
+text = "Decision Tree"
 
 [node name="DynamicScriptingButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
-text = "DS"
+text = "Dynamic Scripting"
 
 [node name="NDSButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
-text = "NDS"
+text = "Neuro-Dynamic Scripting"
 
 [node name="FSMButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
-text = "FSM"
+text = "Finite State Machine"
 
 [node name="PercentageDisplay" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/LeftPlayerPanel"]
 layout_mode = 2
@@ -112,19 +112,19 @@ text = "Human"
 
 [node name="DecisionTreeButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
-text = "DT"
+text = "Decision Tree"
 
 [node name="DynamicScriptingButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
-text = "DS"
+text = "Dynamic Scripting"
 
 [node name="NDSButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
-text = "NDS"
+text = "Neuro-Dynamic Scripting"
 
 [node name="FSMButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel/AlgorithmPanel"]
 layout_mode = 2
-text = "FSM"
+text = "Finite State Machine"
 
 [node name="PercentageDisplay" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/RightPlayerPanel"]
 layout_mode = 2
