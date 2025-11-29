@@ -37,6 +37,13 @@ func _ready():
 	# ABLE TO LISTEN TO THE INPUT EVENTS EVEN WHEN THE GAME IS PAUSED
 	#process_mode = Node.PROCESS_MODE_ALWAYS
 	
+	Global.current_match = 1
+	Global.player1_round_wins = 0
+	Global.player2_round_wins = 0
+	
+	P1_CurrentHP = max_hp
+	P2_CurrentHP = max_hp
+	
 	player1_initial_position = player1.position
 	player2_initial_position = player2.position
 	
@@ -55,6 +62,7 @@ func _ready():
 		pause_menu.connect("quit_to_menu", _on_quit_to_menu)
 	
 	initialize_match_count_display()
+	update_all_displays()
 
 func _input(event):
 	if event.is_action_pressed("close"):  # ESC key
@@ -102,7 +110,6 @@ func _on_save_state():
 func _on_quit_to_menu():
 	Global.set_pause(false)
 	get_tree().change_scene_to_file("res://Levels/main_menu.tscn")
-	print("DEBUG: QUIT TO MAIN MENU IS CLICKED")
 
 func setup_controllers():
 	match Global.player1_controller:
@@ -191,6 +198,8 @@ func _physics_process(delta):
 func init_HPBar():
 	player1HP.max_value = max_hp
 	player2HP.max_value = max_hp
+	player1HP.value = max_hp
+	player2HP.value = max_hp
 
 func apply_damage_to_player2(amount):
 	P2_CurrentHP = max(0, P2_CurrentHP - amount)
@@ -293,7 +302,6 @@ func handle_match_result(winner: String):
 	
 	# Record the win
 	Global.record_win(winner)
-	Global.increment_match()
 	
 	# Auto-save DS states
 	auto_save_ds_states()
@@ -307,6 +315,8 @@ func handle_match_result(winner: String):
 
 func show_match_result():
 	var winner_text = "Player 1" if match_winner == "player1" else "Player 2"
+	var match_that_just_ended = Global.current_match
+	
 	print(winner_text + " wins match " + str(Global.current_match) + " of " + str(Global.match_count))
 	
 	# Update UI or show match result (you can add a proper UI element for this)
@@ -391,6 +401,7 @@ func reset_for_next_match():
 	# Reset game state
 	game_ended = false
 	showing_match_result = false
+	match_winner = ""
 	
 	# Reset HP
 	P1_CurrentHP = max_hp
@@ -399,19 +410,24 @@ func reset_for_next_match():
 	# Reset timer
 	totalTimerAmount = 99
 	timer_running = true
-	timer.start()
+	if timer:
+		timer.start()
 	
 	# Reset player positions and states
 	reset_players()
 	
-	# Update UI
-	timerLabel.text = str(int(totalTimerAmount))
-	player1HP.value = P1_CurrentHP
-	player2HP.value = P2_CurrentHP
+	if timerLabel:
+		timerLabel.text = str(int(totalTimerAmount))
+	if player1HP:
+		player1HP.value = P1_CurrentHP
+	if player2HP:
+		player2HP.value = P2_CurrentHP
 	
 	# Ensure players face each other initially
 	if player1 and player2:
 		update_player_facing_directions()
+	
+	update_all_displays()
 
 func update_player_facing_directions():
 	# Player 1 should face right (towards player 2)
@@ -459,22 +475,22 @@ func game_over():
 	var winner = ""
 	if P1_CurrentHP <= 0 and P2_CurrentHP > 0:
 		winner = "player2"
+		print("Player 2 wins by KO")
 	elif P2_CurrentHP <= 0 and P1_CurrentHP > 0:
+		winner = "player1" 
+		print("Player 1 wins by KO")
+	elif P1_CurrentHP > P2_CurrentHP:
 		winner = "player1"
-	elif P1_CurrentHP > P2_CurrentHP:  # Time out - higher HP wins
-		winner = "player1"
+		print("Player 1 wins by decision (higher HP)")
 	elif P2_CurrentHP > P1_CurrentHP:
 		winner = "player2"
-	else:  # Draw - random winner or handle as needed
+		print("Player 2 wins by decision (higher HP)")
+	else:  # Draw
 		winner = "player1" if randf() > 0.5 else "player2"
+		print("Draw - random winner: " + winner)
 	
 	handle_match_result(winner)
 
-func monitorHP(delta):
-	player1HP.max_value = max_hp
-	player2HP.max_value = max_hp
-	player1HP.value = P1_CurrentHP
-	player2HP.value = P2_CurrentHP
-	
-	if (player2HP.value <= 0 or player1HP.value <= 0) and not game_ended and not showing_match_result:
+func monitorHP(delta):	
+	if (P1_CurrentHP <= 0 or P2_CurrentHP <= 0) and not game_ended and not showing_match_result:
 		game_over()

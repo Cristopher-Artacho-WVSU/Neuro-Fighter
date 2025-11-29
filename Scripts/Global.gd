@@ -46,7 +46,7 @@ var debug_log_entries = []
 # Pause state
 var game_paused = false
 
-var match_count: int = 1  # Default to single round
+var match_count: int = 3  # Default to single round
 var current_match: int = 1
 var player1_round_wins: int = 0
 var player2_round_wins: int = 0
@@ -236,12 +236,12 @@ func is_match_series_complete() -> bool:
 	return player1_round_wins >= wins_needed or player2_round_wins >= wins_needed
 
 func get_series_winner() -> String:
-	var wins_needed = ceil(float(match_count) / 2.0)
-	if player1_round_wins >= wins_needed:
+	if player1_round_wins > player2_round_wins:
 		return "player1"
-	elif player2_round_wins >= wins_needed:
+	elif player2_round_wins > player1_round_wins:
 		return "player2"
-	return ""
+	else:
+		return "player1" if randf() > 0.5 else "player2"  # tiebreaker
 
 func reset_match_data():
 	current_match = 1
