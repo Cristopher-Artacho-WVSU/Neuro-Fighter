@@ -176,6 +176,13 @@ func _physics_process(delta):
 	update_facing_direction()
 	applyGravity(delta)
 	
+	if is_hurt:
+		# Only handle slide movement if already sliding
+		if is_sliding:
+			handle_slide_movement(delta)
+		move_and_slide()
+		return
+	
 	# Update slide cooldown
 	if slide_cooldown_timer > 0:
 		slide_cooldown_timer -= delta
@@ -326,7 +333,7 @@ func end_slide():
 
 # ===== COMBAT SYSTEM =====
 func AttackSystem():
-	if is_attacking || is_jumping || is_hurt:
+	if is_attacking || is_jumping || is_hurt || is_sliding:
 		return
 	
 	var punch = Input.is_action_just_pressed("punch")
@@ -336,14 +343,17 @@ func AttackSystem():
 	
 	if punch:
 		perform_attack("punch")
-	if kick:
+	elif kick:  # Use elif to prevent multiple attacks at once
 		perform_attack("kick")
-	if heavy_punch:
+	elif heavy_punch:
 		perform_attack("heavy_punch")
-	if heavy_kick:
+	elif heavy_kick:
 		perform_attack("heavy_kick")
 
 func perform_attack(attack_type: String):
+	if is_attacking:
+		return
+		
 	var attack_animations = {
 		"punch": "light_punch",
 		"kick": "light_kick", 
@@ -376,18 +386,20 @@ func DefenseSystem(delta):
 
 func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
-		return  # Ignore duplicate hits during hitstop/hitstun
+		return
+	
 	if area.is_in_group(enemy_hitboxGroup):
-		print("Attack Received")
-		#if "upper_attacks_landed" in enemy:
-			#enemy.upper_attacks_landed += 1
 		is_recently_hit = true 
+		
+		# CRITICAL: Reset attack state when hit
+		is_attacking = false
+		
 		if is_defending:
 			velocity.x = 0
-			apply_hitstop(0.15)  # brief pause (0.2 seconds)
+			apply_hitstop(0.15)
 			animation.play("standing_block") 
+			#upper_attacks_blocked += 1
 			applyDamage(7)
-			print(" Upper Damaged From Blocking")
 		else:
 			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
 				applyDamage(15)
@@ -396,27 +408,28 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 				applyDamage(10)
 				animation.play("light_hurt")
 			is_hurt = true
-			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			print("Player 1 Upper body hit taken")
-		# Reset hit immunity after short real-time delay
+			apply_hitstop(0.15)
+			#upper_attacks_taken += 1
+		
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
 		
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	if is_recently_hit:
-		return  # Ignore duplicate hits during hitstop/hitstun
-	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
+		return
+	
 	if area.is_in_group(enemy_hitboxGroup):
-		print("Attack Received")
-		#if "lower_attacks_landed" in enemy:
-			#enemy.lower_attacks_landed += 1
 		is_recently_hit = true 
+		
+		# CRITICAL: Reset attack state when hit
+		is_attacking = false
+		
 		if is_defending:
 			velocity.x = 0
-			apply_hitstop(0.15)  # brief pause (0.2 seconds)
+			apply_hitstop(0.15)
 			animation.play("standing_block") 
+			#upper_attacks_blocked += 1
 			applyDamage(7)
-			print(" Lower Damaged From Blocking")
 		else:
 			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
 				applyDamage(15)
@@ -425,12 +438,9 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 				applyDamage(10)
 				animation.play("light_hurt")
 			is_hurt = true
-			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			print("Player 1 Lower body hit taken")
-		# Reset hit immunity after short real-time delay
-		await get_tree().create_timer(0.2, true).timeout
-		is_recently_hit = false
-		
+			apply_hitstop(0.15)
+			#upper_attacks_taken += 1
+			
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
 		
@@ -482,19 +492,35 @@ func _on_animation_finished(anim_name):
 			is_sliding = false
 		"light_punch", "light_kick", "heavy_punch", "heavy_kick":
 			is_attacking = false
+			# Ensure we don't get stuck if animation finishes but state wasn't reset
+			velocity.x = 0
+			if not is_hurt and not is_defending:
+				animation.play("idle")
 		"crouch_lightKick", "crouch_lightPunch", "crouch_heavyPunch":
 			is_crouching = false
 			is_attacking = false
+			velocity.x = 0
+			if not is_hurt and not is_defending:
+				animation.play("idle")
 		"crouch":
 			is_crouching = false
+			velocity.x = 0
+			if not is_hurt and not is_defending:
+				animation.play("idle")
 		"jump", "jump_forward", "jump_backward":
 			is_jumping = false
+			velocity.x = 0
+			if not is_hurt and not is_defending:
+				animation.play("idle")
 		"standing_block":
 			is_defending = false
+			velocity.x = 0
+			if not is_hurt and not is_attacking:
+				animation.play("idle")
 		"light_hurt", "heavy_hurt":
 			_on_hurt_finished()
 			
-	if not is_sliding and not is_attacking and not is_hurt:
+	if not is_sliding and not is_attacking and not is_hurt and not is_defending and animation.current_animation != "idle":
 		velocity.x = 0
 		animation.play("idle")
 
@@ -552,18 +578,20 @@ func reset_state():
 	is_dashing = false
 	is_jumping = false
 	is_crouching = false
-	is_attacking = false
+	is_attacking = false  # Make sure this gets reset
 	is_defending = false
 	is_hurt = false
 	is_recently_hit = false
 	is_sliding = false
 	jump_backward_played = false
 	jump_forward_played = false
+	
 	# Reset slide cooldown
 	can_slide = true
 	slide_cooldown_timer = 0.0
 	input_buffer.clear()
 	
+	# Force stop current animation and play idle
 	if animation:
 		animation.stop()
 		animation.play("idle")
