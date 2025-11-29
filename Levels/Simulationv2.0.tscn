@@ -138,9 +138,9 @@ visible = false
 [node name="RealTimeChartPanel2" parent="." instance=ExtResource("6_3w2ty")]
 
 [node name="NPCCharacter1" parent="." instance=ExtResource("3_8ht51")]
-position = Vector2(1507, 395)
+position = Vector2(1587, 396)
 
 [node name="PlayerCharacter1" parent="." instance=ExtResource("3_rw36q")]
-position = Vector2(496, 395)
+position = Vector2(514, 399)
 
 [connection signal="timeout" from="MainUI/Timer" to="." method="_on_timer_timeout"]
