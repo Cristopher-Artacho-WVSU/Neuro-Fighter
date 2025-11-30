@@ -231,12 +231,13 @@ func record_win(winner: String):
 		add_log_entry("Player 2 wins match " + str(current_match), 1)
 
 func is_match_series_complete() -> bool:
-	var wins_needed = ceil(float(match_count) / 2.0)
-	var series_won = player1_round_wins >= wins_needed or player2_round_wins >= wins_needed
+	#var wins_needed = ceil(float(match_count) / 2.0)
+	#var series_won = player1_round_wins >= wins_needed or player2_round_wins >= wins_needed
 
 	# Series is complete ONLY if a player has won the required rounds
 	# AND we have exceeded the max_match
-	return series_won and current_match == match_count
+	#return series_won and current_match >= match_count
+	return current_match >= match_count
 
 func get_series_winner() -> String:
 	if player1_round_wins > player2_round_wins:

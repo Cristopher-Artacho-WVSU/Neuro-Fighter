@@ -391,21 +391,23 @@ var rules = [
 func find_enemy_automatically():
 	var parent = get_parent()
 	if parent:
+		# Look for all CharacterBody2D nodes and find the one that's not self
 		for child in parent.get_children():
-			if child is CharacterBody2D and child != self:
+			if child is CharacterBody2D and child != self and is_instance_valid(child):
 				enemy = child
-				print("Enemy found: ", enemy.name)
+				print("Enemy found for ", name, ": ", enemy.name)
 				cache_enemy_components()
 				return
 	
-	# Fallback: try after a short delay
-	await get_tree().create_timer(0.5).timeout
+	# If still not found, try again after scene is stable
+	print("Enemy not found immediately for ", name, ", will retry...")
+	await get_tree().create_timer(0.1).timeout
 	parent = get_parent()
 	if parent:
 		for child in parent.get_children():
-			if child is CharacterBody2D and child != self:
+			if child is CharacterBody2D and child != self and is_instance_valid(child):
 				enemy = child
-				print("Enemy found after delay: ", enemy.name)
+				print("Enemy found after delay for ", name, ": ", enemy.name)
 				cache_enemy_components()
 				return
 	
@@ -589,8 +591,8 @@ func _physics_process(delta):
 	
 	handle_slide_movement(delta)
 	
-	#if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
-		#check_emergency_action()
+	if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		check_emergency_action()
 	
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing && !is_jumping && !is_sliding:
 		evaluate_and_execute(rules)
@@ -1557,13 +1559,15 @@ func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> vo
 func reset_state():
 	print(name, " - Resetting AI state")
 	
-	var timer = get_node_or_null("IdleTimer")
-	if timer:
-		timer.stop()
-		
+	# Stop any timers
+	var idle_timer = get_node_or_null("IdleTimer")
+	if idle_timer:
+		idle_timer.stop()
+	
+	# Reset velocity and physics
 	velocity = Vector2.ZERO
 	
-	# Reset all states
+	# Reset ALL state flags
 	is_dashing = false
 	is_jumping = false
 	is_crouching = false
@@ -1573,25 +1577,28 @@ func reset_state():
 	is_recently_hit = false
 	is_sliding = false
 	
-	# Reset jump state
+	# Reset jump state completely
 	jump_backward_played = false
 	jump_forward_played = false
 	jump_state = ""
 	jump_timer = 0.0
 	
-	# Reset slide cooldown
+	# Reset slide state
 	can_slide = true
 	slide_cooldown_timer = 0.0
+	slide_timer = 0.0
 	
-	# Re-initialize enemy reference
-	find_enemy_automatically()
-	
-	# Reset animation
+	# Clear any stuck animation states
 	if animation:
 		animation.stop()
-		# Small delay before playing idle to ensure everything is reset
-		await get_tree().create_timer(0.1).timeout
-		animation.play("idle")
+		# Force idle animation after a small delay
+		await get_tree().create_timer(0.05).timeout
+		if is_instance_valid(self):
+			animation.play("idle")
+	
+	# Re-initialize enemy reference
+	await get_tree().process_frame
+	find_enemy_automatically()
 	
 	print(name, " - AI reset complete")
 	

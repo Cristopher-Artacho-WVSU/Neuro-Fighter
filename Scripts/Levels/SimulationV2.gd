@@ -112,6 +112,18 @@ func _on_quit_to_menu():
 	get_tree().change_scene_to_file("res://Levels/main_menu.tscn")
 
 func setup_controllers():
+	# Store current positions
+	var p1_pos = player1.position
+	var p2_pos = player2.position
+	
+	# Remove current scripts first
+	player1.set_script(null)
+	player2.set_script(null)
+	
+	# Wait a frame for cleanup
+	await get_tree().process_frame
+	
+	# Set up player 1 controller
 	match Global.player1_controller:
 		"Human":
 			player1.set_script(load("res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd"))
@@ -136,14 +148,23 @@ func setup_controllers():
 			player2.set_script(load("res://Scripts/Controllers/NDSCharacter1/NDSCharacter1_Controller.gd"))
 		"FSM":
 			player2.set_script(load("res://Scripts/Controllers/FSMCharacter1/FSMCharacter1_Controller.gd"))
-		
-	player1._ready()
-	player2._ready()
+	
+	# Restore positions
+	player1.position = p1_pos
+	player2.position = p2_pos
+	
+	# Wait for scripts to initialize
+	await get_tree().process_frame
+	
+	# Call _ready if available
+	if player1.has_method("_ready"):
+		player1._ready()
+	if player2.has_method("_ready"):
+		player2._ready()
 	
 	player1.set_physics_process(true)
 	player2.set_physics_process(true)
 	
-	#await get_tree().create_timer(0.5).timeout
 	print("Controllers setup complete:")
 	print("Player 1: ", Global.player1_controller)
 	print("Player 2: ", Global.player2_controller)
@@ -314,8 +335,8 @@ func show_match_result():
 		timerLabel.text = winner_text + " wins!"
 	
 	# Wait and then proceed to next match or end series
-	#var tree = get_tree()
-	#await tree.create_timer(3.0).timeout
+	var tree = get_tree()
+	await tree.create_timer(3.0).timeout
 	
 	if not Global.is_match_series_complete():
 		# Start next match
@@ -354,35 +375,35 @@ func reset_players():
 	if player1.has_method("reset_state"):
 		player1.reset_state()
 	#else:
-		## Fallback reset for players without reset_state method
-		#reset_player_fallback(player1)
+		# Fallback reset for players without reset_state method
+		reset_player_fallback(player1)
 	
 	if player2.has_method("reset_state"):
 		player2.reset_state()
 	#else:
-		## Fallback reset for players without reset_state method
-		#reset_player_fallback(player2)
+		# Fallback reset for players without reset_state method
+		reset_player_fallback(player2)
 
-#func reset_player_fallback(player: CharacterBody2D):
-	#if player.has_method("KO"):
-		## Force stop KO animation and reset to idle
-		#var animation = player.get_node("AnimationPlayer")
-		#if animation:
-			#animation.play("idle")
-	#
-	## Reset common state variables if they exist
-	#if "is_attacking" in player:
-		#player.is_attacking = false
-	#if "is_defending" in player:
-		#player.is_defending = false
-	#if "is_hurt" in player:
-		#player.is_hurt = false
-	#if "is_dashing" in player:
-		#player.is_dashing = false
-	#if "is_jumping" in player:
-		#player.is_jumping = false
-	#if "is_crouching" in player:
-		#player.is_crouching = false
+func reset_player_fallback(player: CharacterBody2D):
+	if player.has_method("KO"):
+		# Force stop KO animation and reset to idle
+		var animation = player.get_node("AnimationPlayer")
+		if animation:
+			animation.play("idle")
+	
+	# Reset common state variables if they exist
+	if "is_attacking" in player:
+		player.is_attacking = false
+	if "is_defending" in player:
+		player.is_defending = false
+	if "is_hurt" in player:
+		player.is_hurt = false
+	if "is_dashing" in player:
+		player.is_dashing = false
+	if "is_jumping" in player:
+		player.is_jumping = false
+	if "is_crouching" in player:
+		player.is_crouching = false
 
 # Update the reset_for_next_match function to also reset facing direction
 func reset_for_next_match():
@@ -403,9 +424,13 @@ func reset_for_next_match():
 	if timer:
 		timer.start()
 	
-	# Reset player positions and states
+	# Reset player positions and states with proper sequencing
 	reset_players()
 	
+	# Wait a frame to ensure everything is reset
+	await get_tree().process_frame
+	
+	# Reset UI elements
 	if timerLabel:
 		timerLabel.text = str(int(totalTimerAmount))
 	if player1HP:
@@ -413,11 +438,17 @@ func reset_for_next_match():
 	if player2HP:
 		player2HP.value = P2_CurrentHP
 	
-	# Ensure players face each other initially
+	# Ensure players face each other
 	if player1 and player2:
 		update_player_facing_directions()
 	
 	update_all_displays()
+	
+	# Force AI to re-evaluate after reset
+	if player1.has_method("find_enemy_automatically"):
+		player1.find_enemy_automatically()
+	if player2.has_method("find_enemy_automatically"):
+		player2.find_enemy_automatically()
 
 func update_player_facing_directions():
 	# Player 1 should face right (towards player 2)
