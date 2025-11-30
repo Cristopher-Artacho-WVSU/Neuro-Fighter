@@ -1103,7 +1103,7 @@ func generate_script():
 		print("FORCING RULE REFRESH - Too many idle cycles!")
 		# Reset weights to encourage different rules
 		for rule in rules:
-			rule["weight"] = randf_range(0.3, 0.9)
+			rule["weight"] = randf_range(0.4, 0.75)
 		consecutive_idle_cycles = 0
 	
 	log_script_generation()
@@ -1557,6 +1557,10 @@ func apply_hitstop(hitstop_duration: float, slowdown_factor: float = 0.05) -> vo
 func reset_state():
 	print(name, " - Resetting AI state")
 	
+	var timer = get_node_or_null("IdleTimer")
+	if timer:
+		timer.stop()
+		
 	velocity = Vector2.ZERO
 	
 	# Reset all states
@@ -1733,11 +1737,12 @@ func ensure_minimum_movement_weights():
 	var movement_rule_ids = [9, 10, 11, 12, 13, 14, 15, 16, 18]  # Movement-related rules
 	
 	for rule in rules:
-		if rule["ruleID"] in movement_rule_ids and rule["weight"] < 0.3:
-			rule["weight"] = 0.3
+		if rule["ruleID"] in movement_rule_ids and rule["weight"] < 0.4:
+			rule["weight"] = 0.4
 			print("Boosted movement rule ", rule["ruleID"], " to minimum weight")
 	
 func execute_smart_fallback(distance: float):
+	# More aggressive fallback - always do something, never stay idle
 	if distance >= 400:
 		_execute_single_action("dash_forward")
 		print("Smart fallback: dash_forward (distance: ", distance, ")")
@@ -1745,34 +1750,64 @@ func execute_smart_fallback(distance: float):
 		_execute_single_action("dash_backward") 
 		print("Smart fallback: dash_backward (distance: ", distance, ")")
 	else:
-		# In mid-range, choose random attack
-		var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
-		var random_attack = attacks[randi() % attacks.size()]
-		_execute_single_action(random_attack)
-		print("Smart fallback: ", random_attack, " (distance: ", distance, ")")
+		# In mid-range, choose random attack with higher probability
+		if randf() < 0.8:  # 80% chance to attack
+			var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
+			var random_attack = attacks[randi() % attacks.size()]
+			_execute_single_action(random_attack)
+			print("Smart fallback: ", random_attack, " (distance: ", distance, ")")
+		else:  # 20% chance to move
+			if randf() < 0.5:
+				_execute_single_action("dash_forward")
+				print("Smart fallback: dash_forward (distance: ", distance, ")")
+			else:
+				_execute_single_action("dash_backward")
+				print("Smart fallback: dash_backward (distance: ", distance, ")")
 	
 func check_emergency_action():
-	# If both players are idle and close to each other for too long, force action
+	# If player is idle for too long, force action regardless of enemy state
 	if not is_instance_valid(enemy):
 		return
 		
 	var distance = global_position.distance_to(enemy.global_position)
-	var both_idle = (animation.current_animation == "idle" and 
-					enemyAnimation and enemyAnimation.current_animation == "idle")
 	
-	if both_idle and distance < 400:
-		# Force an action based on distance
+	# Track how long we've been idle
+	if not has_node("IdleTimer"):
+		var timer = Timer.new()
+		timer.name = "IdleTimer"
+		timer.wait_time = 2.0  # 2 seconds of idle
+		timer.one_shot = true
+		add_child(timer)
+		timer.start()
+		timer.connect("timeout", Callable(self, "_on_idle_timeout"))
+	
+	# Immediate emergency action based on distance (more aggressive)
+	if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		# Force an action based on distance - don't wait for both players
 		if distance < 250:
 			# Too close - create space
 			_execute_single_action("dash_backward")
-			print("EMERGENCY: Forced dash_backward - too close and idle")
+			print("EMERGENCY: Forced dash_backward - too close and idle (distance: ", distance, ")")
 		elif distance > 600:
 			# Too far - close distance  
 			_execute_single_action("dash_forward")
-			print("EMERGENCY: Forced dash_forward - too far and idle")
-		else:
+			print("EMERGENCY: Forced dash_forward - too far and idle (distance: ", distance, ")")
+		elif randf() < 0.7:  # 70% chance to attack when in mid-range
 			# Mid range - attack
 			var attacks = ["light_punch", "light_kick", "crouch_lightPunch"]
 			var random_attack = attacks[randi() % attacks.size()]
 			_execute_single_action(random_attack)
-			print("EMERGENCY: Forced attack - stuck in idle")
+			print("EMERGENCY: Forced attack - stuck in idle (distance: ", distance, ")")
+
+func _on_idle_timeout():
+	# If we're still idle after the timer, force a random action
+	if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		var actions = ["dash_forward", "dash_backward", "light_punch", "light_kick"]
+		var random_action = actions[randi() % actions.size()]
+		_execute_single_action(random_action)
+		print("IDLE TIMEOUT: Forced ", random_action, " after prolonged idle")
+	
+	# Restart timer if it exists
+	var timer = get_node_or_null("IdleTimer")
+	if timer:
+		timer.start()
