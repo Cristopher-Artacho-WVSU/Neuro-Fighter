@@ -237,14 +237,14 @@ var max_idle_cycles = 11
 #]
 var rules = [
 	# ===== HIGH PRIORITY: DEFENSIVE ACTIONS =====
-	{
-		"ruleID": 1, "prioritization": 100,
-		"conditions": { 
-			"enemy_anim": ["light_punch", "light_kick", "heavy_punch", "heavy_kick", "crouch_lightPunch", "crouch_lightKick"],
-			"distance": { "op": "<=", "value": 350 }
-		},
-		"enemy_action": ["standing_defense"], "weight": 0.7, "wasUsed": false, "inScript": false
-	},
+	#{
+		#"ruleID": 1, "prioritization": 100,
+		#"conditions": { 
+			#"enemy_anim": ["light_punch", "light_kick", "heavy_punch", "heavy_kick", "crouch_lightPunch", "crouch_lightKick"],
+			#"distance": { "op": "<=", "value": 350 }
+		#},
+		#"enemy_action": ["standing_defense"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
 	{
 		"ruleID": 2, "prioritization": 95,
 		"conditions": { 
@@ -539,9 +539,9 @@ func _physics_process(delta):
 	update_facing_direction()
 	applyGravity(delta)
 	
-	if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
-		check_emergency_action()
-	
+	#if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		#check_emergency_action()
+	#
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
 		evaluate_and_execute(rules)
 	
@@ -766,9 +766,9 @@ func evaluate_and_execute(rules: Array):
 		if enemy_anim in ["crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"]:
 			_execute_single_action("crouch")
 			print("Emergency crouch defense!")
-		else:
-			_execute_single_action("standing_defense")
-			print("Emergency standing defense!")
+		#else:
+			#_execute_single_action("standing_defense")
+			#print("Emergency standing defense!")
 		return
 
 	if matched_rules.size() > 0:
@@ -865,10 +865,10 @@ func _execute_single_action(action):
 				is_attacking = true
 				velocity.x = 0
 				velocity.y = 0
-		"standing_defense":
-			if is_on_floor() and not is_jumping and not is_attacking and not is_hurt:
-				animation.play("standing_block")
-				is_defending = true
+		#"standing_defense":
+			#if is_on_floor() and not is_jumping and not is_attacking and not is_hurt:
+				#animation.play("standing_block")
+				#is_defending = true
 		"dash_forward":
 			if is_on_floor() and not is_jumping and not is_attacking and not is_hurt:
 				var direction = 1 if enemy.global_position.x > global_position.x else -1
@@ -1659,8 +1659,8 @@ func reset_state():
 	if animation:
 		animation.stop()
 		# Small delay before playing idle to ensure everything is reset
-		await get_tree().create_timer(0.1).timeout
-		animation.play("idle")
+		#await get_tree().create_timer(0.1).timeout
+		#animation.play("idle")
 	
 	print(name, " - AI reset complete")
 	
