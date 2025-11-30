@@ -231,14 +231,14 @@ var max_idle_cycles = 11
 
 var rules = [
 	# ===== HIGH PRIORITY: DEFENSIVE ACTIONS =====
-	{
-		"ruleID": 1, "prioritization": 100,
-		"conditions": { 
-			"enemy_anim": ["light_punch", "light_kick", "heavy_punch", "heavy_kick", "crouch_lightPunch", "crouch_lightKick"],
-			"distance": { "op": "<=", "value": 350 }
-		},
-		"enemy_action": ["standing_defense"], "weight": 0.7, "wasUsed": false, "inScript": false
-	},
+	#{
+		#"ruleID": 1, "prioritization": 100,
+		#"conditions": { 
+			#"enemy_anim": ["light_punch", "light_kick", "heavy_punch", "heavy_kick", "crouch_lightPunch", "crouch_lightKick"],
+			#"distance": { "op": "<=", "value": 350 }
+		#},
+		#"enemy_action": ["standing_defense"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
 	{
 		"ruleID": 2, "prioritization": 95,
 		"conditions": { 
@@ -589,8 +589,8 @@ func _physics_process(delta):
 	
 	handle_slide_movement(delta)
 	
-	if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
-		check_emergency_action()
+	#if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		#check_emergency_action()
 	
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing && !is_jumping && !is_sliding:
 		evaluate_and_execute(rules)
@@ -598,7 +598,7 @@ func _physics_process(delta):
 		velocity.x = 0
 	
 	DamagedSystem(delta)
-	#debug_states()
+	debug_states()
 	move_and_slide()
 
 func update_facing_direction():
@@ -857,9 +857,8 @@ func evaluate_and_execute(rules: Array):
 		if enemy_anim in ["crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"]:
 			_execute_single_action("crouch")
 			print("Emergency crouch defense!")
-		else:
-			_execute_single_action("standing_defense")
-			print("Emergency standing defense!")
+			#_execute_single_action("standing_defense")
+			#print("Emergency standing defense!")
 		return
 
 	if matched_rules.size() > 0:
@@ -957,10 +956,10 @@ func _execute_single_action(action):
 				is_attacking = true
 				velocity.x = 0
 				velocity.y = 0
-		"standing_defense":
-			if is_on_floor() and not is_jumping and not is_attacking and not is_hurt:
-				animation.play("standing_block")
-				is_defending = true
+		#"standing_defense":
+			#if is_on_floor() and not is_jumping and not is_attacking and not is_hurt:
+				#animation.play("standing_block")
+				#is_defending = true
 		"dash_forward":
 			if is_on_floor() and not is_jumping and not is_attacking and not is_hurt:
 				var direction = 1 if enemy.global_position.x > global_position.x else -1
@@ -1044,14 +1043,15 @@ func _execute_single_action(action):
 	last_action = action
 
 func debug_states():
-	print("is_dashing: ", is_dashing)
-	print("is_jumping state: ", is_jumping)
-	print("is_crouching: ", is_crouching)
-	print("is_attacking state:", is_attacking)
-	print("is_defending: ", is_defending)
-	print("is_hurt state:", is_hurt)
-	print("is_is_dashing: ", is_dashing)
-	print("is_on_floor(): ", is_on_floor())
+	#print("is_dashing: ", is_dashing)
+	#print("is_jumping state: ", is_jumping)
+	#print("is_crouching: ", is_crouching)
+	#print("is_attacking state:", is_attacking)
+	#print("is_defending: ", is_defending)
+	#print("is_hurt state:", is_hurt)
+	#print("is_is_dashing: ", is_dashing)
+	#print("is_on_floor(): ", is_on_floor())
+	print("Current animation:", animation.current_animation)
 	pass
 
 #FOR ANIMATIONS IN ORDER TO NOT GET CUT OFF

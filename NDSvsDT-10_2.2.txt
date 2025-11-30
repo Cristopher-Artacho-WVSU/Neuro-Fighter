@@ -1,0 +1,4158 @@
+Timestamp: 2025-11-29T23:13:37
+cycle_id: 0
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 0.5
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.5
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.5
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.5
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": true,
+    "weight": 0.5
+  }
+]
+executed_rules:[1,5]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":4,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:13:42
+cycle_id: 1
+script:[
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.5064
+  },
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 0.5064
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.5
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.5
+  }
+]
+executed_rules:[9]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.508
+Timestamp: 2025-11-29T23:13:46
+cycle_id: 2
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 0.611247541535894
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.511376141096155
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.510376141096155
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": true,
+    "weight": 0.510376141096155
+  }
+]
+executed_rules:[10]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.495
+Timestamp: 2025-11-29T23:13:50
+cycle_id: 3
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 0.567078468120181
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.521736211341702
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.520736211341702
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.520736211341702
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": true,
+    "weight": 0.520736211341702
+  }
+]
+executed_rules:[14,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.495
+Timestamp: 2025-11-29T23:13:54
+cycle_id: 4
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 0.6721180221474
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.531089212486727
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.531089212486727
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.531089212486727
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": true,
+    "weight": 0.531089212486727
+  }
+]
+executed_rules:[1,8,12]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:13:58
+cycle_id: 5
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 0.776088438761979
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.541490238625556
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.541490238625556
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.541490238625556
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": true,
+    "weight": 0.541490238625556
+  }
+]
+executed_rules:[1,8,12]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:14:02
+cycle_id: 6
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 0.880114220382273
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.551883515901864
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.551883515901864
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.540472126565874
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.54041950404644
+  }
+]
+executed_rules:[1,8]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.500
+Timestamp: 2025-11-29T23:14:06
+cycle_id: 7
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 0.980195084765802
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.564936278106024
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.553524888770034
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.546650573348254
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.535285138404618
+  }
+]
+executed_rules:[8,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.495
+Timestamp: 2025-11-29T23:14:10
+cycle_id: 8
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.563600092989965
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.541036650789543
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.526685817011956
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.515257466885213
+  }
+]
+executed_rules:[2]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":3,"upper_attacks_taken":1}
+fitness: 0.495
+Timestamp: 2025-11-29T23:14:14
+cycle_id: 9
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.557221531170897
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.532442347266567
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.527239104406329
+  }
+]
+executed_rules:[2]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":3,"upper_attacks_taken":1}
+fitness: 0.501
+Timestamp: 2025-11-29T23:14:19
+cycle_id: 10
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.56171537086899
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.54349936943834
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": true,
+    "weight": 0.530801447731107
+  }
+]
+executed_rules:[4]
+parameters: {"lower_attacks_landed":4,"lower_attacks_taken":0,"upper_attacks_landed":1,"upper_attacks_taken":0}
+fitness: 0.501
+Timestamp: 2025-11-29T23:14:24
+cycle_id: 11
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.555166179006014
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.540626480406239
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.532173837150846
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": true,
+    "weight": 0.519967864869251
+  }
+]
+executed_rules:[5]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":6,"upper_attacks_taken":0}
+fitness: 0.510
+Timestamp: 2025-11-29T23:14:28
+cycle_id: 12
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": true,
+    "weight": 0.554575706851136
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.546123063595743
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.511646601906072
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": true,
+    "weight": 0.510906340321552
+  }
+]
+executed_rules:[17,15,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.512
+Timestamp: 2025-11-29T23:14:32
+cycle_id: 13
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.55943758147208
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.528102803693692
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.527362542109172
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": true,
+    "weight": 0.520410610245149
+  }
+]
+executed_rules:[14,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.500
+Timestamp: 2025-11-29T23:14:37
+cycle_id: 14
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.532683185572011
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.532416961426121
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.532341829771382
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": true,
+    "weight": 0.530316460228545
+  }
+]
+executed_rules:[1,3]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":5,"upper_attacks_taken":0}
+fitness: 0.495
+Timestamp: 2025-11-29T23:14:41
+cycle_id: 15
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.555266313172826
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.544033481037069
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.54395834938233
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.542012554223785
+  }
+]
+executed_rules:[9]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":1,"upper_attacks_taken":1}
+fitness: 0.510
+Timestamp: 2025-11-29T23:14:45
+cycle_id: 16
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.559136022330735
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": true,
+    "weight": 0.549544341046526
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.528411319557244
+  }
+]
+executed_rules:[10]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.497
+Timestamp: 2025-11-29T23:14:49
+cycle_id: 17
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": true,
+    "weight": 0.550162213001561
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.545958230424337
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.542739594659618
+  }
+]
+executed_rules:[10]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":2}
+fitness: 0.495
+Timestamp: 2025-11-29T23:14:54
+cycle_id: 18
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.561370911306966
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.534001894962617
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.532523827985752
+  }
+]
+executed_rules:[2]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":3}
+fitness: 0.490
+Timestamp: 2025-11-29T23:14:58
+cycle_id: 19
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.553695289218361
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.543066615115041
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.537217222241496
+  }
+]
+executed_rules:[2,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":2}
+fitness: 0.485
+Timestamp: 2025-11-29T23:15:02
+cycle_id: 20
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.564485442706553
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.507030518001425
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": true,
+    "weight": 0.503986835764952
+  }
+]
+executed_rules:[10]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.490
+Timestamp: 2025-11-29T23:15:06
+cycle_id: 21
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.569725651206965
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.524581928044453
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": true,
+    "weight": 0.51653824580798
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": true,
+    "weight": 0.514709516117866
+  }
+]
+executed_rules:[12,10,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.495
+Timestamp: 2025-11-29T23:15:11
+cycle_id: 22
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.531231148800055
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.531145833356479
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.527212621826728
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": true,
+    "weight": 0.517484842155675
+  }
+]
+executed_rules:[1,5]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":4,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:15:15
+cycle_id: 23
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.540741634160104
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.53980274716449
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.524498081334752
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.516781617589118
+  }
+]
+executed_rules:[8,9]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":1,"upper_attacks_taken":1}
+fitness: 0.508
+Timestamp: 2025-11-29T23:15:19
+cycle_id: 24
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.538670951157964
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.53095448741233
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.513173692439155
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.511897389914748
+  }
+]
+executed_rules:[9]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.497
+Timestamp: 2025-11-29T23:15:23
+cycle_id: 25
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.530721482665624
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.529445180141217
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": true,
+    "weight": 0.527819341551549
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.516335247200019
+  }
+]
+executed_rules:[1,15]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.495
+Timestamp: 2025-11-29T23:15:27
+cycle_id: 26
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": true,
+    "weight": 0.540116269273768
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.535298841588905
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.531929447906425
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": true,
+    "weight": 0.531450008737257
+  }
+]
+executed_rules:[14,1,15]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.495
+Timestamp: 2025-11-29T23:15:32
+cycle_id: 27
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.548434531384277
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": true,
+    "weight": 0.547955092215108
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.542138696027365
+  }
+]
+executed_rules:[1,11,14]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:15:36
+cycle_id: 28
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": true,
+    "weight": 0.553772877620661
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.551704609549546
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.537654386922721
+  }
+]
+executed_rules:[1,11,4]
+parameters: {"lower_attacks_landed":1,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.506
+Timestamp: 2025-11-29T23:15:40
+cycle_id: 29
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": true,
+    "weight": 0.570286642197768
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.554168151499828
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.533073299541573
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.493173906081418
+  }
+]
+executed_rules:[4]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":2}
+fitness: 0.500
+Timestamp: 2025-11-29T23:15:45
+cycle_id: 30
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.567052868185717
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.551693548270839
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.5038818741071
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.485750338203487
+  }
+]
+executed_rules:[1,9]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":2}
+fitness: 0.490
+Timestamp: 2025-11-29T23:15:49
+cycle_id: 31
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.533378013540102
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.511960362159504
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.507162159589224
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.49784407481481
+  }
+]
+executed_rules:[9]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.490
+Timestamp: 2025-11-29T23:15:53
+cycle_id: 32
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.513826949302344
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": true,
+    "weight": 0.507957542266934
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.503116008463987
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": true,
+    "weight": 0.49784755656569
+  }
+]
+executed_rules:[8,1,12,15]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.495
+Timestamp: 2025-11-29T23:15:58
+cycle_id: 33
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.530346165544925
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.524476758509515
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.514366772808272
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": true,
+    "weight": 0.514355340517698
+  }
+]
+executed_rules:[1,5]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":5,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:16:02
+cycle_id: 34
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.53929775424697
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": true,
+    "weight": 0.530454043548286
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.526262167755246
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": true,
+    "weight": 0.524452357075095
+  }
+]
+executed_rules:[15,1,3]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":4,"upper_attacks_taken":0}
+fitness: 0.510
+Timestamp: 2025-11-29T23:16:07
+cycle_id: 35
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.553698390610404
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.536094066779204
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.53607717514623
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": true,
+    "weight": 0.535465993919857
+  }
+]
+executed_rules:[10]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":1,"upper_attacks_taken":1}
+fitness: 0.508
+Timestamp: 2025-11-29T23:16:11
+cycle_id: 36
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.559215024608809
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.55319402506395
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.551373028620023
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": true,
+    "weight": 0.549582843837577
+  }
+]
+executed_rules:[10]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.497
+Timestamp: 2025-11-29T23:16:15
+cycle_id: 37
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.568919539731048
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.55069626031101
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.53852486765216
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": true,
+    "weight": 0.524086531167529
+  }
+]
+executed_rules:[4]
+parameters: {"lower_attacks_landed":4,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.495
+Timestamp: 2025-11-29T23:16:19
+cycle_id: 38
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.565528753982722
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": true,
+    "weight": 0.553357361323872
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.546919024839241
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.536778130995471
+  }
+]
+executed_rules:[9,16,1]
+parameters: {"lower_attacks_landed":1,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.508
+Timestamp: 2025-11-29T23:16:24
+cycle_id: 39
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.568312532098494
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.554961861806017
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.52506681625883
+  }
+]
+executed_rules:[1,9]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.502
+Timestamp: 2025-11-29T23:16:28
+cycle_id: 40
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.544014152441306
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.532795742361132
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.530752638475978
+  }
+]
+executed_rules:[2]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":4,"upper_attacks_taken":0}
+fitness: 0.495
+Timestamp: 2025-11-29T23:16:33
+cycle_id: 41
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.547612329134366
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.545131516200325
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": true,
+    "weight": 0.531653959380111
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.518121999098878
+  }
+]
+executed_rules:[3]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":7,"upper_attacks_taken":0}
+fitness: 0.508
+Timestamp: 2025-11-29T23:16:37
+cycle_id: 42
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.559160295869025
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.558637852689238
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": true,
+    "weight": 0.531628335587792
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.517555968436214
+  }
+]
+executed_rules:[8,16,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.514
+Timestamp: 2025-11-29T23:16:41
+cycle_id: 43
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.55927946387977
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.539787020143873
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": true,
+    "weight": 0.518842640358216
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.512849027838812
+  }
+]
+executed_rules:[1,8,15]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.495
+Timestamp: 2025-11-29T23:16:46
+cycle_id: 44
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.55928841675829
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.535127839919539
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": true,
+    "weight": 0.531121452438942
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.50918489108047
+  }
+]
+executed_rules:[1,15]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.495
+Timestamp: 2025-11-29T23:16:50
+cycle_id: 45
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.528134584182038
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.52313412612978
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.516680327678754
+  }
+]
+executed_rules:[11]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.495
+Timestamp: 2025-11-29T23:16:54
+cycle_id: 46
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.533185716558305
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.5206337563935
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.515137209417231
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:16:58
+cycle_id: 47
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.537132039481363
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.531635492505095
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.527333225672405
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.517329484990201
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:02
+cycle_id: 48
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.543830691639277
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.533826950957072
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.528393682640982
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.523652290737323
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:06
+cycle_id: 49
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.544891457528742
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.540150065625083
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.522406261249256
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.512323960081609
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:10
+cycle_id: 50
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.538904639566848
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.528822338399201
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.510391562496036
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.50880977131765
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:14
+cycle_id: 51
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.526889148461345
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.525307357282959
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.51604828792763
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.502602667410694
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:18
+cycle_id: 52
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.532545776994942
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.519100156478006
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.508392017546711
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.501217046173829
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:22
+cycle_id: 53
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.524888725232135
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.517713753859253
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.505163760647725
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:26
+cycle_id: 54
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.521660867973889
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.512412445077523
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.511855721171424
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:30
+cycle_id: 55
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.528909082919371
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.528352359013272
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.514112901424877
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.51291688483458
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:34
+cycle_id: 56
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.530610219333735
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.529414202743438
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.516300349624124
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.515517116514014
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:38
+cycle_id: 57
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.532797572394056
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.532014339283946
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.523425581033371
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.522627302428924
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:42
+cycle_id: 58
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.539922984885802
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.539124706281354
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.511422279504071
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.511292034913729
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:46
+cycle_id: 59
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.527920093264466
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.527789848674123
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.517069777943974
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.507777872051085
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:50
+cycle_id: 60
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.533567046163302
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.524275140270413
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.509417798041623
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.501586995343687
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:54
+cycle_id: 61
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.525914723390911
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.518083920692974
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.506189471959148
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.50019114232915
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:17:58
+cycle_id: 62
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.522686453800708
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.51668812417071
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.51343289000373
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.498637982558518
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:18:02
+cycle_id: 63
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.529929664090927
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.515134756645715
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.510841452861484
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:18:06
+cycle_id: 64
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.527338045026481
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.517321430672327
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": true,
+    "weight": 0.511893509079138
+  }
+]
+executed_rules:[1,14,11]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:18:10
+cycle_id: 65
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.533819089701613
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": true,
+    "weight": 0.528391168108423
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.524440467324197
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.514488981956581
+  }
+]
+executed_rules:[8,14,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:18:14
+cycle_id: 66
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.543471099706675
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.527519614339059
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.521747799020197
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.51258506451814
+  }
+]
+executed_rules:[8,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.503
+Timestamp: 2025-11-29T23:18:18
+cycle_id: 67
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.538252778947943
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.529090044445886
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.518231485057964
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": true,
+    "weight": 0.510398449673845
+  }
+]
+executed_rules:[1,4]
+parameters: {"lower_attacks_landed":1,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":2}
+fitness: 0.500
+Timestamp: 2025-11-29T23:18:23
+cycle_id: 68
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.538640835686116
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.520141133635331
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.510229074596453
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.506549921780416
+  }
+]
+executed_rules:[2]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":3}
+fitness: 0.492
+Timestamp: 2025-11-29T23:18:27
+cycle_id: 69
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.529886094737361
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.511206941921324
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.507166535549174
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.50050522203675
+  }
+]
+executed_rules:[2]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":1,"upper_attacks_taken":2}
+fitness: 0.485
+Timestamp: 2025-11-29T23:18:31
+cycle_id: 70
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": true,
+    "weight": 0.525381031848701
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.518719718336276
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.51451694038134
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": true,
+    "weight": 0.499232763532511
+  }
+]
+executed_rules:[5,7,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":2,"upper_attacks_taken":2}
+fitness: 0.492
+Timestamp: 2025-11-29T23:18:36
+cycle_id: 71
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.537953975247631
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.510669798398802
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": true,
+    "weight": 0.498053206505169
+  }
+]
+executed_rules:[3]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":6,"upper_attacks_taken":0}
+fitness: 0.494
+Timestamp: 2025-11-29T23:18:41
+cycle_id: 72
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.523993452259528
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.513759620350229
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.511011711814132
+  }
+]
+executed_rules:[8,1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":1,"upper_attacks_taken":2}
+fitness: 0.512
+Timestamp: 2025-11-29T23:18:45
+cycle_id: 73
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.534126352882723
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.525563799874326
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.52071177767996
+  }
+]
+executed_rules:[11]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.492
+Timestamp: 2025-11-29T23:18:49
+cycle_id: 74
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.542037330877606
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.528992206334396
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.526486064113502
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.509875230159188
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:18:53
+cycle_id: 75
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.545489181890163
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.542983039669269
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.526372205714955
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.525588500755601
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:18:57
+cycle_id: 76
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.550356972448008
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.542086199659085
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.531033773413774
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.515525508972482
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:01
+cycle_id: 77
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.547531956123229
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.532023691681937
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.520723235375599
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.513401916575844
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:05
+cycle_id: 78
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.537221197490058
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.529899878690304
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.520940541636608
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.519028786099118
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:09
+cycle_id: 79
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.537438619966566
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.535526864429075
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.523751947151382
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:13
+cycle_id: 80
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.540249906623129
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.538808072237436
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.535359287315373
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:17
+cycle_id: 81
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.555306069602473
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.55185728468041
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.527055527288619
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.526570292742951
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:21
+cycle_id: 82
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.543554181116428
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.543068946570759
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.537500640775368
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.499062530184891
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:25
+cycle_id: 83
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.553999060368902
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.515560949778425
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.50806540708479
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.493457588439551
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:29
+cycle_id: 84
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.524562136301612
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.509954317656373
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.505252314734176
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.497996428580299
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:33
+cycle_id: 85
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.521750267448702
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.514494381294826
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.505468300293067
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.49586564175852
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:37
+cycle_id: 86
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.521965271379147
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.512362612844599
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.506826132199757
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:41
+cycle_id: 87
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.523322611805415
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.518000803681827
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.511437708132085
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:45
+cycle_id: 88
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.53449794816265
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.527934852612908
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.522717842486894
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.517845495728051
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:49
+cycle_id: 89
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.539215034925877
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": false,
+    "weight": 0.534342688167034
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.528095333290536
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.52201562278513
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:53
+cycle_id: 90
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.544593128113859
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": false,
+    "weight": 0.538513417608453
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.525537881155226
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.525404970097952
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:19:57
+cycle_id: 91
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.542035920595869
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.541903009538596
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.509095297728226
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.498041274264699
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:20:01
+cycle_id: 92
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.5255936253954
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.514539601931873
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.506282019413911
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.492403143251342
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:20:05
+cycle_id: 93
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": false,
+    "weight": 0.522778593942959
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": false,
+    "weight": 0.50889971778039
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.506494264953275
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.496979820146103
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:20:09
+cycle_id: 94
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.522990728115922
+  },
+  {
+    "action": "jump_backward",
+    "distance": 250,
+    "rule_id": 15,
+    "was_used": false,
+    "weight": 0.51347628330875
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.502525772400583
+  }
+]
+executed_rules:[]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:20:13
+cycle_id: 95
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_forward",
+    "distance": 400,
+    "rule_id": 16,
+    "was_used": false,
+    "weight": 0.519022563979713
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": false,
+    "weight": 0.511339416105735
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.507242011269121
+  }
+]
+executed_rules:[1]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:20:17
+cycle_id: 96
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 345,
+    "rule_id": 9,
+    "was_used": true,
+    "weight": 0.527836356108425
+  },
+  {
+    "action": "crouch_heavyPunch",
+    "distance": 315,
+    "rule_id": 13,
+    "was_used": false,
+    "weight": 0.52373895127181
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.522303819614687
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.51261375855857
+  }
+]
+executed_rules:[1,9]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":1}
+fitness: 0.500
+Timestamp: 2025-11-29T23:20:21
+cycle_id: 97
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.541245432099702
+  },
+  {
+    "action": "light_punch",
+    "distance": 315,
+    "rule_id": 3,
+    "was_used": false,
+    "weight": 0.531555371043585
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.52669214905749
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.516595020285747
+  }
+]
+executed_rules:[1,2]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":3}
+fitness: 0.495
+Timestamp: 2025-11-29T23:20:25
+cycle_id: 98
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch",
+    "distance": 315,
+    "rule_id": 10,
+    "was_used": false,
+    "weight": 0.550528913345961
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.525675049682983
+  },
+  {
+    "action": "light_kick",
+    "distance": 325,
+    "rule_id": 2,
+    "was_used": true,
+    "weight": 0.520431784574218
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": true,
+    "weight": 0.520103270054388
+  }
+]
+executed_rules:[14,1,2]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.485
+Timestamp: 2025-11-29T23:20:29
+cycle_id: 99
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.542155132855366
+  },
+  {
+    "action": "jump_forward",
+    "distance": 350,
+    "rule_id": 14,
+    "was_used": true,
+    "weight": 0.536583353226771
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": true,
+    "weight": 0.523489040398986
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.509226687961708
+  }
+]
+executed_rules:[1,8,14]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.500
+Timestamp: 2025-11-29T23:20:34
+cycle_id: 100
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": false,
+    "weight": 0.547004840902812
+  },
+  {
+    "action": "dash_backward",
+    "distance": 315,
+    "rule_id": 8,
+    "was_used": false,
+    "weight": 0.539987738660303
+  },
+  {
+    "action": "slide_forward",
+    "distance": 350,
+    "rule_id": 18,
+    "was_used": false,
+    "weight": 0.525725386223025
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": true,
+    "weight": 0.506409145980405
+  }
+]
+executed_rules:[1,4]
+parameters: {"lower_attacks_landed":1,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":2}
+fitness: 0.500
+Timestamp: 2025-11-29T23:20:38
+cycle_id: 101
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightKick",
+    "distance": 325,
+    "rule_id": 4,
+    "was_used": true,
+    "weight": 0.516151040600065
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.512248781678899
+  },
+  {
+    "action": "jump",
+    "distance": 250,
+    "rule_id": 12,
+    "was_used": true,
+    "weight": 0.51149172468913
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.506265526968066
+  }
+]
+executed_rules:[12,4,1]
+parameters: {"lower_attacks_landed":1,"lower_attacks_taken":0,"upper_attacks_landed":0,"upper_attacks_taken":0}
+fitness: 0.492
+Timestamp: 2025-11-29T23:20:43
+cycle_id: 102
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": true,
+    "weight": 1.0
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.526427859376472
+  },
+  {
+    "action": "heavy_punch",
+    "distance": 345,
+    "rule_id": 7,
+    "was_used": false,
+    "weight": 0.520444604665639
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": true,
+    "weight": 0.506703184720478
+  }
+]
+executed_rules:[1,11,5]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":5,"upper_attacks_taken":0}
+fitness: 0.502
+Timestamp: 2025-11-29T23:20:47
+cycle_id: 103
+script:[
+  {
+    "action": "dash_forward",
+    "distance": 325,
+    "rule_id": 1,
+    "was_used": false,
+    "weight": 1.0
+  },
+  {
+    "action": "crouch_lightPunch",
+    "distance": 315,
+    "rule_id": 5,
+    "was_used": true,
+    "weight": 0.531648124235267
+  },
+  {
+    "action": "heavy_kick",
+    "distance": 345,
+    "rule_id": 6,
+    "was_used": false,
+    "weight": 0.519970403337374
+  },
+  {
+    "action": "slide_backward",
+    "distance": 180,
+    "rule_id": 17,
+    "was_used": false,
+    "weight": 0.51737157995889
+  }
+]
+executed_rules:[5]
+parameters: {"lower_attacks_landed":0,"lower_attacks_taken":0,"upper_attacks_landed":6,"upper_attacks_taken":0}
+fitness: 0.510
