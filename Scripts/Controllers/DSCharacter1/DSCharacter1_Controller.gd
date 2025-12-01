@@ -1042,7 +1042,7 @@ func generate_script():
 				rule["weight"] = maxWeight
 	
 	# Ensure movement rules don't get too low
-	ensure_minimum_movement_weights()
+	#ensure_minimum_movement_weights()
 	
 	DistributeRemainder()
 	_create_new_script()
@@ -1760,10 +1760,10 @@ func execute_smart_fallback(distance: float):
 				print("Smart fallback: dash_backward (distance: ", distance, ")")
 
 # MOVEMENT WEIGHT ENSURANCE - From your original pre-modified scripts
-func ensure_minimum_movement_weights():
-	var movement_rule_ids = [9, 10, 11, 12, 13, 14, 15, 16, 18]  # Movement-related rules
-	
-	for rule in rules:
-		if rule["ruleID"] in movement_rule_ids and rule["weight"] < 0.4:
-			rule["weight"] = 0.4
-			print("Boosted movement rule ", rule["ruleID"], " to minimum weight")
+#func ensure_minimum_movement_weights():
+	#var movement_rule_ids = [9, 10, 11, 12, 13, 14, 15, 16, 18]  # Movement-related rules
+	#
+	#for rule in rules:
+		#if rule["ruleID"] in movement_rule_ids and rule["weight"] < 0.4:
+			#rule["weight"] = 0.4
+			#print("Boosted movement rule ", rule["ruleID"], " to minimum weight")

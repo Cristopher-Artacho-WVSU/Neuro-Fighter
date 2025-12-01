@@ -113,11 +113,11 @@ var last_action: String
 @onready var generateScript_timer = Timer.new()
 
 #ONREADY VARIABLES FOR THE OTHER PLAYER
-@onready var enemy = get_parent().get_node("PlayerCharacter1")
-@onready var enemyAnimation = enemy.get_node("AnimationPlayer")
-@onready var enemy_UpperHurtbox = enemy.get_node("Hurtbox_UpperBody")
-@onready var enemy_LowerHurtbox = enemy.get_node("Hurtbox_LowerBody")
-@onready var prev_distance_to_enemy = abs(enemy.position.x - position.x)
+var enemy: CharacterBody2D = null
+var enemyAnimation: AnimationPlayer = null
+var enemy_UpperHurtbox: Area2D = null
+var enemy_LowerHurtbox: Area2D = null
+var prev_distance_to_enemy: float = 0.0
 
 #AREA2D GROUP
 var player_index: int = 0
@@ -128,6 +128,8 @@ var chart_panel: Node = null
 var recent_used_rules_this_cycle: Array = []
 var total_rules_used: int = 0
 var total_actions_taken: int = 0
+var consecutive_idle_cycles: int = 0
+var max_idle_cycles = 11
 
 var rules = [
 	{
@@ -233,20 +235,195 @@ var rules = [
 	}
 ]
 
+#var rules = [
+	## ===== HIGH PRIORITY: DEFENSIVE ACTIONS =====
+	#{
+		#"ruleID": 1, "prioritization": 100,
+		#"conditions": { 
+			#"enemy_anim": ["light_punch", "light_kick", "heavy_punch", "heavy_kick", "crouch_lightPunch", "crouch_lightKick"],
+			#"distance": { "op": "<=", "value": 350 }
+		#},
+		#"enemy_action": ["standing_defense"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 2, "prioritization": 95,
+		#"conditions": { 
+			#"enemy_anim": ["crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"],
+			#"distance": { "op": "<=", "value": 350 }
+		#},
+		#"enemy_action": ["crouch"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
+	#
+	## ===== MEDIUM PRIORITY: ATTACKS =====
+	#{
+		#"ruleID": 3, "prioritization": 80,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 300 },
+			#"rand_chance": { "op": ">=", "value": 0.6 }
+		#},
+		#"enemy_action": ["light_punch"], "weight": 0.8, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 4, "prioritization": 80,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 320 },
+			#"rand_chance": { "op": ">=", "value": 0.5 }
+		#},
+		#"enemy_action": ["light_kick"], "weight": 0.8, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 5, "prioritization": 75,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 280 },
+			#"upper_attacks_landed": { "op": ">=", "value": 1 }
+		#},
+		#"enemy_action": ["heavy_punch"], "weight": 0.6, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 6, "prioritization": 75,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 300 },
+			#"upper_attacks_landed": { "op": ">=", "value": 1 }
+		#},
+		#"enemy_action": ["heavy_kick"], "weight": 0.6, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 7, "prioritization": 70,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 280 },
+			#"rand_chance": { "op": ">=", "value": 0.4 }
+		#},
+		#"enemy_action": ["crouch_lightPunch"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 8, "prioritization": 70,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 300 },
+			#"rand_chance": { "op": ">=", "value": 0.4 }
+		#},
+		#"enemy_action": ["crouch_lightKick"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
+	#
+	## ===== MOVEMENT AND POSITIONING =====
+	#{
+		#"ruleID": 9, "prioritization": 60,
+		#"conditions": { 
+			#"distance": { "op": ">=", "value": 400 },
+			#"rand_chance": { "op": ">=", "value": 0.8 }
+		#},
+		#"enemy_action": ["dash_forward"], "weight": 0.9, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 10, "prioritization": 60,
+		#"conditions": { 
+			#"distance": { "op": ">=", "value": 350 },
+			#"rand_chance": { "op": ">=", "value": 0.7 }
+		#},
+		#"enemy_action": ["dash_forward"], "weight": 0.8, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 11, "prioritization": 55,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 200 },
+			#"upper_attacks_taken": { "op": ">=", "value": 2 },
+			#"rand_chance": { "op": ">=", "value": 0.6 }
+		#},
+		#"enemy_action": ["dash_backward"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 12, "prioritization": 50,
+		#"conditions": { 
+			#"distance": { "op": ">=", "value": 500 },
+			#"rand_chance": { "op": ">=", "value": 0.5 }
+		#},
+		#"enemy_action": ["slide_forward"], "weight": 0.6, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 13, "prioritization": 45,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 150 },
+			#"upper_attacks_taken": { "op": ">=", "value": 3 },
+			#"rand_chance": { "op": ">=", "value": 0.5 }
+		#},
+		#"enemy_action": ["slide_backward"], "weight": 0.6, "wasUsed": false, "inScript": false
+	#},
+	#
+	## ===== JUMPS AND ADVANCED MOVEMENT =====
+	#{
+		#"ruleID": 14, "prioritization": 40,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 250 },
+			#"rand_chance": { "op": ">=", "value": 0.3 }
+		#},
+		#"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 15, "prioritization": 40,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 300 },
+			#"rand_chance": { "op": ">=", "value": 0.4 }
+		#},
+		#"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 16, "prioritization": 40,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 200 },
+			#"upper_attacks_taken": { "op": ">=", "value": 2 },
+			#"rand_chance": { "op": ">=", "value": 0.5 }
+		#},
+		#"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#
+	## ===== AGGRESSIVE FOLLOW-UPS =====
+	#{
+		#"ruleID": 17, "prioritization": 85,
+		#"conditions": { 
+			#"enemy_anim": ["light_hurt", "heavy_hurt"],
+			#"distance": { "op": "<=", "value": 350 },
+			#"rand_chance": { "op": ">=", "value": 0.8 }
+		#},
+		#"enemy_action": ["dash_forward", "light_punch"], "weight": 0.9, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 18, "prioritization": 30,
+		#"conditions": { 
+			#"distance": { "op": ">=", "value": 600 }
+		#},
+		#"enemy_action": ["dash_forward"], "weight": 1.0, "wasUsed": false, "inScript": false
+	#}
+#]
+
 func find_enemy_automatically():
-	# Look for other CharacterBody2D in parent scene
 	var parent = get_parent()
-	if parent:
+	if not parent:
+		print("No parent found for ", name)
+		return
+	
+	# Multiple attempts to find enemy
+	for attempt in range(3):
 		for child in parent.get_children():
-			if child is CharacterBody2D and child != self:
-				enemy = child
-				break
+			if child is CharacterBody2D and child != self and is_instance_valid(child):
+				# Additional check to ensure it's actually the opponent
+				if "Player" in child.name or "NPC" in child.name:
+					enemy = child
+					print("Enemy found for ", name, ": ", enemy.name)
+					cache_enemy_components()
+					return
+		
+		if attempt < 2:  # Don't wait on last attempt
+			print("Enemy not found on attempt ", attempt + 1, " for ", name, ", retrying...")
+			await get_tree().create_timer(0.2).timeout
 	
-	if not enemy:
-		push_error("No enemy found for controller: " + name)
+	# Final fallback - any CharacterBody2D that's not self
+	for child in parent.get_children():
+		if child is CharacterBody2D and child != self and is_instance_valid(child):
+			enemy = child
+			print("Fallback enemy found for ", name, ": ", enemy.name)
+			cache_enemy_components()
+			return
 	
-	if enemy:
-		cache_enemy_components()
+	print("CRITICAL: No enemy found for ", name)
 
 func cache_enemy_components():
 	if enemy:
@@ -271,6 +448,7 @@ func _ready():
 	if enemy and enemy.has_node("AnimationPlayer"):
 		print("AnimationPlayer of Enemy detected")
 	
+	find_enemy_automatically()
 	initialize_ai_state_manager()
 	initialize_character_state()
 	start_script_generation_timer()
@@ -278,7 +456,6 @@ func _ready():
 	
 	initialize_chart_support()
 	
-	find_enemy_automatically()
 	
 	for hitbox in hitboxGroup:
 		if not hitbox.is_connected("area_entered", Callable(self, "_on_hitbox_area_entered")):
@@ -341,8 +518,48 @@ func start_script_generation_timer():
 	generateScript_timer.connect("timeout", Callable(self, "_on_generateScript_timer_timeout"))
 
 # ===== PHYSICS AND MOVEMENT =====
+#func _physics_process(delta):
+	#
+	#websocket.poll()
+	#var state = websocket.get_ready_state()
+#
+	#if state == WebSocketPeer.STATE_OPEN and not connected:
+		#print("✅ Connected to LSTM server")
+		#connected = true
+	#elif state == WebSocketPeer.STATE_CLOSING or state == WebSocketPeer.STATE_CLOSED:
+		#if connected:
+			#print("❌ Disconnected from LSTM server")
+			#connected = false
+#
+	#if connected:
+		#while websocket.get_available_packet_count() > 0:
+			#var msg = websocket.get_packet().get_string_from_utf8()
+			#var parse_result = JSON.parse_string(msg)
+			#
+			#if typeof(parse_result) == TYPE_ARRAY:
+				#NDSsuggestions = parse_result  # Save suggestions array for generate_script()
+				#print("📨 LSTM suggestion received:", NDSsuggestions)
+			#else:
+				#print("⚠️ Unexpected message format from server:", msg)
+						#
+	#updateDetails()
+	#update_facing_direction()
+	#applyGravity(delta)
+	#
+	#if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		#check_emergency_action()
+	#
+	#if !is_attacking && !is_defending && !is_hurt && !is_dashing:
+		#evaluate_and_execute(rules)
+	#
+	#DamagedSystem(delta)
+	##debug_states()
+	#move_and_slide()
 func _physics_process(delta):
+	if not is_instance_valid(self):
+		return
 	
+	# WebSocket connection handling
 	websocket.poll()
 	var state = websocket.get_ready_state()
 
@@ -360,22 +577,37 @@ func _physics_process(delta):
 			var parse_result = JSON.parse_string(msg)
 			
 			if typeof(parse_result) == TYPE_ARRAY:
-				NDSsuggestions = parse_result  # Save suggestions array for generate_script()
-				print("📨 LSTM suggestion received:", NDSsuggestions)
+				NDSsuggestions = parse_result
 			else:
 				print("⚠️ Unexpected message format from server:", msg)
-						
+	
+	if not is_instance_valid(enemy):
+		find_enemy_automatically()
+		if not enemy:
+			# Emergency fallback - try to at least look presentable
+			if animation.current_animation != "idle":
+				animation.play("idle")
+			return
+			
 	updateDetails()
 	update_facing_direction()
 	applyGravity(delta)
 	
-	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
+	handle_slide_movement(delta)
+	
+	# Emergency state recovery
+	if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		check_emergency_action()
+	
+	# Only evaluate rules if we're in a state that can accept new actions
+	if can_accept_new_actions():
 		evaluate_and_execute(rules)
+	elif is_attacking || is_defending || is_hurt:
+		velocity.x = 0
 	
 	DamagedSystem(delta)
-	#debug_states()
 	move_and_slide()
-
+	
 func update_facing_direction():
 	if not is_instance_valid(enemy):
 		print("Enemy not found")
@@ -495,15 +727,20 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 
 
 func evaluate_and_execute(rules: Array):
-	var enemy_anim = enemyAnimation.current_animation
+	if not is_instance_valid(enemy):
+		find_enemy_automatically()
+		if not enemy:
+			return
+	
+	var enemy_anim = enemyAnimation.current_animation if enemyAnimation else "idle"
 	var distance = global_position.distance_to(enemy.global_position)
 	var matched_rules = []
 
-	for nds_index in range(DSscript.size()):
-		var rule = DSscript[nds_index]
+	for i in range(DSscript.size()):
+		var rule = DSscript[i]
 		var conditions = rule["conditions"]
 		var match_all = true
-
+		
 		# Check if this is a slide rule and if sliding is available
 		var is_slide_rule = false
 		var actions = rule.get("enemy_actions", [])
@@ -519,7 +756,7 @@ func evaluate_and_execute(rules: Array):
 		# Skip slide rules if sliding is not available
 		if is_slide_rule and not can_perform_slide():
 			continue
-			
+		
 		if match_all and "distance" in conditions:
 			var cond = conditions["distance"]
 			if not _compare_numeric(cond["op"], distance, cond["value"]):
@@ -548,24 +785,24 @@ func evaluate_and_execute(rules: Array):
 				continue
 
 		if match_all:
-			matched_rules.append(nds_index)
+			matched_rules.append(i)
 
-	# Sort matched rules by prioritization (highest first)
 	matched_rules.sort_custom(_sort_by_priority_desc)
+
+	# CRITICAL FIX: If no rules match, use smart fallback instead of doing nothing
+	if matched_rules.size() == 0:
+		execute_smart_fallback(distance)
+		return
 
 	if matched_rules.size() > 0:
 		var rule_index = matched_rules[0]
-		var rule = DSscript[rule_index]   # ✅ use rule_index, not nds_index
+		var rule = rules[rule_index]
 		
+		# TRACK RULE USAGE FOR CHARTS
 		recent_used_rules_this_cycle.append(rule["ruleID"])
 		total_rules_used += 1
-		total_actions_taken += 1
-		
-		if chart_panel and chart_panel.has_method("record_rule_usage"):
-			chart_panel.record_rule_usage(rule["ruleID"])
-		
-		var actions = rule.get("enemy_actions", [])
 
+		var actions = rule.get("enemy_actions", [])
 		if actions.size() == 0:
 			var raw_action = rule.get("enemy_action", "idle")
 			actions = [raw_action] if typeof(raw_action) == TYPE_STRING else raw_action
@@ -574,7 +811,6 @@ func evaluate_and_execute(rules: Array):
 		for action in actions:
 			if typeof(action) == TYPE_STRING:
 				valid_actions.append(action)
-				print(valid_actions)
 			else:
 				print("Invalid action type in rule %d: %s" % [rule.get("ruleID", -1), str(action)])
 
@@ -583,7 +819,7 @@ func evaluate_and_execute(rules: Array):
 			if not rule["ruleID"] in cycle_used_rules:
 				cycle_used_rules.append(rule["ruleID"])
 				
-			DSscript[rule_index]["wasUsed"] = true
+			rules[rule_index]["wasUsed"] = true
 			for script_rule in DSscript:
 				if script_rule["ruleID"] == rule["ruleID"]:
 					script_rule["wasUsed"] = true
@@ -777,32 +1013,63 @@ func debug_states():
 
 #FOR ANIMATIONS IN ORDER TO NOT GET CUT OFF
 func _on_animation_finished(anim_name: String):
+	if Global.debug_mode:
+		print(name, " - Animation finished: ", anim_name)
+	
+	# Use a match statement for cleaner state management
 	match anim_name:
 		"light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch", "heavy_punch", "heavy_kick":
 			is_attacking = false
+			# Clear attack state immediately
+			velocity.x = 0
+			
 		"standing_block":
 			is_defending = false
+			
 		"light_hurt", "heavy_hurt":
 			_on_hurt_finished()
+			
 		"jump", "jump_forward", "jump_backward":
-			is_jumping = false
-			jump_state = ""
-			jump_forward_played = false
-			jump_backward_played = false
-			jump_fall_started = false
-			jump_landing_done = false
-			velocity.x = 0
+			_reset_jump_state()
+			
 		"crouch":
 			is_crouching = false
+			
 		"move_forward", "move_backward":
 			is_dashing = false
 			velocity.x = 0
-	#animation.play("idle")
+			
+		"slide":
+			is_sliding = false
+			velocity.x = 0
+	
+	# CRITICAL FIX: Don't automatically play idle - let the AI decide next action
+	# But ensure we're not stuck in a finished animation
+	if animation.current_animation == anim_name and can_accept_new_actions():
+		# Small delay to allow AI to choose next action
+		await get_tree().create_timer(0.05).timeout
+		if is_instance_valid(self) and animation.current_animation == anim_name and can_accept_new_actions():
+			animation.play("idle")
 			
 
 func generate_script():
 	var active = 0
 	var inactive = 0
+	
+	# Track if we're being too idle
+	if cycle_used_rules.size() == 0:
+		consecutive_idle_cycles += 1
+	else:
+		consecutive_idle_cycles = 0
+	
+	# Force rule refresh if too idle
+	if consecutive_idle_cycles >= max_idle_cycles:
+		print("FORCING RULE REFRESH - Too many idle cycles!")
+		# Reset weights to encourage different rules
+		for rule in rules:
+			rule["weight"] = randf_range(0.4, 0.8)
+		consecutive_idle_cycles = 0
+	
 	log_every_10_cycles()
 	log_script_generation()
 	cycle_used_rules.clear()
@@ -850,21 +1117,14 @@ func generate_script():
 				weightRemainder += (rule["weight"] - maxWeight)
 				rule["weight"] = maxWeight
 	
+	# Ensure movement rules don't get too low
+	#ensure_minimum_movement_weights()
+	
 	DistributeRemainder()
 	_create_new_script()
-	send_script_to_lstm()
+	_reset_rule_usage()
 	print("New script generated with weights")
 	printSumWeights()
-	_reset_rule_usage()
-	
-	# ✅ Send the new script to LSTM server
-	#var script_data = {
-		#"timestamp": Time.get_datetime_string_from_system(),
-		#"cycle_id": log_cycles,
-		#"script": DSscript,
-		#"fitness": fitness
-	#}
-	#print("Sent script:" script_data)
 
 func calculateFitness():
 	var offensivenessVal = (0.002 * upper_attacks_landed + 0.002 * lower_attacks_landed)
@@ -1027,68 +1287,81 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	if area.is_in_group(enemy_hitboxGroup):
-		#if "upper_attacks_landed" in enemy:
-			#enemy.upper_attacks_landed += 1
 		is_recently_hit = true
 		if is_defending:
 			velocity.x = 0
-			apply_hitstop(0.15)  # brief pause (0.2 seconds)
+			# Use call_deferred for physics-related operations
+			call_deferred("apply_hitstop", 0.15)
 			animation.play("standing_block") 
 			upper_attacks_blocked += 1
-			applyDamage(7)
+			call_deferred("applyDamage", 7)
 			print(" Upper Damaged From Blocking")
 		else:
 			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
-				applyDamage(15)
+				call_deferred("applyDamage", 15)
 				animation.play("heavy_hurt")
 			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch"]:
-				applyDamage(10)
+				call_deferred("applyDamage", 10)
 				animation.play("light_hurt")
 			is_hurt = true
-			apply_hitstop(0.15)  # brief pause (0.2 seconds)
+			call_deferred("apply_hitstop", 0.15)
 			upper_attacks_taken += 1
 			print("Player 2 Upper body hit taken")
-		# Reset hit immunity after short real-time delay
-		await get_tree().create_timer(0.2, true).timeout
-		is_recently_hit = false
+		
+		# Reset hit immunity after short real-time delay - use call_deferred
+		var timer = get_tree().create_timer(0.2)
+		timer.timeout.connect(_reset_recently_hit)
+
+func _reset_recently_hit():
+	is_recently_hit = false
 		
 func _on_hurtbox_lower_body_area_entered(area: Area2D):
 	if is_recently_hit:
 		return  # Ignore duplicate hits during hitstop/hitstun
 	#	MADE GROUP FOR ENEMY NODES "Player1_Hitboxes" 
 	if area.is_in_group(enemy_hitboxGroup):
-		#if "lower_attacks_landed" in enemy:
-			#enemy.lower_attacks_landed += 1
 		is_recently_hit = true 
 		if is_defending:
 			velocity.x = 0
-			apply_hitstop(0.15)  # brief pause (0.2 seconds)
+			call_deferred("apply_hitstop", 0.15)
 			animation.play("standing_block") 
 			upper_attacks_blocked += 1
-			applyDamage(7)
+			call_deferred("applyDamage", 7)
 			print(" Lower Damaged From Blocking")
 		else:
 			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
-				applyDamage(15)
+				call_deferred("applyDamage", 15)
 				animation.play("heavy_hurt")
 			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch"]:
-				applyDamage(10)
+				call_deferred("applyDamage", 10)
 				animation.play("light_hurt")
 			is_hurt = true
-			apply_hitstop(0.15)  # brief pause (0.2 seconds)
+			call_deferred("apply_hitstop", 0.15)
 			upper_attacks_taken += 1
 			print("Player 2 Lower body hit taken")
-		# Reset hit immunity after short real-time delay
-		await get_tree().create_timer(0.2, true).timeout
-		is_recently_hit = false
+		
+		# Reset hit immunity after short real-time delay - use call_deferred
+		var timer = get_tree().create_timer(0.2)
+		timer.timeout.connect(_reset_recently_hit)
 		
 func applyDamage(amount: int):
+	# DEBUG: Print which player is taking damage
+	print(name + " taking damage: " + str(amount) + " | player_hitboxGroup: " + player_hitboxGroup)
+	
+	# When THIS player is hit, damage should be applied to THIS player
+	# The logic was reversed before
 	if player_hitboxGroup == "Player1_Hitboxes":
+		# This is Player 1, so apply damage to Player 1
 		if get_parent().has_method("apply_damage_to_player1"):
 			get_parent().apply_damage_to_player1(amount)
-	else:
+			print("Damage applied to Player 1")
+	elif player_hitboxGroup == "Player2_Hitboxes":
+		# This is Player 2, so apply damage to Player 2  
 		if get_parent().has_method("apply_damage_to_player2"):
 			get_parent().apply_damage_to_player2(amount)
+			print("Damage applied to Player 2")
+	else:
+		print("ERROR: Unknown player hitbox group: " + player_hitboxGroup)
 
 func updateDetails():
 	playerDetails.text = "Lower Attacks Taken: %d\nUpper Attacks Taken: %d\nLower Attacks Landed: %d\nUpper Attacks Landed: %d \nUpper Attacks Blocked: %d \nLower Attacks Blocked: %d" % [
@@ -1359,8 +1632,17 @@ func send_script_to_lstm():
 	#print("✅ Updated DSscript weights from LSTM suggestions")
 
 func reset_state():
+	print(name, " - Performing comprehensive AI state reset")
+	
+	# Stop any timers first
+	var idle_timer = get_node_or_null("IdleTimer")
+	if idle_timer:
+		idle_timer.stop()
+	
+	# Reset physics state
 	velocity = Vector2.ZERO
-	# Reset all states
+	
+	# Comprehensive state flag reset
 	is_dashing = false
 	is_jumping = false
 	is_crouching = false
@@ -1369,20 +1651,40 @@ func reset_state():
 	is_hurt = false
 	is_recently_hit = false
 	is_sliding = false
+	
+	# Reset jump state completely
 	jump_backward_played = false
 	jump_forward_played = false
-	# Reset slide cooldown
+	jump_state = ""
+	jump_timer = 0.0
+	jump_fall_started = false
+	jump_landing_done = false
+	jump_frozen_up_done = false
+	jump_frozen_down_done = false
+	
+	# Reset slide state
 	can_slide = true
 	slide_cooldown_timer = 0.0
+	slide_timer = 0.0
+	slide_direction = 0
 	
-	# Reset chart tracking
-	initialize_chart_support()
+	# Reset attack tracking
+	last_action = "idle"
+	last_input_time = 0.0
 	
+	# Reset consecutive idle tracking
+	consecutive_idle_cycles = 0
+	
+	# Clear any stuck animation states
 	if animation:
 		animation.stop()
-		animation.play("idle")
+		# Force idle animation after ensuring scene stability
+		call_deferred("force_idle_animation")
 	
-	print("NDS Character reset to initial state")
+	# Reset enemy reference for new round
+	call_deferred("refresh_enemy_reference")
+	
+	print(name, " - AI reset complete")
 
 func can_perform_slide() -> bool:
 	return can_slide and not is_sliding and is_on_floor() and not is_jumping
@@ -1653,3 +1955,106 @@ func identify_player_type() -> String:
 	elif "NPCCharacter1" in name or "player2" in name.to_lower():
 		return "player2"
 	return "undefined"
+
+func check_emergency_action():
+	# If player is idle for too long, force action regardless of enemy state
+	if not is_instance_valid(enemy):
+		return
+		
+	var distance = global_position.distance_to(enemy.global_position)
+	
+	# Track how long we've been idle
+	if not has_node("IdleTimer"):
+		var timer = Timer.new()
+		timer.name = "IdleTimer"
+		timer.wait_time = 2.0  # 2 seconds of idle
+		timer.one_shot = true
+		add_child(timer)
+		timer.start()
+		timer.connect("timeout", Callable(self, "_on_idle_timeout"))
+	
+	# Immediate emergency action based on distance (more aggressive)
+	if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		# Force an action based on distance - don't wait for both players
+		if distance < 250:
+			# Too close - create space
+			_execute_single_action("dash_backward")
+			print("EMERGENCY: Forced dash_backward - too close and idle (distance: ", distance, ")")
+		elif distance > 600:
+			# Too far - close distance  
+			_execute_single_action("dash_forward")
+			print("EMERGENCY: Forced dash_forward - too far and idle (distance: ", distance, ")")
+		elif randf() < 0.7:  # 70% chance to attack when in mid-range
+			# Mid range - attack
+			var attacks = ["light_punch", "light_kick", "crouch_lightPunch"]
+			var random_attack = attacks[randi() % attacks.size()]
+			_execute_single_action(random_attack)
+			print("EMERGENCY: Forced attack - stuck in idle (distance: ", distance, ")")
+
+func _on_idle_timeout():
+	# If we're still idle after the timer, force a random action
+	if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		var actions = ["dash_forward", "dash_backward", "light_punch", "light_kick"]
+		var random_action = actions[randi() % actions.size()]
+		_execute_single_action(random_action)
+		print("IDLE TIMEOUT: Forced ", random_action, " after prolonged idle")
+	
+	# Restart timer if it exists
+	var timer = get_node_or_null("IdleTimer")
+	if timer:
+		timer.start()
+
+func execute_smart_fallback(distance: float):
+	# More aggressive fallback - always do something, never stay idle
+	if distance >= 400:
+		_execute_single_action("dash_forward")
+		print("Smart fallback: dash_forward (distance: ", distance, ")")
+	elif distance <= 200:
+		_execute_single_action("dash_backward") 
+		print("Smart fallback: dash_backward (distance: ", distance, ")")
+	else:
+		# In mid-range, choose random attack with higher probability
+		if randf() < 0.8:  # 80% chance to attack
+			var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
+			var random_attack = attacks[randi() % attacks.size()]
+			_execute_single_action(random_attack)
+			print("Smart fallback: ", random_attack, " (distance: ", distance, ")")
+		else:  # 20% chance to move
+			if randf() < 0.5:
+				_execute_single_action("dash_forward")
+				print("Smart fallback: dash_forward (distance: ", distance, ")")
+			else:
+				_execute_single_action("dash_backward")
+				print("Smart fallback: dash_backward (distance: ", distance, ")")
+
+#func ensure_minimum_movement_weights():
+	#var movement_rule_ids = [9, 10, 11, 12, 13, 14, 15, 16, 18]  # Movement-related rules
+	#
+	#for rule in rules:
+		#if rule["ruleID"] in movement_rule_ids and rule["weight"] < 0.4:
+			#rule["weight"] = 0.4
+			#print("Boosted movement rule ", rule["ruleID"], " to minimum weight")
+
+func can_accept_new_actions() -> bool:
+	return (!is_attacking && !is_defending && !is_hurt && !is_dashing && 
+			!is_jumping && !is_sliding && !is_recently_hit)
+			
+func force_idle_animation():
+	if is_instance_valid(self) and animation:
+		animation.play("idle")
+
+func refresh_enemy_reference():
+	enemy = null
+	await get_tree().process_frame
+	find_enemy_automatically()
+
+func _reset_jump_state():
+	jump_backward_played = false
+	jump_forward_played = false
+	jump_state = ""
+	jump_timer = 0.0
+	jump_fall_started = false
+	jump_landing_done = false
+	jump_frozen_up_done = false
+	jump_frozen_down_done = false
+	is_jumping = false
