@@ -1,6 +1,5 @@
+#res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd
 extends CharacterBody2D
-
-
 
 #ONREADY VARIABLES
 @onready var animation = $AnimationPlayer

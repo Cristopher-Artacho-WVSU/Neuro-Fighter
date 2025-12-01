@@ -1,3 +1,4 @@
+#res://Scripts/ui/LineChart.gd
 extends Control
 class_name LineChart
 

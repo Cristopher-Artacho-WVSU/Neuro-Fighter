@@ -1,3 +1,4 @@
+#res://Scripts/ui/BarChart.gd
 extends Control
 class_name BarChart
 

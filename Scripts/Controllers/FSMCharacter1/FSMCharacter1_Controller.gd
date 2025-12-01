@@ -1,3 +1,4 @@
+#res://Scripts/Controllers/FSMCharacter1/FSMCharacter1_Controller.gd
 extends CharacterBody2D
 
 enum State { IDLE, MOVE, ATTACK }

@@ -1,5 +1,5 @@
+#res://Scripts/Controlalers/NPCCharacter1/DTCharacter1.gd
 extends CharacterBody2D
-
 
 #ONREADY VARIABLES FOR THE CURRENT PLAYER
 @onready var animation = $AnimationPlayer
