@@ -115,47 +115,38 @@ func setup_controllers():
 	match Global.player1_controller:
 		"Human":
 			player1.set_script(load("res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd"))
-			player1._ready()
-			player1.set_physics_process(true)
 		"DecisionTree":
 			player1.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
-			player1._ready()
-			player1.set_physics_process(true)
 		"DynamicScripting":
 			player1.set_script(load("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
-			player1._ready()
-			player1.set_physics_process(true)
 		"NDS":
 			player1.set_script(load("res://Scripts/Controllers/NDSCharacter1/NDSCharacter1_Controller.gd"))
-			player1._ready()
-			player1.set_physics_process(true)
 		"FSM":
 			player1.set_script(load("res://Scripts/Controllers/FSMCharacter1/FSMCharacter1_Controller.gd"))
-			player1._ready()
-			player1.set_physics_process(true)
 	
 	# Set up player 2 controller
 	match Global.player2_controller:
 		"Human":
 			player2.set_script(load("res://Scripts/Controllers/PlayerCharacter1/PlayerCharacter1_Controller.gd"))
-			player2._ready()
-			player2.set_physics_process(true)
 		"DecisionTree":
 			player2.set_script(load("res://Scripts/Controllers/NPCCharacter1/DTCharacter1.gd"))
-			player2._ready()
-			player2.set_physics_process(true)
 		"DynamicScripting":
 			player2.set_script(load("res://Scripts/Controllers/DSCharacter1/DSCharacter1_Controller.gd"))
-			player2._ready()
-			player2.set_physics_process(true)
 		"NDS":
 			player2.set_script(load("res://Scripts/Controllers/NDSCharacter1/NDSCharacter1_Controller.gd"))
-			player2._ready()
-			player2.set_physics_process(true)
 		"FSM":
 			player2.set_script(load("res://Scripts/Controllers/FSMCharacter1/FSMCharacter1_Controller.gd"))
-			player2._ready()
-			player2.set_physics_process(true)
+		
+	player1._ready()
+	player2._ready()
+	
+	player1.set_physics_process(true)
+	player2.set_physics_process(true)
+	
+	#await get_tree().create_timer(0.5).timeout
+	print("Controllers setup complete:")
+	print("Player 1: ", Global.player1_controller)
+	print("Player 2: ", Global.player2_controller)
 			
 func setup_chart_panel():
 	if chart_panel:
@@ -186,7 +177,6 @@ func _physics_process(delta):
 		return
 		
 	monitorHP(delta)
-	
 	if timer_running:
 		totalTimerAmount -= delta
 		if totalTimerAmount <= 0:
@@ -324,8 +314,8 @@ func show_match_result():
 		timerLabel.text = winner_text + " wins!"
 	
 	# Wait and then proceed to next match or end series
-	var tree = get_tree()
-	await tree.create_timer(3.0).timeout
+	#var tree = get_tree()
+	#await tree.create_timer(3.0).timeout
 	
 	if not Global.is_match_series_complete():
 		# Start next match
@@ -363,36 +353,36 @@ func reset_players():
 	# Reset character states
 	if player1.has_method("reset_state"):
 		player1.reset_state()
-	else:
-		# Fallback reset for players without reset_state method
-		reset_player_fallback(player1)
+	#else:
+		## Fallback reset for players without reset_state method
+		#reset_player_fallback(player1)
 	
 	if player2.has_method("reset_state"):
 		player2.reset_state()
-	else:
-		# Fallback reset for players without reset_state method
-		reset_player_fallback(player2)
+	#else:
+		## Fallback reset for players without reset_state method
+		#reset_player_fallback(player2)
 
-func reset_player_fallback(player: CharacterBody2D):
-	if player.has_method("KO"):
-		# Force stop KO animation and reset to idle
-		var animation = player.get_node("AnimationPlayer")
-		if animation:
-			animation.play("idle")
-	
-	# Reset common state variables if they exist
-	if "is_attacking" in player:
-		player.is_attacking = false
-	if "is_defending" in player:
-		player.is_defending = false
-	if "is_hurt" in player:
-		player.is_hurt = false
-	if "is_dashing" in player:
-		player.is_dashing = false
-	if "is_jumping" in player:
-		player.is_jumping = false
-	if "is_crouching" in player:
-		player.is_crouching = false
+#func reset_player_fallback(player: CharacterBody2D):
+	#if player.has_method("KO"):
+		## Force stop KO animation and reset to idle
+		#var animation = player.get_node("AnimationPlayer")
+		#if animation:
+			#animation.play("idle")
+	#
+	## Reset common state variables if they exist
+	#if "is_attacking" in player:
+		#player.is_attacking = false
+	#if "is_defending" in player:
+		#player.is_defending = false
+	#if "is_hurt" in player:
+		#player.is_hurt = false
+	#if "is_dashing" in player:
+		#player.is_dashing = false
+	#if "is_jumping" in player:
+		#player.is_jumping = false
+	#if "is_crouching" in player:
+		#player.is_crouching = false
 
 # Update the reset_for_next_match function to also reset facing direction
 func reset_for_next_match():
@@ -466,6 +456,7 @@ func set_player_facing_direction(player: CharacterBody2D, flip_h: bool):
 			hurtbox.scale.x = scale_x
 
 func game_over():
+	print("game over")
 	if game_ended:
 		return
 		
