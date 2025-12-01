@@ -1651,13 +1651,14 @@ func reset_state():
 	# Reset slide cooldown
 	can_slide = true
 	slide_cooldown_timer = 0.0
-	
+	$Hurtbox_UpperBody.monitoring = true
+	$Hurtbox_UpperBody.monitorable = true
 	# Re-initialize enemy reference
 	find_enemy_automatically()
 	
 	# Reset animation
-	if animation:
-		animation.stop()
+	#if animation:
+		#animation.stop()
 		# Small delay before playing idle to ensure everything is reset
 		#await get_tree().create_timer(0.1).timeout
 		#animation.play("idle")
