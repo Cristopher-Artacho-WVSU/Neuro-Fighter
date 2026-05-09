@@ -97,6 +97,11 @@ var log_cycles = 0
 var NDS_10cycleLog_file_path = "res://NDS_10Cycles.txt"  # Using JSON format for simplicity
 var log_cycles10 = 0
 
+# POSITIONING SYSTEM vars (used by apply_positioning_velocity)
+var position_ideal_min: float = 220.0   # too close - back away
+var position_ideal_max: float = 350.0   # too far   - close in
+var position_walk_speed: float = 130.0  # px/s walk speed for repositioning
+
 var ai_state_manager: Node
 #SAVED AI FITNESS
 var current_fitness = 0.5
@@ -542,12 +547,45 @@ func _physics_process(delta):
 	#if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
 		#check_emergency_action()
 	#
-	if !is_attacking && !is_defending && !is_hurt && !is_dashing:
+	handle_slide_movement(delta)
+	
+	# Static positioning: enforce combat range every frame, independent of rules
+	apply_positioning_velocity()
+	
+	if !is_attacking && !is_defending && !is_hurt && !is_dashing && !is_jumping && !is_sliding:
 		evaluate_and_execute(rules)
+	elif is_attacking || is_defending || is_hurt:
+		velocity.x = 0
 	
 	DamagedSystem(delta)
 	#debug_states()
 	move_and_slide()
+
+# ===== STATIC POSITIONING SYSTEM =====
+# Runs every physics frame independent of the rule/script system.
+# Maintains a combat sweet spot so attacks can always connect.
+
+func apply_positioning_velocity():
+	# Don't reposition while in any blocking state
+	if is_attacking or is_hurt or is_defending or is_jumping or is_sliding or is_dashing:
+		return
+	if not is_instance_valid(enemy):
+		return
+	
+	var dist = abs(enemy.global_position.x - global_position.x)
+	var toward = get_direction_to_enemy()
+	
+	if dist > position_ideal_max:
+		# Too far - walk toward enemy
+		velocity.x = toward * position_walk_speed
+		if animation.current_animation == "idle":
+			animation.play("move_forward")
+	elif dist < position_ideal_min:
+		# Too close - back away
+		velocity.x = -toward * position_walk_speed
+		if animation.current_animation == "idle":
+			animation.play("move_backward")
+	# Inside sweet spot: leave velocity alone so attacks/dashes control it
 
 func update_facing_direction():
 	if not is_instance_valid(enemy):
@@ -572,23 +610,36 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 		return
 		
 	var curr_distance_to_enemy = abs(enemy.position.x - position.x)
+	# Minimum engagement distance – stop closing in at this range so attacks can connect
+	var MIN_ENGAGE_DISTANCE := 220.0
+	# Direction toward the enemy (+1 right, -1 left) — used to detect forward vs backward dash
+	var toward_enemy := get_direction_to_enemy()
 	
 	if not is_dashing:
-		if ai_move_direction == 1:
+		if ai_move_direction == toward_enemy:
+			# Moving TOWARD the enemy — only start if outside minimum range
+			if curr_distance_to_enemy > MIN_ENGAGE_DISTANCE:
+				is_dashing = true
+				dash_direction = ai_move_direction
+				dash_timer = dash_time
+		else:
+			# Moving AWAY from the enemy — no range restriction
 			is_dashing = true
-			dash_direction = 1
-			dash_timer = dash_time
-		elif ai_move_direction == -1:
-			is_dashing = true
-			dash_direction = -1
+			dash_direction = ai_move_direction
 			dash_timer = dash_time
 		
 	if is_dashing:
-		velocity.x = dash_direction * dash_speed
-		dash_timer -= delta
-		if dash_timer <= 0:
+		# Cancel a toward-enemy dash the moment we reach minimum engagement range
+		var live_dist = abs(enemy.position.x - position.x)
+		if dash_direction == toward_enemy and live_dist <= MIN_ENGAGE_DISTANCE:
 			is_dashing = false
 			velocity.x = 0
+		else:
+			velocity.x = dash_direction * dash_speed
+			dash_timer -= delta
+			if dash_timer <= 0:
+				is_dashing = false
+				velocity.x = 0
 			
 		if is_jumping:
 			jump_timer += delta
@@ -1310,13 +1361,22 @@ func _on_hurtbox_upper_body_area_entered(area: Area2D):
 			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
 				applyDamage(15)
 				animation.play("heavy_hurt")
-			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch"]:
+				is_hurt = true
+			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch", "crouch_lightKick"]:
 				applyDamage(10)
 				animation.play("light_hurt")
-			is_hurt = true
+				is_hurt = true
+			else:
+				# Fallback: treat any other attack as a light hit
+				applyDamage(10)
+				animation.play("light_hurt")
+				is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			upper_attacks_taken += 1
-			print("Player 2 Upper body hit taken")
+			print("NDS Upper body hit taken")
+			# Safety timeout: auto-clear is_hurt if animation_finished never fires
+			var hurt_clear_timer = get_tree().create_timer(2.0, true)
+			hurt_clear_timer.timeout.connect(func(): if is_hurt: _on_hurt_finished())
 		# Reset hit immunity after short real-time delay
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
@@ -1333,20 +1393,29 @@ func _on_hurtbox_lower_body_area_entered(area: Area2D):
 			velocity.x = 0
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
 			animation.play("standing_block") 
-			upper_attacks_blocked += 1
+			lower_attacks_blocked += 1
 			applyDamage(7)
 			print(" Lower Damaged From Blocking")
 		else:
 			if enemyAnimation.current_animation in ["heavy_kick", "heavy_punch", "crouch_heavyPunch"]:
 				applyDamage(15)
 				animation.play("heavy_hurt")
-			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch"]:
+				is_hurt = true
+			elif enemyAnimation.current_animation in ["light_kick", "light_punch", "light_heavyPunch", "crouch_lightkick", "crouch_lightPunch", "crouch_lightKick"]:
 				applyDamage(10)
 				animation.play("light_hurt")
-			is_hurt = true
+				is_hurt = true
+			else:
+				# Fallback: treat any other attack as a light hit
+				applyDamage(10)
+				animation.play("light_hurt")
+				is_hurt = true
 			apply_hitstop(0.15)  # brief pause (0.2 seconds)
-			upper_attacks_taken += 1
-			print("Player 2 Lower body hit taken")
+			lower_attacks_taken += 1
+			print("NDS Lower body hit taken")
+			# Safety timeout: auto-clear is_hurt if animation_finished never fires
+			var hurt_clear_timer = get_tree().create_timer(2.0, true)
+			hurt_clear_timer.timeout.connect(func(): if is_hurt: _on_hurt_finished())
 		# Reset hit immunity after short real-time delay
 		await get_tree().create_timer(0.2, true).timeout
 		is_recently_hit = false
@@ -1953,14 +2022,18 @@ func ensure_minimum_movement_weights():
 			print("Boosted movement rule ", rule["ruleID"], " to minimum weight")
 
 func execute_smart_fallback(distance: float):
-	if distance >= 400:
+	var MIN_ENGAGE_DISTANCE := 220.0
+	if distance >= 350:
 		_execute_single_action("dash_forward")
 		print("Smart fallback: dash_forward (distance: ", distance, ")")
-	elif distance <= 200:
-		_execute_single_action("dash_backward") 
-		print("Smart fallback: dash_backward (distance: ", distance, ")")
+	elif distance <= MIN_ENGAGE_DISTANCE:
+		# Ultra-close: attack instead of retreating (retreat is blocked by physics anyway)
+		var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
+		var random_attack = attacks[randi() % attacks.size()]
+		_execute_single_action(random_attack)
+		print("Smart fallback: close-range attack ", random_attack, " (distance: ", distance, ")")
 	else:
-		# In mid-range, choose random attack
+		# Mid-range: choose a random attack
 		var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
 		var random_attack = attacks[randi() % attacks.size()]
 		_execute_single_action(random_attack)
