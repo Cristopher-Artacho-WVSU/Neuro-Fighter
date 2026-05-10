@@ -326,20 +326,21 @@ func show_match_result():
 		
 func show_series_result():
 	var series_winner = Global.get_series_winner()
-	var winner_text = "Player 1" if series_winner == "player1" else "Player 2"
+	#var winner_text = "Player 1" if series_winner == "player1" else ("Player 2" if series_winner == "player2" else series_winner)
 	
+	if series_winner == "player1" || series_winner == "player2":
+		print(series_winner + "wins the series!")
+	else:
+		print("The Series ended with a Draw of: " + series_winner)
 	print("=== SERIES COMPLETE ===")
-	print(winner_text + " wins the series!")
-	print("Final Score - P1: " + str(Global.player1_round_wins) + " | P2: " + str(Global.player2_round_wins))
+	#print("Final Score - P1: " + str(Global.player1_round_wins) + " | P2: " + str(Global.player2_round_wins))
 	
 	# Update UI
 	if timerLabel:
-		timerLabel.text = winner_text + " wins series!"
+		timerLabel.text = series_winner + " wins series!"
 	
 	# Wait and return to main menu
-	var tree = get_tree()
-	await tree.create_timer(3.0).timeout
-	tree.change_scene_to_file("res://Levels/main_menu.tscn")
+	get_tree().change_scene_to_file("res://Levels/main_menu.tscn")
 
 func reset_players():
 	# Reset player 1 to their initial position

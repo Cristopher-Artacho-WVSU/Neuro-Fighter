@@ -244,7 +244,8 @@ func get_series_winner() -> String:
 	elif player2_round_wins > player1_round_wins:
 		return "player2"
 	else:
-		return "player1" if randf() > 0.5 else "player2"  # tiebreaker
+		print("%d-%d" % [player1_round_wins, player2_round_wins])
+		return "%d-%d" % [player1_round_wins, player2_round_wins]
 
 func reset_match_data():
 	current_match = 1

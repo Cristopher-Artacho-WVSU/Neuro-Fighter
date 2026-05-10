@@ -595,7 +595,7 @@ func reset_state():
 	if animation:
 		animation.stop()
 		animation.play("idle")
-	
+		
 	print("Player Character reset to initial state")
 func handle_jump_animation(delta):
 	var vy = velocity.y

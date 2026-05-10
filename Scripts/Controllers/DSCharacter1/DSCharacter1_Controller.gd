@@ -591,7 +591,6 @@ func _physics_process(delta):
 	updateDetails()
 	update_facing_direction()
 	applyGravity(delta)
-	
 	handle_slide_movement(delta)
 	
 	# Static positioning: enforce combat range every frame, independent of rules
@@ -604,6 +603,11 @@ func _physics_process(delta):
 	
 	DamagedSystem(delta)
 	debug_states()
+	if animation.current_animation == "":
+		reset_state()
+		evaluate_and_execute(rules)
+		print("Reset Done")
+		pass
 	move_and_slide()
 
 func apply_positioning_velocity():
@@ -1091,7 +1095,8 @@ func debug_states():
 	#print("is_hurt state:", is_hurt)
 	#print("is_is_dashing: ", is_dashing)
 	#print("is_on_floor(): ", is_on_floor())
-	print("Current animation:", animation.current_animation)
+	#print(rules)
+	#print("Current animation:", animation.current_animation)
 	pass
 
 #FOR ANIMATIONS IN ORDER TO NOT GET CUT OFF

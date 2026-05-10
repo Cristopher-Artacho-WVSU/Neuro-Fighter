@@ -1,4 +1,4 @@
-[gd_scene load_steps=329 format=3 uid="uid://dlstoxbgip6b2"]
+[gd_scene format=3 uid="uid://dlstoxbgip6b2"]
 
 [ext_resource type="Texture2D" uid="uid://5xo00djk0ee8" path="res://Assets/Characters/Character 1/Standing_HHurt/Standing_HHurt0000.png" id="1_v7t0u"]
 [ext_resource type="Texture2D" uid="uid://br6aa5bq27h8e" path="res://Assets/Characters/Character 1/Crouch/Crouch0000.png" id="2_cbwdj"]
@@ -9497,64 +9497,62 @@ size = Vector2(73, 34)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_44tk2"]
 size = Vector2(42, 54)
 
-[node name="PlayerCharacter1" type="CharacterBody2D"]
+[node name="PlayerCharacter1" type="CharacterBody2D" unique_id=1882947797]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=880111012]
 position = Vector2(-13, 0)
 sprite_frames = SubResource("SpriteFrames_v1dgo")
 animation = &"idle"
 frame = 1
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_hetll")
-}
-autoplay = "idle"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1499580050]
+libraries/ = SubResource("AnimationLibrary_hetll")
+autoplay = &"idle"
 
-[node name="Collision_Character" type="CollisionShape2D" parent="."]
+[node name="Collision_Character" type="CollisionShape2D" parent="." unique_id=1430828652]
 position = Vector2(0, 41)
 shape = SubResource("CapsuleShape2D_1wr7s")
 
-[node name="Hurtbox_UpperBody" type="Area2D" parent="."]
+[node name="Hurtbox_UpperBody" type="Area2D" parent="." unique_id=1840840151]
 
-[node name="Collision_UpperBody" type="CollisionShape2D" parent="Hurtbox_UpperBody"]
+[node name="Collision_UpperBody" type="CollisionShape2D" parent="Hurtbox_UpperBody" unique_id=2072780025]
 position = Vector2(6, -88)
 shape = SubResource("CapsuleShape2D_v7t0u")
 
-[node name="Hurtbox_LowerBody" type="Area2D" parent="."]
+[node name="Hurtbox_LowerBody" type="Area2D" parent="." unique_id=132632283]
 
-[node name="Collision_LowerBody" type="CollisionShape2D" parent="Hurtbox_LowerBody"]
+[node name="Collision_LowerBody" type="CollisionShape2D" parent="Hurtbox_LowerBody" unique_id=952390071]
 position = Vector2(-2, 150)
 shape = SubResource("CapsuleShape2D_xekhk")
 
-[node name="Hitbox_RightHand" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+[node name="Hitbox_RightHand" type="Area2D" parent="." unique_id=1126264333 groups=["Player1_Hitboxes"]]
 monitoring = false
 monitorable = false
 
-[node name="Collision_RightHand" type="CollisionShape2D" parent="Hitbox_RightHand"]
+[node name="Collision_RightHand" type="CollisionShape2D" parent="Hitbox_RightHand" unique_id=1418482110]
 position = Vector2(6, -95)
 shape = SubResource("RectangleShape2D_kboy1")
 
-[node name="Hitbox_LeftHand" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+[node name="Hitbox_LeftHand" type="Area2D" parent="." unique_id=948340645 groups=["Player1_Hitboxes"]]
 monitoring = false
 monitorable = false
 
-[node name="Collision_LeftHand" type="CollisionShape2D" parent="Hitbox_LeftHand"]
+[node name="Collision_LeftHand" type="CollisionShape2D" parent="Hitbox_LeftHand" unique_id=1920850436]
 position = Vector2(99, -120)
 shape = SubResource("RectangleShape2D_bhyjx")
 
-[node name="Hitbox_RightFoot" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+[node name="Hitbox_RightFoot" type="Area2D" parent="." unique_id=2037374981 groups=["Player1_Hitboxes"]]
 monitoring = false
 monitorable = false
 
-[node name="Collision_RightFoot" type="CollisionShape2D" parent="Hitbox_RightFoot"]
+[node name="Collision_RightFoot" type="CollisionShape2D" parent="Hitbox_RightFoot" unique_id=653776787]
 position = Vector2(101.5, 277)
 shape = SubResource("RectangleShape2D_fvknb")
 
-[node name="Hitbox_LeftFoot" type="Area2D" parent="." groups=["Player1_Hitboxes"]]
+[node name="Hitbox_LeftFoot" type="Area2D" parent="." unique_id=509132032 groups=["Player1_Hitboxes"]]
 monitoring = false
 monitorable = false
 
-[node name="Collision_LeftFoot" type="CollisionShape2D" parent="Hitbox_LeftFoot"]
+[node name="Collision_LeftFoot" type="CollisionShape2D" parent="Hitbox_LeftFoot" unique_id=1692868784]
 position = Vector2(-124, 284)
 shape = SubResource("RectangleShape2D_44tk2")
