@@ -397,7 +397,7 @@ var rules = [
 		{
 		"ruleID": 1, "prioritization": 1,
 		"conditions": { 
-			"distance": { "op": ">=", "value": 400 },
+			"distance": { "op": ">=", "value": 300 },
 		},
 		"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -411,7 +411,7 @@ var rules = [
 	{
 		"ruleID": 3, "prioritization": 12,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 300 },
+			"distance": { "op": "<=", "value": 280 },
 		},
 		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -426,7 +426,7 @@ var rules = [
 	{
 		"ruleID": 5, "prioritization": 22,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 280 },
+			"distance": { "op": "<=", "value": 300 },
 		},
 		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -434,14 +434,13 @@ var rules = [
 		"ruleID": 6, "prioritization": 13,
 		"conditions": { 
 			"distance": { "op": "<=", "value": 300 },
-			"rand_chance": { "op": ">=", "value": 0.4 }
 		},
 		"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 		{
 		"ruleID": 7, "prioritization": 14,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 280 },
+			"distance": { "op": "<=", "value": 240 },
 		},
 		"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -697,10 +696,14 @@ func _physics_process(delta):
 	updateDetails()
 	update_facing_direction()
 	applyGravity(delta)
+	
+	#if animation.current_animation == "idle" and is_on_floor() and not is_hurt:
+		#check_emergency_action()
+	#
 	handle_slide_movement(delta)
 	
 	# Static positioning: enforce combat range every frame, independent of rules
-	#apply_positioning_velocity()
+	apply_positioning_velocity()
 	
 	if !is_attacking && !is_defending && !is_hurt && !is_dashing && !is_jumping && !is_sliding:
 		evaluate_and_execute(rules)
@@ -708,12 +711,13 @@ func _physics_process(delta):
 		velocity.x = 0
 	
 	DamagedSystem(delta)
-	#debug_states()
+	debug_states()
 	if animation.current_animation == "":
 		reset_state()
 		evaluate_and_execute(rules)
 		print("Reset Done")
 	move_and_slide()
+
 
 func apply_positioning_velocity():
 	# Don't reposition while in any blocking state
@@ -1777,7 +1781,7 @@ func handle_jump_animation(delta):
 	# Keep frame frozen every physics frame
 	if jump_state == "frozen_up":
 		animation.seek(jump_frame_ascend_time, true)
-		
+
 	# -------------------------------------
 	# 2. FALLING — play until frame 9
 	# -------------------------------------

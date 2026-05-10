@@ -396,12 +396,11 @@ var max_idle_cycles = 11
 	#}
 #]
 
-
 var rules = [
 		{
 		"ruleID": 1, "prioritization": 1,
 		"conditions": { 
-			"distance": { "op": ">=", "value": 400 },
+			"distance": { "op": ">=", "value": 300 },
 		},
 		"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -415,7 +414,7 @@ var rules = [
 	{
 		"ruleID": 3, "prioritization": 12,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 300 },
+			"distance": { "op": "<=", "value": 280 },
 		},
 		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -430,7 +429,7 @@ var rules = [
 	{
 		"ruleID": 5, "prioritization": 22,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 280 },
+			"distance": { "op": "<=", "value": 300 },
 		},
 		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -438,14 +437,13 @@ var rules = [
 		"ruleID": 6, "prioritization": 13,
 		"conditions": { 
 			"distance": { "op": "<=", "value": 300 },
-			"rand_chance": { "op": ">=", "value": 0.4 }
 		},
 		"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 		{
 		"ruleID": 7, "prioritization": 14,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 280 },
+			"distance": { "op": "<=", "value": 240 },
 		},
 		"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
