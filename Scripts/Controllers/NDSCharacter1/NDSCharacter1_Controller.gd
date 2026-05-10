@@ -13,16 +13,13 @@ var connected := false
 #JUMP
 var jump_speed = 3000 
 var fall_multiplier = 5.0
-var jump_multiplier = 1.6       # LESS gravity while rising → faster upward travel
-var jump_force = -1700.0        # STRONGER initial jump → higher/faster jump start
+var jump_multiplier = 1.6
+var jump_force = -1700.0
 var jump_frame_ascend_time = 0.5   # frame 6
 var jump_frame_fall_time = 0.687   # frame 9
 var jump_end_time = 0.75           # frame 11
 var jump_forward_played = false
 var jump_backward_played = false
-
-
-# Add these at the top of the script
 var jump_frozen_up_done = false
 var jump_fall_started = false
 var jump_frozen_down_done = false
@@ -41,36 +38,36 @@ var dash_speed = 300
 var dash_time = 0.5
 var dash_timer = 0.0
 var dash_direction = 0
-var is_sliding: bool = false
-var slide_cooldown_timer: float = 0.0
-var slide_direction: int = 0
-var slide_speed: float = 800
-var slide_duration: float = 0.4
-var slide_cooldown: float = 0.5
-
 
 #DEFENSE 
 var last_input_time = 0.0
 var defense_delay = 0.5
 
-#BOOL STATES
-#MOVEMENTS
 var is_dashing = false
 var is_jumping = false
 var is_crouching = false
-var can_slide: bool = true
-var slide_timer: float = 0.0
 #ATTACKS
 var is_attacking = false
 #DEFENSE
 var is_defending = false
 var is_hurt = false
 
-#SCRIPT VALUES
+# DOUBLE DASH
+var is_sliding: bool = false
+var slide_speed: float = 800
+var slide_duration: float = 0.4
+var slide_timer: float = 0.0
+var slide_direction: int = 0
+var can_slide: bool = true
+var slide_cooldown: float = 0.5
+
+var slide_cooldown_timer: float = 0.0
 var ruleScript = 5
 var current_rule_dict: Dictionary = {}
 var weightRemainder = 0
-var DSscript = []
+var NDSscript = []
+
+#SCRIPT VALUES
 var NDSsuggestions: Array = []
 
 
@@ -240,163 +237,270 @@ var max_idle_cycles = 11
 		#"enemy_action": ["slide_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	#}
 #]
-var rules = [
-	# ===== HIGH PRIORITY: DEFENSIVE ACTIONS =====
+#var rules = [
+	## ===== HIGH PRIORITY: DEFENSIVE ACTIONS =====
+	##{
+		##"ruleID": 1, "prioritization": 100,
+		##"conditions": { 
+			##"enemy_anim": ["light_punch", "light_kick", "heavy_punch", "heavy_kick", "crouch_lightPunch", "crouch_lightKick"],
+			##"distance": { "op": "<=", "value": 350 }
+		##},
+		##"enemy_action": ["standing_defense"], "weight": 0.7, "wasUsed": false, "inScript": false
+	##},
 	#{
-		#"ruleID": 1, "prioritization": 100,
+		#"ruleID": 2, "prioritization": 95,
 		#"conditions": { 
-			#"enemy_anim": ["light_punch", "light_kick", "heavy_punch", "heavy_kick", "crouch_lightPunch", "crouch_lightKick"],
+			#"enemy_anim": ["crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"],
 			#"distance": { "op": "<=", "value": 350 }
 		#},
-		#"enemy_action": ["standing_defense"], "weight": 0.7, "wasUsed": false, "inScript": false
+		#"enemy_action": ["crouch"], "weight": 0.7, "wasUsed": false, "inScript": false
 	#},
-	{
-		"ruleID": 2, "prioritization": 95,
-		"conditions": { 
-			"enemy_anim": ["crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"],
-			"distance": { "op": "<=", "value": 350 }
-		},
-		"enemy_action": ["crouch"], "weight": 0.7, "wasUsed": false, "inScript": false
-	},
-	
-	# ===== MEDIUM PRIORITY: ATTACKS =====
-	{
-		"ruleID": 3, "prioritization": 80,
-		"conditions": { 
-			"distance": { "op": "<=", "value": 300 },
-			"rand_chance": { "op": ">=", "value": 0.6 }
-		},
-		"enemy_action": ["light_punch"], "weight": 0.8, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 4, "prioritization": 80,
-		"conditions": { 
-			"distance": { "op": "<=", "value": 320 },
-			"rand_chance": { "op": ">=", "value": 0.5 }
-		},
-		"enemy_action": ["light_kick"], "weight": 0.8, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 5, "prioritization": 75,
-		"conditions": { 
-			"distance": { "op": "<=", "value": 280 },
-			"upper_attacks_landed": { "op": ">=", "value": 1 }
-		},
-		"enemy_action": ["heavy_punch"], "weight": 0.6, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 6, "prioritization": 75,
-		"conditions": { 
-			"distance": { "op": "<=", "value": 300 },
-			"upper_attacks_landed": { "op": ">=", "value": 1 }
-		},
-		"enemy_action": ["heavy_kick"], "weight": 0.6, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 7, "prioritization": 70,
-		"conditions": { 
-			"distance": { "op": "<=", "value": 280 },
-			"rand_chance": { "op": ">=", "value": 0.4 }
-		},
-		"enemy_action": ["crouch_lightPunch"], "weight": 0.7, "wasUsed": false, "inScript": false
-	},
-	{
-		"ruleID": 8, "prioritization": 70,
-		"conditions": { 
-			"distance": { "op": "<=", "value": 300 },
-			"rand_chance": { "op": ">=", "value": 0.4 }
-		},
-		"enemy_action": ["crouch_lightKick"], "weight": 0.7, "wasUsed": false, "inScript": false
-	},
-	
-	# ===== MOVEMENT AND POSITIONING =====
-	{
-		"ruleID": 9, "prioritization": 60,
+	#
+	## ===== MEDIUM PRIORITY: ATTACKS =====
+	#{
+		#"ruleID": 3, "prioritization": 80,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 300 },
+			#"rand_chance": { "op": ">=", "value": 0.6 }
+		#},
+		#"enemy_action": ["light_punch"], "weight": 0.8, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 4, "prioritization": 80,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 320 },
+			#"rand_chance": { "op": ">=", "value": 0.5 }
+		#},
+		#"enemy_action": ["light_kick"], "weight": 0.8, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 5, "prioritization": 75,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 280 },
+			#"upper_attacks_landed": { "op": ">=", "value": 1 }
+		#},
+		#"enemy_action": ["heavy_punch"], "weight": 0.6, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 6, "prioritization": 75,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 300 },
+			#"upper_attacks_landed": { "op": ">=", "value": 1 }
+		#},
+		#"enemy_action": ["heavy_kick"], "weight": 0.6, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 7, "prioritization": 70,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 280 },
+			#"rand_chance": { "op": ">=", "value": 0.4 }
+		#},
+		#"enemy_action": ["crouch_lightPunch"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 8, "prioritization": 70,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 300 },
+			#"rand_chance": { "op": ">=", "value": 0.4 }
+		#},
+		#"enemy_action": ["crouch_lightKick"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
+	#
+	## ===== MOVEMENT AND POSITIONING =====
+	#{
+		#"ruleID": 9, "prioritization": 60,
+		#"conditions": { 
+			#"distance": { "op": ">=", "value": 400 },
+			#"rand_chance": { "op": ">=", "value": 0.8 }
+		#},
+		#"enemy_action": ["dash_forward"], "weight": 0.9, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 10, "prioritization": 60,
+		#"conditions": { 
+			#"distance": { "op": ">=", "value": 350 },
+			#"rand_chance": { "op": ">=", "value": 0.7 }
+		#},
+		#"enemy_action": ["dash_forward"], "weight": 0.8, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 11, "prioritization": 55,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 200 },
+			#"upper_attacks_taken": { "op": ">=", "value": 2 },
+			#"rand_chance": { "op": ">=", "value": 0.6 }
+		#},
+		#"enemy_action": ["dash_backward"], "weight": 0.7, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 12, "prioritization": 50,
+		#"conditions": { 
+			#"distance": { "op": ">=", "value": 500 },
+			#"rand_chance": { "op": ">=", "value": 0.5 }
+		#},
+		#"enemy_action": ["slide_forward"], "weight": 0.6, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 13, "prioritization": 45,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 150 },
+			#"upper_attacks_taken": { "op": ">=", "value": 3 },
+			#"rand_chance": { "op": ">=", "value": 0.5 }
+		#},
+		#"enemy_action": ["slide_backward"], "weight": 0.6, "wasUsed": false, "inScript": false
+	#},
+	#
+	## ===== JUMPS AND ADVANCED MOVEMENT =====
+	#{
+		#"ruleID": 14, "prioritization": 40,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 250 },
+			#"rand_chance": { "op": ">=", "value": 0.3 }
+		#},
+		#"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 15, "prioritization": 40,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 300 },
+			#"rand_chance": { "op": ">=", "value": 0.4 }
+		#},
+		#"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 16, "prioritization": 40,
+		#"conditions": { 
+			#"distance": { "op": "<=", "value": 200 },
+			#"upper_attacks_taken": { "op": ">=", "value": 2 },
+			#"rand_chance": { "op": ">=", "value": 0.5 }
+		#},
+		#"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
+	#},
+	#
+	## ===== AGGRESSIVE FOLLOW-UPS =====
+	#{
+		#"ruleID": 17, "prioritization": 85,
+		#"conditions": { 
+			#"enemy_anim": ["light_hurt", "heavy_hurt"],
+			#"distance": { "op": "<=", "value": 350 },
+			#"rand_chance": { "op": ">=", "value": 0.8 }
+		#},
+		#"enemy_action": ["dash_forward", "light_punch"], "weight": 0.9, "wasUsed": false, "inScript": false
+	#},
+	#{
+		#"ruleID": 18, "prioritization": 30,
+		#"conditions": { 
+			#"distance": { "op": ">=", "value": 600 }
+		#},
+		#"enemy_action": ["dash_forward"], "weight": 1.0, "wasUsed": false, "inScript": false
+	#}
+#]
+
+
+var rules = [
+		{
+		"ruleID": 1, "prioritization": 1,
 		"conditions": { 
 			"distance": { "op": ">=", "value": 400 },
-			"rand_chance": { "op": ">=", "value": 0.8 }
 		},
-		"enemy_action": ["dash_forward"], "weight": 0.9, "wasUsed": false, "inScript": false
+		"enemy_action": ["dash_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
-	{
-		"ruleID": 10, "prioritization": 60,
+		{
+		"ruleID": 2, "prioritization": 11,
 		"conditions": { 
-			"distance": { "op": ">=", "value": 350 },
-			"rand_chance": { "op": ">=", "value": 0.7 }
+			"distance": { "op": "<=", "value": 320 },
 		},
-		"enemy_action": ["dash_forward"], "weight": 0.8, "wasUsed": false, "inScript": false
+		"enemy_action": ["light_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
-		"ruleID": 11, "prioritization": 55,
+		"ruleID": 3, "prioritization": 12,
+		"conditions": { 
+			"distance": { "op": "<=", "value": 300 },
+		},
+		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 4, "prioritization": 21,
+		"conditions": { 
+			"distance": { "op": "<=", "value": 300 },
+			"upper_attacks_landed": { "op": ">=", "value": 1 }
+		},
+		"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 5, "prioritization": 22,
+		"conditions": { 
+			"distance": { "op": "<=", "value": 280 },
+		},
+		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 6, "prioritization": 13,
+		"conditions": { 
+			"distance": { "op": "<=", "value": 300 },
+			"rand_chance": { "op": ">=", "value": 0.4 }
+		},
+		"enemy_action": ["crouch_lightKick"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+		{
+		"ruleID": 7, "prioritization": 14,
+		"conditions": { 
+			"distance": { "op": "<=", "value": 280 },
+		},
+		"enemy_action": ["crouch_lightPunch"], "weight": 0.5, "wasUsed": false, "inScript": false
+	},
+	{
+		"ruleID": 8, "prioritization": 2,
 		"conditions": { 
 			"distance": { "op": "<=", "value": 200 },
-			"upper_attacks_taken": { "op": ">=", "value": 2 },
-			"rand_chance": { "op": ">=", "value": 0.6 }
 		},
-		"enemy_action": ["dash_backward"], "weight": 0.7, "wasUsed": false, "inScript": false
+		"enemy_action": ["dash_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
-		"ruleID": 12, "prioritization": 50,
+		"ruleID": 9, "prioritization": 3,
 		"conditions": { 
 			"distance": { "op": ">=", "value": 500 },
-			"rand_chance": { "op": ">=", "value": 0.5 }
 		},
-		"enemy_action": ["slide_forward"], "weight": 0.6, "wasUsed": false, "inScript": false
+		"enemy_action": ["slide_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
-		"ruleID": 13, "prioritization": 45,
+		"ruleID": 10, "prioritization": 4,
 		"conditions": { 
 			"distance": { "op": "<=", "value": 150 },
-			"upper_attacks_taken": { "op": ">=", "value": 3 },
-			"rand_chance": { "op": ">=", "value": 0.5 }
 		},
-		"enemy_action": ["slide_backward"], "weight": 0.6, "wasUsed": false, "inScript": false
+		"enemy_action": ["slide_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
-	
-	# ===== JUMPS AND ADVANCED MOVEMENT =====
 	{
-		"ruleID": 14, "prioritization": 40,
+		"ruleID": 11, "prioritization": 5,
 		"conditions": { 
 			"distance": { "op": "<=", "value": 250 },
-			"rand_chance": { "op": ">=", "value": 0.3 }
 		},
 		"enemy_action": ["jump"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
-		"ruleID": 15, "prioritization": 40,
+		"ruleID": 12, "prioritization": 6,
 		"conditions": { 
 			"distance": { "op": "<=", "value": 300 },
-			"rand_chance": { "op": ">=", "value": 0.4 }
 		},
 		"enemy_action": ["jump_forward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 	{
-		"ruleID": 16, "prioritization": 40,
+		"ruleID": 13, "prioritization": 7,
 		"conditions": { 
 			"distance": { "op": "<=", "value": 200 },
-			"upper_attacks_taken": { "op": ">=", "value": 2 },
-			"rand_chance": { "op": ">=", "value": 0.5 }
+			"lower_attacks_taken": { "op": ">=", "value": 2 },
 		},
 		"enemy_action": ["jump_backward"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
-	
-	# ===== AGGRESSIVE FOLLOW-UPS =====
 	{
-		"ruleID": 17, "prioritization": 85,
+		"ruleID": 14, "prioritization": 8,
 		"conditions": { 
-			"enemy_anim": ["light_hurt", "heavy_hurt"],
+			"enemy_anim": ["crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"],
 			"distance": { "op": "<=", "value": 350 },
-			"rand_chance": { "op": ">=", "value": 0.8 }
+			"upper_attacks_taken": { "op": ">=", "value": 2 },
 		},
-		"enemy_action": ["dash_forward", "light_punch"], "weight": 0.9, "wasUsed": false, "inScript": false
+		"enemy_action": ["crouch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
-	{
-		"ruleID": 18, "prioritization": 30,
-		"conditions": { 
-			"distance": { "op": ">=", "value": 600 }
-		},
-		"enemy_action": ["dash_forward"], "weight": 1.0, "wasUsed": false, "inScript": false
-	}
 ]
 
 func find_enemy_automatically():
@@ -438,11 +542,15 @@ func _ready():
 	print("NDS HitboxGroup: ", player_hitboxGroup)
 	for hb in hitboxGroup:
 		hb.add_to_group(player_hitboxGroup)
+	
 	get_enemy_hurtbox()
+	setup_player_marker()
+	
+	find_enemy_automatically()
+	updateDetails()
 #	PRINT THE SERVER IF IT IS CONNECTING
 	connect_to_server()
 	
-	updateDetails()
 	if enemy and enemy.has_node("AnimationPlayer"):
 		print("AnimationPlayer of Enemy detected")
 	
@@ -453,7 +561,7 @@ func _ready():
 	
 	initialize_chart_support()
 	
-	find_enemy_automatically()
+	
 	
 	for hitbox in hitboxGroup:
 		if not hitbox.is_connected("area_entered", Callable(self, "_on_hitbox_area_entered")):
@@ -469,7 +577,7 @@ func _ready():
 	if not animation.is_connected("animation_finished", Callable(self, "_on_animation_finished")):
 		animation.connect("animation_finished", Callable(self, "_on_animation_finished"))
 		
-	setup_player_marker()
+	
 
 
 func get_enemy_hurtbox():
@@ -499,13 +607,13 @@ func initialize_character_state():
 	is_hurt = false
 	
 	# Create initial script
-	DSscript.clear()
+	NDSscript.clear()
 	for i in range(min(ruleScript, rules.size())):
 		rules[i]["inScript"] = true
-		DSscript.append(rules[i])
+		NDSscript.append(rules[i])
 
 		
-	print("DS PLAYER Initialized with script: ", DSscript.size(), " rules")
+	print("NDS PLAYER Initialized with script: ", NDSscript.size(), " rules")
 
 
 func start_script_generation_timer():
@@ -558,7 +666,11 @@ func _physics_process(delta):
 		velocity.x = 0
 	
 	DamagedSystem(delta)
-	#debug_states()
+	debug_states()
+	if animation.current_animation == "":
+		reset_state()
+		evaluate_and_execute(rules)
+		print("Reset Done")
 	move_and_slide()
 
 # ===== STATIC POSITIONING SYSTEM =====
@@ -695,20 +807,68 @@ func MovementSystem(ai_move_direction: int, delta := 1.0 / 60.0):
 				#pass
 			#else:
 				#_reset_jump_state()
-	if jump_state == "ascend":
-		if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
-			velocity.x += 30   # instead of 30
-			velocity.y -= 5
-			animation.play("jump_forward")
-			jump_forward_played = true
-		if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "fall":
-			velocity.y += 25
-			
-		elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
-			velocity.x += 30   # instead of 30
-			velocity.y -= 5
-			animation.play("jump_backward")
-			jump_backward_played = true
+	#if jump_state == "ascend":
+		#if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
+			#velocity.x += 30   # instead of 30
+			#velocity.y -= 5
+			#animation.play("jump_forward")
+			#jump_forward_played = true
+		#if curr_distance_to_enemy < prev_distance_to_enemy and jump_state == "fall":
+			#velocity.y += 25
+			#
+		#elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
+			#velocity.x += 30   # instead of 30
+			#velocity.y -= 5
+			#animation.play("jump_backward")
+			#jump_backward_played = true
+		if jump_state == "ascend":
+
+			# Jump forward / backward detection
+			if curr_distance_to_enemy < prev_distance_to_enemy and not jump_forward_played:
+				velocity.x = 200 * ai_move_direction   # Forward widen
+				animation.play("jump_forward")
+				jump_forward_played = true
+
+			elif curr_distance_to_enemy > prev_distance_to_enemy and not jump_backward_played:
+				velocity.x = -200 * ai_move_direction  # Backward widen
+				animation.play("jump_backward")
+				jump_backward_played = true
+
+			# Gravity reduction on rising
+			velocity.y += gravity * delta * jump_multiplier
+
+			# Switch to FALL at exact animation time
+			if jump_timer >= jump_frame_fall_time:
+				jump_state = "fall"
+				jump_fall_started = true
+
+
+		# -------------------------------
+		# FALL PHASE
+		# -------------------------------
+		elif jump_state == "fall":
+			velocity.y += gravity * delta * fall_multiplier
+
+			# Prevent floaty jumps
+			if velocity.y > 0:
+				velocity.y += gravity * delta * 2
+
+			if is_on_floor() and not jump_landing_done:
+				animation.play("jump_end")
+				jump_landing_done = true
+				jump_state = "landing"
+				velocity.x = 0
+
+
+		# -------------------------------
+		# LANDING PHASE
+		# -------------------------------
+		elif jump_state == "landing":
+			if animation.current_animation == "jump_end":
+				# Let animation finish naturally
+				pass
+			else:
+				_reset_jump_state()
 	if velocity.x != 0:
 		if curr_distance_to_enemy < prev_distance_to_enemy:
 			animation.play("move_forward")
@@ -729,25 +889,28 @@ func evaluate_and_execute(rules: Array):
 	var matched_rules = []
 
 	# NEW: Track if we have any defensive needs
-	var needs_defense = false
+	#var needs_defense = false
 	var enemy_is_attacking = enemy_anim in ["light_punch", "light_kick", "heavy_punch", "heavy_kick", 
 										   "crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"]
 	
-	if enemy_is_attacking and distance <= 350:
-		needs_defense = true
+	#if enemy_is_attacking and distance <= 350:
+		#needs_defense = true
 
-	for i in range(DSscript.size()):
-		var rule = DSscript[i]
+	for i in range(NDSscript.size()):
+		var rule = NDSscript[i]
 		var conditions = rule["conditions"]
 		var match_all = true
 		
 		# Check distance condition
 		if "distance" in conditions:
-			var cond = conditions["distance"]
-			var current_distance = distance
-			if not _compare_numeric(cond["op"], current_distance, cond["value"]):
-				match_all = false
-				continue
+			var conds = conditions["distance"]
+			if typeof(conds) != TYPE_ARRAY:
+				conds = [conds]
+			for cond in conds:
+				var current_distance = distance
+				if not _compare_numeric(cond["op"], current_distance, cond["value"]):
+					match_all = false
+					continue
 				
 		# Check upper attacks landed condition
 		if match_all and "upper_attacks_landed" in conditions:
@@ -783,11 +946,11 @@ func evaluate_and_execute(rules: Array):
 					continue
 			
 		# Check random chance condition
-		if "rand_chance" in conditions:
-			var rand_val = conditions["rand_chance"]["value"]
-			if randf() > rand_val:
-				match_all = false
-				continue
+		#if "rand_chance" in conditions:
+			#var rand_val = conditions["rand_chance"]["value"]
+			#if randf() > rand_val:
+				#match_all = false
+				#continue
 
 		# Check slide-specific conditions
 		var actions = rule.get("enemy_actions", [])
@@ -812,19 +975,19 @@ func evaluate_and_execute(rules: Array):
 	matched_rules.sort_custom(_sort_by_priority_desc)
 
 	# NEW: Fallback system - if no rules match but we need defense, use defensive action
-	if matched_rules.size() == 0 and needs_defense:
-		# Emergency defense - choose based on enemy attack type
-		if enemy_anim in ["crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"]:
-			_execute_single_action("crouch")
-			print("Emergency crouch defense!")
-		#else:
-			#_execute_single_action("standing_defense")
-			#print("Emergency standing defense!")
-		return
+	#if matched_rules.size() == 0 and needs_defense:
+		## Emergency defense - choose based on enemy attack type
+		#if enemy_anim in ["crouch_lightPunch", "crouch_lightKick", "crouch_heavyPunch"]:
+			#_execute_single_action("crouch")
+			#print("Emergency crouch defense!")
+		##else:
+			##_execute_single_action("standing_defense")
+			##print("Emergency standing defense!")
+		#return
 
 	if matched_rules.size() > 0:
 		var rule_index = matched_rules[0]
-		var rule = DSscript[rule_index]
+		var rule = NDSscript[rule_index]
 		
 		# TRACK RULE USAGE FOR CHARTS
 		recent_used_rules_this_cycle.append(rule["ruleID"])
@@ -858,13 +1021,13 @@ func evaluate_and_execute(rules: Array):
 					rules[j]["wasUsed"] = true
 					break
 					
-			for script_rule in DSscript:
+			for script_rule in NDSscript:
 				if script_rule["ruleID"] == rule["ruleID"]:
 					script_rule["wasUsed"] = true
 					break
-	else:
-		# NEW: Smart fallback instead of idle
-		execute_smart_fallback(distance)
+	#else:
+		## NEW: Smart fallback instead of idle
+		#execute_smart_fallback(distance)
 			
 func _compare_numeric(op: String, current_value: float, rule_value: float) -> bool:
 	match op:
@@ -888,6 +1051,7 @@ func _execute_actions(actions: Array):
 		return
 	
 	for action in actions:
+		total_rules_used += 1
 		_execute_single_action(action)
 
 func _execute_single_action(action):
@@ -1001,18 +1165,21 @@ func _execute_single_action(action):
 			print("Unknown action: %s" % str(action))
 	
 	last_action = action
+	print(last_action)
 	
 func debug_states():
-	#print("is_dashing: ", is_dashing)
-	#print("is_jumping state: ", is_jumping)
-	#print("is_crouching: ", is_crouching)
-	#print("is_attacking state:", is_attacking)
-	#print("is_defending: ", is_defending)
-	#print("is_hurt state:", is_hurt)
-	#print("is_is_dashing: ", is_dashing)
-	#print("is_on_floor(): ", is_on_floor())
-	print("Current animation:", animation.current_animation)
-	pass
+	print("is_dashing: ", is_dashing)
+	print("is_jumping state: ", is_jumping)
+	print("is_crouching: ", is_crouching)
+	print("is_attacking state:", is_attacking)
+	print("is_defending: ", is_defending)
+	print("is_hurt state:", is_hurt)
+	print("is_is_dashing: ", is_dashing)
+	print("is_on_floor(): ", is_on_floor())
+	#print(valid_actions)
+	print(NDSscript)
+	print("DS Current animation:", animation.current_animation)
+	
 
 #FOR ANIMATIONS IN ORDER TO NOT GET CUT OFF
 func _on_animation_finished(anim_name: String):
@@ -1071,7 +1238,7 @@ func generate_script():
 	cycle_used_rules.clear()
 	
 	# Count active rules in current script
-	for rule in DSscript:
+	for rule in NDSscript:
 		if rule.get("wasUsed", false):
 			active += 1
 	
@@ -1127,7 +1294,7 @@ func generate_script():
 				rule["weight"] = maxWeight
 	
 	# NEW: Ensure movement rules don't get too low
-	ensure_minimum_movement_weights()
+	#ensure_minimum_movement_weights()
 	
 	DistributeRemainder()
 	_create_new_script()
@@ -1171,7 +1338,7 @@ func _create_new_script():
 	for rule in rules:
 		rule["inScript"] = false
 	
-	DSscript.clear()
+	NDSscript.clear()
 	
 	var candidates = []
 	for rule in rules:
@@ -1228,9 +1395,9 @@ func _create_new_script():
 			selected_rules.append(movement_rule)
 			print("Forcibly added movement rule: ", movement_rule["ruleID"])
 	
-	DSscript = selected_rules
-	print("Rules Generated (", DSscript.size(), " rules):")
-	for rule in DSscript:
+	NDSscript = selected_rules
+	print("Rules Generated (", NDSscript.size(), " rules):")
+	for rule in NDSscript:
 		print("  - Rule ", rule["ruleID"], " (weight: ", rule["weight"], ")")
 
 func DistributeRemainder():
@@ -1506,7 +1673,7 @@ func log_script_generation():
 
 	# Step 1: Simplify all rules in DSscript
 	var simplified_rules = []
-	for rule in DSscript:
+	for rule in NDSscript:
 		if rule.has("conditions") and rule["conditions"].has("distance"):
 			var condition = rule["conditions"]["distance"]
 			var action = ""
@@ -1541,7 +1708,7 @@ func log_script_generation():
 		var data_to_send = {
 			"timestamp": Time.get_datetime_string_from_system(),
 			"cycle_id": log_cycles,
-			"script": DSscript,
+			"script": NDSscript,
 			"parameters": {
 				"upper_attacks_taken": upper_attacks_taken,
 				"lower_attacks_taken": lower_attacks_taken,
@@ -1698,7 +1865,7 @@ func send_script_to_lstm():
 
 func reset_state():
 	print(name, " - Resetting AI state")
-	
+	animation.play("idle")
 	velocity = Vector2.ZERO
 	
 	# Reset all states
@@ -2012,32 +2179,32 @@ func _reset_jump_state():
 	jump_fall_started = false
 	jump_landing_done = false
 	velocity.x = 0
-
-func ensure_minimum_movement_weights():
-	var movement_rule_ids = [9, 10, 11, 12, 13, 14, 15, 16, 18]  # Movement-related rules
-	
-	for rule in rules:
-		if rule["ruleID"] in movement_rule_ids and rule["weight"] < 0.3:
-			rule["weight"] = 0.3
-			print("Boosted movement rule ", rule["ruleID"], " to minimum weight")
-
-func execute_smart_fallback(distance: float):
-	var MIN_ENGAGE_DISTANCE := 220.0
-	if distance >= 350:
-		_execute_single_action("dash_forward")
-		print("Smart fallback: dash_forward (distance: ", distance, ")")
-	elif distance <= MIN_ENGAGE_DISTANCE:
-		# Ultra-close: attack instead of retreating (retreat is blocked by physics anyway)
-		var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
-		var random_attack = attacks[randi() % attacks.size()]
-		_execute_single_action(random_attack)
-		print("Smart fallback: close-range attack ", random_attack, " (distance: ", distance, ")")
-	else:
-		# Mid-range: choose a random attack
-		var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
-		var random_attack = attacks[randi() % attacks.size()]
-		_execute_single_action(random_attack)
-		print("Smart fallback: ", random_attack, " (distance: ", distance, ")")
+#
+#func ensure_minimum_movement_weights():
+	#var movement_rule_ids = [9, 10, 11, 12, 13, 14, 15, 16, 18]  # Movement-related rules
+	#
+	#for rule in rules:
+		#if rule["ruleID"] in movement_rule_ids and rule["weight"] < 0.3:
+			#rule["weight"] = 0.3
+			#print("Boosted movement rule ", rule["ruleID"], " to minimum weight")
+##
+#func execute_smart_fallback(distance: float):
+	#var MIN_ENGAGE_DISTANCE := 220.0
+	#if distance >= 350:
+		#_execute_single_action("dash_forward")
+		#print("Smart fallback: dash_forward (distance: ", distance, ")")
+	#elif distance <= MIN_ENGAGE_DISTANCE:
+		## Ultra-close: attack instead of retreating (retreat is blocked by physics anyway)
+		#var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
+		#var random_attack = attacks[randi() % attacks.size()]
+		#_execute_single_action(random_attack)
+		#print("Smart fallback: close-range attack ", random_attack, " (distance: ", distance, ")")
+	#else:
+		## Mid-range: choose a random attack
+		#var attacks = ["light_punch", "light_kick", "crouch_lightPunch", "crouch_lightKick"]
+		#var random_attack = attacks[randi() % attacks.size()]
+		#_execute_single_action(random_attack)
+		#print("Smart fallback: ", random_attack, " (distance: ", distance, ")")
 
 func apply_nds_suggestions():
 	if NDSsuggestions and NDSsuggestions.size() > 0:
@@ -2054,29 +2221,29 @@ func apply_nds_suggestions():
 					break
 	else:
 		print("No NDS suggestions to apply")
-
-func check_emergency_action():
-	# If both players are idle and close to each other for too long, force action
-	if not is_instance_valid(enemy):
-		return
-		
-	var distance = global_position.distance_to(enemy.global_position)
-	var both_idle = (animation.current_animation == "idle" and 
-					enemyAnimation and enemyAnimation.current_animation == "idle")
-	
-	if both_idle and distance < 400:
-		# Force an action based on distance
-		if distance < 250:
-			# Too close - create space
-			_execute_single_action("dash_backward")
-			print("EMERGENCY: Forced dash_backward - too close and idle")
-		elif distance > 600:
-			# Too far - close distance  
-			_execute_single_action("dash_forward")
-			print("EMERGENCY: Forced dash_forward - too far and idle")
-		else:
-			# Mid range - attack
-			var attacks = ["light_punch", "light_kick", "crouch_lightPunch"]
-			var random_attack = attacks[randi() % attacks.size()]
-			_execute_single_action(random_attack)
-			print("EMERGENCY: Forced attack - stuck in idle")
+#
+#func check_emergency_action():
+	## If both players are idle and close to each other for too long, force action
+	#if not is_instance_valid(enemy):
+		#return
+		#
+	#var distance = global_position.distance_to(enemy.global_position)
+	#var both_idle = (animation.current_animation == "idle" and 
+					#enemyAnimation and enemyAnimation.current_animation == "idle")
+	#
+	#if both_idle and distance < 400:
+		## Force an action based on distance
+		#if distance < 250:
+			## Too close - create space
+			#_execute_single_action("dash_backward")
+			#print("EMERGENCY: Forced dash_backward - too close and idle")
+		#elif distance > 600:
+			## Too far - close distance  
+			#_execute_single_action("dash_forward")
+			#print("EMERGENCY: Forced dash_forward - too far and idle")
+		#else:
+			## Mid range - attack
+			#var attacks = ["light_punch", "light_kick", "crouch_lightPunch"]
+			#var random_attack = attacks[randi() % attacks.size()]
+			#_execute_single_action(random_attack)
+			#print("EMERGENCY: Forced attack - stuck in idle")
