@@ -392,7 +392,6 @@ var max_idle_cycles = 11
 		#"enemy_action": ["dash_forward"], "weight": 1.0, "wasUsed": false, "inScript": false
 	#}
 #]
-
 var rules = [
 		{
 		"ruleID": 1, "prioritization": 1,
@@ -411,7 +410,7 @@ var rules = [
 	{
 		"ruleID": 3, "prioritization": 12,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 280 },
+			"distance": { "op": "<=", "value": 300 },
 		},
 		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -426,7 +425,8 @@ var rules = [
 	{
 		"ruleID": 5, "prioritization": 22,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 300 },
+			"distance": [{ "op": ">=", "value": 340 },
+			{ "op": "<=", "value": 350 }],
 		},
 		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
@@ -1387,9 +1387,7 @@ func _create_new_script():
 	# NEW: Ensure we have a mix of rule types
 	var selected_rules = []
 	var rule_types_added = {
-		"defense": false,
-		"close_attack": false, 
-		"far_attack": false,
+		"attack": false, 
 		"movement": false
 	}
 	
@@ -1398,11 +1396,11 @@ func _create_new_script():
 		var rule_id = rule["ruleID"]
 		
 		# Categorize rule
-		if rule_id in [1, 2]:
-			rule_types_added["defense"] = true
-		elif rule_id in [3, 4, 5, 6, 7, 8]:
+		#if rule_id in [1, 2]:
+			#rule_types_added["defense"] = true
+		if rule_id in [2, 3, 4, 5, 6, 7]:
 			rule_types_added["close_attack"] = true
-		elif rule_id in [9, 10, 11, 12, 13, 14, 15, 16, 18]:
+		elif rule_id in [1, 8, 9, 10, 11, 12, 13, 14]:
 			rule_types_added["movement"] = true
 		
 		rule["inScript"] = true
@@ -1413,7 +1411,7 @@ func _create_new_script():
 		# Find a movement rule with highest weight not already selected
 		var movement_candidates = []
 		for rule in rules:
-			if rule["ruleID"] in [9, 10, 11, 12, 13, 14, 15, 16, 18] and not rule["inScript"]:
+			if rule["ruleID"] in [1, 8, 9, 10, 11, 12, 13, 14] and not rule["inScript"]:
 				movement_candidates.append(rule)
 		
 		if movement_candidates.size() > 0:
@@ -1643,21 +1641,38 @@ func log_script_generation():
 
 	# Step 1: Simplify all rules in DSscript
 	var simplified_rules = []
+	
 	for rule in DSscript:
 		if rule.has("conditions") and rule["conditions"].has("distance"):
 			var condition = rule["conditions"]["distance"]
+			var distance_values = []
+
+			# ✅ CASE 1: distance is a single dictionary
+			if condition is Dictionary:
+				if condition.has("value"):
+					distance_values.append(condition["value"])
+
+			# ✅ CASE 2: distance is an array of dictionaries
+			elif condition is Array:
+				for c in condition:
+					if c is Dictionary and c.has("value"):
+						distance_values.append(c["value"])
+
+			# Skip if nothing valid
+			if distance_values.is_empty():
+				continue
+
 			var action = ""
 			if rule.has("enemy_action") and rule["enemy_action"].size() > 0:
 				action = rule["enemy_action"][0]
 
 			simplified_rules.append({
 				"rule_id": rule["ruleID"],
-				"distance": condition["value"],
+				"distance": distance_values,
 				"action": action,
 				"weight": rule["weight"],
 				"was_used": rule["wasUsed"]
 			})
-
 	# Step 2: Write the log entry once (after collecting all rules)
 	file.store_string("Timestamp: %s\n" % timestamp)
 	file.store_string("cycle_id: %d\n" % log_cycles)
@@ -1739,8 +1754,8 @@ func reset_state():
 	is_dashing = false
 	is_jumping = false
 	is_crouching = false
-	is_attacking = false
 	is_defending = false
+	is_attacking = false
 	is_hurt = false
 	is_recently_hit = false
 	is_sliding = false
