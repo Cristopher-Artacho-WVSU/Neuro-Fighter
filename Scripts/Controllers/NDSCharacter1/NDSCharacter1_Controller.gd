@@ -414,23 +414,23 @@ var rules = [
 	{
 		"ruleID": 3, "prioritization": 12,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 300 },
+			"distance": { "op": "<=", "value": 310 },
 		},
 		"enemy_action": ["light_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 		{
 		"ruleID": 4, "prioritization": 21,
 		"conditions": { 
-			"distance": { "op": "<=", "value": 300 },
-			"upper_attacks_landed": { "op": ">=", "value": 1 }
+			"distance": [{ "op": ">=", "value": 320 },
+			{ "op": "<=", "value": 340 }],
 		},
 		"enemy_action": ["heavy_kick"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},
 		{
 		"ruleID": 5, "prioritization": 22,
 		"conditions": { 
-			"distance": [{ "op": ">=", "value": 340 },
-			{ "op": "<=", "value": 350 }],
+			"distance": [{ "op": ">=", "value": 320 },
+			{ "op": "<=", "value": 340 }],
 		},
 		"enemy_action": ["heavy_punch"], "weight": 0.5, "wasUsed": false, "inScript": false
 	},

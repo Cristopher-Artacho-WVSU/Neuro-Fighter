@@ -51,10 +51,23 @@ var current_match: int = 1
 var player1_round_wins: int = 0
 var player2_round_wins: int = 0
 
+#FOR SERVER
+var server_pid
+
 func _ready():
+#	RUN THE SERVER 
+	var base_dir = OS.get_executable_path().get_base_dir()
+	var server_path = base_dir + "/run_server.exe"
+	server_pid = OS.create_process(server_path, [])
 	if debug_mode:
 		add_log_entry("Global.gd initialized - Debug Mode: ON", 1)
 
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		print("Game closing...")
+		if server_pid > 0:
+			OS.kill(server_pid)
+			
 func reset_round_wins():
 	player1_round_wins = 0
 	player2_round_wins = 0
